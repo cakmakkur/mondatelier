@@ -4,22 +4,20 @@
   left: 0;
   width: 100%;
   display: flex;
-  justify-content: center;
-  column-gap: 150px;
+  justify-content: space-between;
   z-index: 140;
-  padding-top: 4vh;
-  opacity: 0;
-  transition: 5s;
+  padding: 3vh 2vw;
+}
+
+.navBar__right {
+  display: flex;
+  column-gap: 30px;
 }
 
 .navBar_nav {
-  background: rgb(196, 73, 137);
-  background: linear-gradient(338deg, rgb(196, 73, 137) 21%, rgb(158, 39, 189) 77%);
-  background-clip: text;
-  -moz-background-clip: text;
-  color: rgba(255, 255, 255, 0);
-  font-family: monospace;
-  font-size: 1.1rem;
+  color: white;
+  font-family: papyrus;
+  font-size: 1.3rem;
   transition: 0.3s;
 }
 .navBar_nav:hover {
@@ -28,88 +26,71 @@
   transform: scale(1.02);
 }
 
-.section_3 {
-  width: 100%;
-  height: 100vh;
-  background-color: black;
-  position: relative;
+.navBar__title {
+  color: rgb(255, 255, 207);
+  font-size: 2.2rem;
+  font-weight: bold;
+  user-select: none;
+  padding-top: 2px;
+  padding-left: 10px;
+}
+.navBar__title:hover {
+  transform: none;
 }
 
-.canvas_2,
-.canvas_3 {
+.navBar__left {
+  display: flex;
+  flex-direction: row;
+}
+
+.navBar__favicon {
+  width: 50px;
+  height: 50px;
+}
+
+.homepage_container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: black;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.homepage__canvas {
   pointer-events: none;
   transition: 5s;
 }
 
-.intro_text_box {
-  width: 50%;
-  height: 100vh;
-  padding-top: 40vh;
-  z-index: 100;
-  position: relative;
+.homepage__greeting {
+  position: absolute;
   display: flex;
   flex-direction: column;
-  row-gap: 15vh;
-}
-
-.clock_box {
-  display: flex;
-  column-gap: 5px;
   z-index: 120;
-}
-
-.number_box {
-  position: relative;
-  height: 70px;
-  width: 50px;
-  background-color: white;
-  overflow: hidden;
-  border: 1px solid black;
-  transform: scale(0.9);
-}
-
-.numbers_img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  transition: transform 0.5s cubic-bezier(0.38, 0.25, 0.36, 1.11);
-}
-
-.numbers_separator_box {
-  position: relative;
+  top: 30vh;
+  left: 5vw;
+  max-width: 40vw;
   color: white;
-  height: 70px;
-  width: 30px;
-  font-size: 5rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding: 20px;
 }
-
-.text_mondatelier {
-  position: relative;
-  color: white;
-  z-index: 120;
-  font-size: 5.5rem;
+.homepage__greeting h1 {
+  font-size: 3.2rem;
+}
+.homepage__greeting p {
+  display: block;
+  padding: 20px 0px 30px;
 }
 
 .start_tour_btn {
-  position: absolute;
-  z-index: 120;
   color: rgba(255, 255, 255, 0);
   background-color: black;
-  top: 550px;
-  left: 170px;
-  font-size: 3rem;
+  font-size: 2rem;
   border: 1px solid rgb(165, 104, 177);
-  padding: 11px 70px 2px;
-  border-radius: 60px;
+  padding: 11px 30px 4px;
+  border-radius: 5px;
   background: rgb(196, 73, 137);
   background: linear-gradient(338deg, rgb(196, 73, 137) 21%, rgb(158, 39, 189) 77%);
   background-clip: text;
   -moz-background-clip: text;
-  transition: filter 0.25s, opacity 5s;
-  opacity: 0;
 }
 .start_tour_btn:hover {
   cursor: pointer;

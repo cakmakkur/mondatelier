@@ -14,6 +14,8 @@
 /frontend/.idea/
 *.log
 
+
+
 # === Common ===
 .env
 .DS_Store

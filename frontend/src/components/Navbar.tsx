@@ -1,39 +1,36 @@
-import { useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 
-interface NavBarProps {
-  startFadeIn: boolean;
-}
-export default function NavBar({ startFadeIn }: NavBarProps) {
-  const navBarRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!navBarRef.current) return;
-
-    if (startFadeIn) {
-      timeoutRef.current = setTimeout(() => {
-        navBarRef.current!.style.opacity = "1";
-      }, 2000);
-    } else {
-      navBarRef.current!.style.opacity = "0";
-    }
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [startFadeIn]);
-
+export default function NavBar() {
   return (
-    <div ref={navBarRef} className="navBar">
-      <a className="navBar_nav" href="#">
-        We
-      </a>
-      <a className="navBar_nav" href="#">
-        Gallery
-      </a>
-      <a className="navBar_nav" href="#">
-        Contact
-      </a>
+    <div className="navBar">
+      <div className="navBar__left">
+        <Link className="navBar__left" to="/">
+          <img className="navBar__favicon" src="/favicon.png" alt="" />
+          <a className="navBar_nav navBar__title" href="#">
+            mondatelier
+          </a>
+        </Link>
+      </div>
+      <div className="navBar__right">
+        <a className="navBar_nav" href="#">
+          LOGIN
+        </a>
+        <a className="navBar_nav" href="#">
+          SIGNUP
+        </a>
+        <a className="navBar_nav" href="#">
+          Community
+        </a>
+        <a className="navBar_nav" href="#">
+          Artworks
+        </a>
+        <a className="navBar_nav" href="#">
+          Cart
+        </a>
+        <a className="navBar_nav" href="#">
+          Menu
+        </a>
+      </div>
     </div>
   );
 }

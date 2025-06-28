@@ -4,29 +4,14 @@ import { Link } from "react-router-dom";
 import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
 import { moon, anchor } from "../assets/homepage_canvas_components.js";
-// import Clock from "../components/Clock";
-// @ts-expect-error importing canvas class
-import Effect from "../effects/homepage_moon_canvas.js";
 import NavBar from "../components/Navbar.js";
 
 export default function Homepage() {
-  const footerRef = useRef<HTMLDivElement>(null);
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [startAnimation, setStartAnimation] = useState(false);
-  const [startFadeIn, setStartFadeIn] = useState(false);
-  const modalDivRef = useRef<HTMLDivElement>(null);
-
-  const timeoutRef2 = useRef<number | null>(null);
-  const timeoutRef3 = useRef<number | null>(null);
-
-  const canvasRef_2 = useRef<HTMLCanvasElement>(null);
-  const canvasRef_3 = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>(0);
-  const effectRef = useRef<Effect>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const stars = useRef<THREE.Mesh[]>([]);
   const phaseOffsets = useRef<number[]>([]);
-  const timeoutRef = useRef<number | null>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     function handleLoad() {
@@ -39,35 +24,20 @@ export default function Homepage() {
   }, []);
 
   useEffect(() => {
-    if (!modalDivRef.current || !isPageLoaded) return;
-    modalDivRef.current.style.opacity = "0";
-    timeoutRef3.current = setTimeout(() => {
-      setStartAnimation(true);
-      setStartFadeIn(true);
-    }, 300);
-    return () => {
-      if (timeoutRef3.current) clearTimeout(timeoutRef3.current);
-    };
+    if (!isPageLoaded) return;
+    setStartAnimation(true);
   }, [isPageLoaded]);
 
   useEffect(() => {
-    if (!footerRef.current || !startFadeIn) return;
-    timeoutRef2.current = setTimeout(() => {
-      footerRef.current!.style.opacity = "1";
-    }, 2000);
-  }, [startFadeIn]);
-
-  useEffect(() => {
-    if (!canvasRef_2.current) return;
+    if (!canvasRef.current) return;
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
-      canvas: canvasRef_2.current!,
+      canvas: canvasRef.current!,
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("black");
-    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -80,7 +50,6 @@ export default function Homepage() {
     directionalLight.position.set(0, 0, 10);
     scene.add(directionalLight);
 
-    // ----- CAMERA -----
     const camera = new THREE.PerspectiveCamera(
       75,
       window.innerWidth / window.innerHeight,
@@ -91,14 +60,9 @@ export default function Homepage() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
-    // ----- MOON -----
     scene.add(moon);
-
-    // ----- ANCHOR OBJECT -----
-
     scene.add(anchor);
 
-    // ----- STARS -----
     const addStars = (xRange: number[], yRange: number[], zRange: number[]) => {
       const geometry = new THREE.SphereGeometry(0.05, 24, 24);
       const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -112,33 +76,27 @@ export default function Homepage() {
       star.position.set(x, y, z);
       anchor.add(star);
     };
+
     const xRange = [-100, 100];
     const yRange = [-40, 40];
     const zRange = [-110, 110];
-
     Array(600)
       .fill(null)
       .forEach(() => addStars(xRange, yRange, zRange));
 
-    // ----- ANIMATE -----
     const clock = new THREE.Clock();
     function animate() {
       const elapsedTime = clock.getElapsedTime();
 
       stars.current.forEach((star, i) => {
-        star.scale.set(
-          0.5 + Math.abs(Math.sin(elapsedTime + phaseOffsets.current[i])),
-          0.5 + Math.abs(Math.sin(elapsedTime + phaseOffsets.current[i])),
-          0.5 + Math.abs(Math.sin(elapsedTime + phaseOffsets.current[i]))
-        );
+        const scale =
+          0.5 + Math.abs(Math.sin(elapsedTime + phaseOffsets.current[i]));
+        star.scale.set(scale, scale, scale);
       });
-      // stars rotating around invisible anchor element at (0, 0, 0)
-      anchor.rotation.y += 0.0001;
 
-      // moon is lit based on scroll position
+      anchor.rotation.y += 0.0001;
       directionalLight.position.x = window.scrollY * 0.05;
       directionalLight.position.y = window.scrollY * 0.05;
-
       moon.rotation.y += 0.0002;
 
       camera.updateProjectionMatrix();
@@ -148,7 +106,6 @@ export default function Homepage() {
 
     animate();
 
-    // ----- RESIZE -----
     const handleResize = () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
@@ -162,47 +119,6 @@ export default function Homepage() {
     };
   }, [startAnimation]);
 
-  useEffect(() => {
-    if (!canvasRef_3.current) return;
-    if (!startAnimation) return;
-
-    const canvas = canvasRef_3.current;
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    effectRef.current = new Effect(ctx, canvas.width, canvas.height);
-
-    function animate() {
-      effectRef.current.ctx.clearRect(0, 0, canvas.width, canvas.height);
-      requestAnimationFrame(animate);
-      effectRef.current.render();
-    }
-
-    animate();
-
-    // ----- TRIGGER FADE IN OF THE BUTTONS -----
-    timeoutRef.current = setTimeout(() => {
-      buttonRef.current!.style.opacity = "1";
-    }, 2000);
-
-    // ----- RESIZE -----
-    const handleResize = () => {
-      cancelAnimationFrame(animationRef.current);
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      effectRef.current = new Effect(ctx, canvas.width, canvas.height);
-      animate();
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [startAnimation]);
-
   if (!isPageLoaded) {
     return (
       <div className="loading_div">
@@ -212,32 +128,24 @@ export default function Homepage() {
   }
 
   return (
-    <section className="section_3">
-      <div ref={modalDivRef} className="fade_out_modal_div"></div>
-
-      <NavBar startFadeIn={startFadeIn} />
-
+    <section className="homepage_container">
+      <NavBar />
       <canvas
-        ref={canvasRef_2}
-        className="canvas_2 absoluteFullScreen"
+        ref={canvasRef}
+        className="homepage__canvas absoluteFullScreen"
       ></canvas>
-      <canvas
-        ref={canvasRef_3}
-        className="canvas_3 absoluteFullScreen"
-      ></canvas>
-      <Link to="/exposition">
-        <button ref={buttonRef} className="start_tour_btn">
-          Start Tour
-        </button>
-      </Link>
+      <div className="homepage__greeting">
+        <h1>Share Your Passion</h1>
+        <p>
+          Whether you're here to showcase your work, find a new home for it or
+          simply be inspired by others — you're in the right place.{" "}
+        </p>
+        <Link to="/exposition">
+          <button className="start_tour_btn">Create an account</button>
+        </Link>
+      </div>
 
-      <div className="intro_text_box">
-        {/* <h1 className="text_mondatelier">Mondatelier</h1>
-        <Clock /> */}
-      </div>
-      <div ref={footerRef} className="footer">
-        &copy; Kursat Cakmak
-      </div>
+      <div className="footer">&copy; Kursat Cakmak</div>
     </section>
   );
 }
