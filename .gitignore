@@ -1,0 +1,30 @@
+# === Backend (Java / Spring Boot) ===
+/backend/target/
+/backend/.classpath
+/backend/.project
+/backend/.settings/
+/backend/.idea/
+*.iml
+
+# === Frontend (Node.js / React / Vue / etc.) ===
+/frontend/node_modules/
+/frontend/.next/
+/frontend/dist/
+/frontend/.vite/
+/frontend/.idea/
+*.log
+
+# === Common ===
+.env
+.DS_Store
+*.log
+*.tmp
+*.bak
+*.swp
+Thumbs.db
+
+# === OS or Editor Files ===
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
