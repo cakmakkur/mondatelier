@@ -1,0 +1,33 @@
+.navBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  column-gap: 150px;
+  z-index: 140;
+  padding-top: 4vh;
+  opacity: 0;
+  transition: 5s;
+}
+
+.navBar_nav {
+  background: rgb(196, 73, 137);
+  background: linear-gradient(
+    338deg,
+    rgba(196, 73, 137, 1) 21%,
+    rgba(158, 39, 189, 1) 77%
+  );
+  background-clip: text;
+  -moz-background-clip: text;
+  color: rgba(255, 255, 255, 0);
+  font-family: monospace;
+  font-size: 1.1rem;
+  transition: 0.3s;
+  &:hover {
+    cursor: pointer;
+    filter: brightness(1.3);
+    transform: scale(1.02);
+  }
+}
