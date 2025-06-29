@@ -14,6 +14,13 @@ export default function Profile() {
       <div className="profile_display">
         <div className="profile_display--left">
           <h2 className="profile_name">Kürsat Cakmak</h2>
+          <div className="profile_follow">
+            <h5>
+              <span>7</span> followers
+              <span style={{ padding: "0px 5px" }}>·</span> <span>3</span>
+              following
+            </h5>
+          </div>
           <div className="profile_detail">
             <img
               style={{ display: "inline-block" }}
@@ -43,12 +50,40 @@ export default function Profile() {
             />
             Offers masterclasses
           </div>
+          <div className="profile_connect_buttons">
+            <button className="follow">
+              <img
+                src="../../public/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                alt=""
+              />
+              Follow
+            </button>
+            <button className="message">
+              <img
+                src="../../public/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                alt=""
+              />
+              Message
+            </button>
+          </div>
         </div>
         <div className="profile_display--right">
           <div className="display_nav">
-            About Work Collections Followers Following
+            <button>About</button>
+            <button>Art</button>
+            <button>Collections</button>
+            <button>Followers</button>
+            <button>Following</button>
           </div>
-          <div className="display_innercontainer"></div>
+          <div className="display_innercontainer">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
+            mollitia at officiis, omnis quidem error iure magnam, eveniet
+            cumque, aperiam doloremque sint eos consequuntur aut illum possimus
+            labore sunt maiores? Lorem ipsum dolor sit amet, consectetur
+            adipisicing elit. Reiciendis mollitia at officiis, omnis quidem
+            error iure magnam, eveniet cumque, aperiam doloremque sint eos
+            consequuntur aut illum possimus labore sunt maiores?
+          </div>
         </div>
       </div>
     </div>

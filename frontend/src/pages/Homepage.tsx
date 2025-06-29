@@ -5,7 +5,6 @@ import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
 // prettier-ignore
 import {moon,anchor} from "../assets/visual_effects/homepage_canvas_components.js";
-import NavBar from "../components/Navbar.js";
 
 export default function Homepage() {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
