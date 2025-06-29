@@ -1,4 +1,16 @@
+import { useState } from "react";
+import About from "../components/profile/About";
+import Art from "../components/profile/Art";
+import Collections from "../components/profile/Collections";
+import Follow from "../components/profile/Follow";
+
 export default function Profile() {
+  const [section, setSection] = useState("about");
+
+  const handleSectionChange = (newSection: string) => {
+    setSection(newSection);
+  };
+
   return (
     <div className="profile_main_div">
       <div className="banner">
@@ -69,20 +81,30 @@ export default function Profile() {
         </div>
         <div className="profile_display--right">
           <div className="display_nav">
-            <button>About</button>
-            <button>Art</button>
-            <button>Collections</button>
-            <button>Followers</button>
-            <button>Following</button>
+            <button onClick={() => handleSectionChange("about")}>About</button>
+            <button onClick={() => handleSectionChange("art")}>Art</button>
+            <button onClick={() => handleSectionChange("collections")}>
+              Collections
+            </button>
+            <button onClick={() => handleSectionChange("followers")}>
+              Followers
+            </button>
+            <button onClick={() => handleSectionChange("following")}>
+              Following
+            </button>
           </div>
           <div className="display_innercontainer">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis
-            mollitia at officiis, omnis quidem error iure magnam, eveniet
-            cumque, aperiam doloremque sint eos consequuntur aut illum possimus
-            labore sunt maiores? Lorem ipsum dolor sit amet, consectetur
-            adipisicing elit. Reiciendis mollitia at officiis, omnis quidem
-            error iure magnam, eveniet cumque, aperiam doloremque sint eos
-            consequuntur aut illum possimus labore sunt maiores?
+            {section === "about" ? (
+              <About />
+            ) : section === "art" ? (
+              <Art />
+            ) : section === "collections" ? (
+              <Collections />
+            ) : section === "followers" ? (
+              <Follow followType="followers" />
+            ) : section === "following" ? (
+              <Follow followType="following" />
+            ) : null}
           </div>
         </div>
       </div>

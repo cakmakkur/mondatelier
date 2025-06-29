@@ -53,3 +53,117 @@ INSERT INTO users (id,
                                ('usr47u8v9w0x', 'scarlett.collins@example.com', 'hashed_password_47', '2024-04-25 08:50:39', '2024-04-25 08:50:39', TRUE),
                                ('usr48v9w0x1y', 'elijah.stewart@example.com', 'hashed_password_48', '2024-05-08 13:25:51', '2024-05-08 13:25:51', TRUE),
                                ('usr49w0x1y2z', 'addison.sanchez@example.com', 'hashed_password_49', '2024-02-22 10:40:44', '2024-02-22 10:40:44', TRUE);
+
+-- Visual Arts
+INSERT INTO art_types (category, name) VALUES
+                                           ('Visual Arts', 'Painting'),
+                                           ('Visual Arts', 'Drawing'),
+                                           ('Visual Arts', 'Sketching'),
+                                           ('Visual Arts', 'Watercolor'),
+                                           ('Visual Arts', 'Oil Painting'),
+                                           ('Visual Arts', 'Acrylic Painting'),
+                                           ('Visual Arts', 'Charcoal'),
+                                           ('Visual Arts', 'Ink'),
+                                           ('Visual Arts', 'Calligraphy'),
+                                           ('Visual Arts', 'Collage'),
+                                           ('Visual Arts', 'Graffiti'),
+                                           ('Visual Arts', 'Street Art'),
+                                           ('Visual Arts', 'Mural'),
+                                           ('Visual Arts', 'Comic Art'),
+                                           ('Visual Arts', 'Manga'),
+                                           ('Visual Arts', 'Pop Art'),
+                                           ('Visual Arts', 'Illustration'),
+                                           ('Visual Arts', 'Mixed Media'),
+                                           ('Visual Arts', 'Printmaking');
+
+-- Digital & New Media Arts
+INSERT INTO art_types (category, name) VALUES
+                                           ('Digital Art', 'Digital Painting'),
+                                           ('Digital Art', 'Pixel Art'),
+                                           ('Digital Art', 'Vector Art'),
+                                           ('Digital Art', '3D Modeling'),
+                                           ('Digital Art', '3D Rendering'),
+                                           ('Digital Art', 'Animation'),
+                                           ('Digital Art', 'Motion Graphics'),
+                                           ('Digital Art', 'Generative Art'),
+                                           ('Digital Art', 'AI Art'),
+                                           ('Digital Art', 'NFT Art'),
+                                           ('Digital Art', 'AR/VR Art'),
+                                           ('Digital Art', 'Web Design'),
+                                           ('Digital Art', 'UI/UX Design'),
+                                           ('Digital Art', 'Game Art'),
+                                           ('Digital Art', 'Concept Art');
+
+-- Photography
+INSERT INTO art_types (category, name) VALUES
+                                           ('Photography', 'Portrait Photography'),
+                                           ('Photography', 'Street Photography'),
+                                           ('Photography', 'Fashion Photography'),
+                                           ('Photography', 'Fine Art Photography'),
+                                           ('Photography', 'Black & White Photography'),
+                                           ('Photography', 'Experimental Photography'),
+                                           ('Photography', 'Film Photography');
+
+-- Music & Sound
+INSERT INTO art_types (category, name) VALUES
+                                           ('Music', 'Music Composition'),
+                                           ('Music', 'Singing'),
+                                           ('Music', 'Instrumental'),
+                                           ('Music', 'Electronic Music'),
+                                           ('Music', 'DJing'),
+                                           ('Music', 'Sound Design'),
+                                           ('Music', 'Beat Making'),
+                                           ('Music', 'Rap'),
+                                           ('Music', 'Classical Music'),
+                                           ('Music', 'Experimental Music'),
+                                           ('Music', 'Audio Collage'),
+                                           ('Music', 'Sound Installation');
+
+-- Design & Craft
+INSERT INTO art_types (category, name) VALUES
+                                           ('Design', 'Graphic Design'),
+                                           ('Design', 'Typography'),
+                                           ('Design', 'Logo Design'),
+                                           ('Design', 'Poster Design'),
+                                           ('Design', 'Interior Design'),
+                                           ('Design', 'Furniture Design'),
+                                           ('Design', 'Industrial Design'),
+                                           ('Design', 'Fashion Design'),
+                                           ('Design', 'Textile Art'),
+                                           ('Design', 'Jewelry Design'),
+                                           ('Design', 'Calligraphy'),
+                                           ('Design', 'Packaging Design');
+
+-- 3D & Physical Arts
+INSERT INTO art_types (category, name) VALUES
+                                           ('3D Art', 'Sculpture'),
+                                           ('3D Art', 'Installation Art'),
+                                           ('3D Art', 'Woodworking'),
+                                           ('3D Art', 'Ceramics'),
+                                           ('3D Art', 'Metalwork'),
+                                           ('3D Art', 'Glass Art'),
+                                           ('3D Art', 'Origami'),
+                                           ('3D Art', 'Model Making'),
+                                           ('3D Art', 'Product Design');
+
+-- Performing Arts
+INSERT INTO art_types (category, name) VALUES
+                                           ('Performing Arts', 'Dance'),
+                                           ('Performing Arts', 'Theater'),
+                                           ('Performing Arts', 'Acting'),
+                                           ('Performing Arts', 'Performance Art'),
+                                           ('Performing Arts', 'Spoken Word'),
+                                           ('Performing Arts', 'Puppetry'),
+                                           ('Performing Arts', 'Mime'),
+                                           ('Performing Arts', 'Circus Arts');
+
+-- Conceptual / Experimental
+INSERT INTO art_types (category, name) VALUES
+                                           ('Conceptual Art', 'Minimalism'),
+                                           ('Conceptual Art', 'Abstract Art'),
+                                           ('Conceptual Art', 'Surrealism'),
+                                           ('Conceptual Art', 'Dadaism'),
+                                           ('Conceptual Art', 'Cyberpunk Art'),
+                                           ('Conceptual Art', 'Postmodern Art'),
+                                           ('Conceptual Art', 'Conceptual Installations'),
+                                           ('Conceptual Art', 'Data Art');
