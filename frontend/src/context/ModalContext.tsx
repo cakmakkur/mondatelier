@@ -6,6 +6,8 @@ interface ModalContextType {
   setRenderModal: React.Dispatch<
     React.SetStateAction<"login" | "signup" | null>
   >;
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -31,10 +33,13 @@ export const ModalContextProvider = ({
   const [renderModal, setRenderModal] = useState<"login" | "signup" | null>(
     null
   );
+  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const value: ModalContextType = {
     renderModal,
     setRenderModal,
+    isSidebarOpen,
+    setIsSidebarOpen,
   };
 
   return (

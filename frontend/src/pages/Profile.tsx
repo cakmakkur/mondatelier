@@ -29,7 +29,7 @@ export default function Profile() {
           <div className="profile_follow">
             <h5>
               <span>7</span> followers
-              <span style={{ padding: "0px 5px" }}>·</span> <span>3</span>
+              <span style={{ padding: "0px 5px" }}>·</span> <span>3 </span>
               following
             </h5>
           </div>
@@ -60,7 +60,7 @@ export default function Profile() {
               src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""
             />
-            Offers masterclasses
+            Masterclasses available
           </div>
           <div className="profile_connect_buttons">
             <button className="follow">

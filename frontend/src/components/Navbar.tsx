@@ -1,19 +1,21 @@
 import { Link, useLocation } from "react-router-dom";
 import Modal from "./Modal";
 import Login from "./Login";
-import accountIcon from "../../public/account_box_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import communityIcon from "../../public/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import artworksIcon from "../../public/wall_art_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import cartIcon from "../../public/shopping_cart_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import menuIcon from "../../public/dehaze_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import mailIcon from "../../public/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import { useAuthContext } from "../auth/AuthContext";
 import { useModalContext } from "../context/ModalContext";
 import { useEffect, useState } from "react";
 
 type Component = "login" | "signup";
 
-export default function NavBar() {
+interface NavBarProps {
+  setIsSidebarOpen?: (isOpen: boolean) => void;
+  isSidebarOpen: boolean;
+}
+
+export default function NavBar({
+  setIsSidebarOpen,
+  isSidebarOpen,
+}: NavBarProps) {
   const location = useLocation();
   const { auth } = useAuthContext();
   const { renderModal, setRenderModal } = useModalContext();
@@ -25,6 +27,12 @@ export default function NavBar() {
 
   const handleClick = (component: Component) => {
     setRenderModal(component);
+  };
+
+  const toggleMenu = () => {
+    if (setIsSidebarOpen) {
+      setIsSidebarOpen(!isSidebarOpen);
+    }
   };
 
   return (
@@ -41,12 +49,7 @@ export default function NavBar() {
         </Link>
       </div>
       <div className="navBar__right">
-        {auth ? (
-          <Link className="navBar_nav" to="/profile">
-            <img src={accountIcon} alt="" />
-            Account
-          </Link>
-        ) : (
+        {!auth ? (
           <>
             <button
               onClick={() => handleClick("login")}
@@ -61,31 +64,62 @@ export default function NavBar() {
               SIGNUP
             </button>
           </>
-        )}
+        ) : null}
         <Link className="navBar_nav" to="#">
-          <img src={communityIcon} alt="" />
+          <img
+            src="/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+            alt=""
+          />
           Community
         </Link>
         <Link className="navBar_nav" to="#">
-          <img src={artworksIcon} alt="" />
-          Artworks
+          <img
+            src="/wall_art_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+            alt=""
+          />
+          Discover
         </Link>
         <Link className="navBar_nav" to="#">
-          <img src={cartIcon} alt="" />
-          Cart
+          <img
+            src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+            alt=""
+          />
+          Events
         </Link>
         {auth ? (
           <Link className="navBar_nav" to="#">
-            <img src={mailIcon} alt="" />
+            <img
+              src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+              alt=""
+            />
             Messages
           </Link>
-        ) : (
-          ""
-        )}
-        <Link className="navBar_nav" to="#">
-          <img src={menuIcon} alt="" />
+        ) : null}
+        {auth ? (
+          <Link className="publish_button" to="#">
+            <img
+              src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+              alt=""
+            />
+            <span>Publish</span>
+          </Link>
+        ) : null}
+        {auth ? (
+          <Link className="navBar_nav" to="#">
+            <img
+              className="account_circle"
+              src="/dev_files/painting-31.jpeg"
+              alt=""
+            />
+          </Link>
+        ) : null}
+        <button onClick={toggleMenu} className="navBar_nav">
+          <img
+            src="/dehaze_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+            alt=""
+          />
           Menu
-        </Link>
+        </button>
       </div>
       {renderModal === "login" ? (
         <Modal setRenderModal={setRenderModal}>

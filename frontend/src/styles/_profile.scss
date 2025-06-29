@@ -1,3 +1,5 @@
+@import "variables";
+
 .profile_main_div {
   background-color: white;
   width: 100%;
@@ -5,7 +7,6 @@
 }
 
 .banner {
-  background-color: blue;
   position: relative;
   & img {
     object-fit: cover;
@@ -110,7 +111,7 @@
 }
 
 .follow {
-  background-color: rgba(255, 255, 207);
+  background-color: $moon-yellow;
 }
 
 .message {

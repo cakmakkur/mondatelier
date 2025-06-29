@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 50;
-  padding: 2vh 2vw 0px;
+  padding: 1.8vh 2vw 0px;
   font-family: Papyrus, fantasy;
   background-color: rgba(0, 0, 0, 0.7);
 }
@@ -25,20 +25,22 @@
 .navBar__right {
   display: flex;
   column-gap: 30px;
+  align-items: center;
 }
 
 .navBar_nav {
   color: white;
   font-size: 1rem;
-  transition: 0.3s;
+  transition: 0.2s;
   display: flex;
   align-items: center;
   flex-direction: column;
+  background-color: transparent;
+  border: none;
 }
 .navBar_nav:hover {
   cursor: pointer;
-  filter: brightness(1.3);
-  transform: scale(1.02);
+  color: rgb(255, 255, 207);
 }
 
 .navBar_btn {
@@ -49,7 +51,6 @@
 .navBar_btn:hover {
   cursor: pointer;
   filter: brightness(1.3);
-  transform: scale(1.02);
 }
 
 .navBar_btn--signup {
@@ -100,6 +101,46 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.account_circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid white;
+}
+.account_circle:hover {
+  filter: brightness(1.3);
+}
+
+.publish_button {
+  font-size: 1rem;
+  font-weight: 600;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  column-gap: 8px;
+  border: none;
+  width: 120px;
+  height: 35px;
+  color: white;
+  border-radius: 25px;
+  background-color: rgb(200, 0, 0);
+  border: 1px solid rgba(255, 255, 255, 0.433);
+}
+.publish_button span {
+  transform: translateY(2px);
+}
+.publish_button:hover {
+  cursor: pointer;
+  filter: brightness(1.3);
+}
+
+.sidebar_lastnav {
+  font-size: 0.9rem;
 }
 
 .homepage_container {
@@ -159,7 +200,6 @@
 }
 
 .banner {
-  background-color: blue;
   position: relative;
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
 }
@@ -298,6 +338,65 @@
 .art_container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+}
+
+.sidebar {
+  background-color: rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 85px;
+  right: -20vw;
+  width: 20vw;
+  height: calc(100vh - 65px);
+  padding: 1vh 1vw 5vh;
+  font-size: 1.3rem;
+  font-weight: 600;
+  transition: 0.3s;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sidebar::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.sidebar_list {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar_option {
+  color: white;
+  display: inline-block;
+  width: 17vw;
+  border: 1px solid rgba(255, 255, 255, 0);
+  transition: 0.2s;
+  padding: 5px 15px;
+  display: flex;
+  column-gap: 8px;
+}
+.sidebar_option:hover {
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.644);
+  border-radius: 5px;
+  background-color: rgb(255, 255, 207);
+  color: black;
+}
+
+.sidebar_separator {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.stream_dot_flash {
+  opacity: 0;
 }
 
 *,
