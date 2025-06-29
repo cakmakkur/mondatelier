@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 // @ts-expect-error importing THREE.js assets
 import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
-import { moon, anchor } from "../assets/homepage_canvas_components.js";
+// prettier-ignore
+import {moon,anchor} from "../assets/visual_effects/homepage_canvas_components.js";
 import NavBar from "../components/Navbar.js";
 
 export default function Homepage() {
