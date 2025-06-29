@@ -6,9 +6,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 140;
-  padding: 3vh 2vw;
+  z-index: 50;
+  padding: 3vh 2vw 0px;
   font-family: Papyrus, fantasy;
+  background-color: black;
 }
 
 .navBar__right {
@@ -70,6 +71,7 @@
 }
 
 .navBar__favicon {
+  transform: translateY(-5px);
   width: 50px;
   height: 50px;
 }
@@ -107,7 +109,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  z-index: 120;
+  z-index: 20;
   top: 30vh;
   left: 5vw;
   max-width: 40vw;
@@ -138,6 +140,79 @@
 .start_tour_btn:hover {
   cursor: pointer;
   filter: brightness(1.3);
+}
+
+.profile_main_div {
+  background-color: white;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.banner {
+  background-color: blue;
+  position: relative;
+}
+.banner img {
+  object-fit: cover;
+}
+
+.banner_img_div {
+  width: 100%;
+  height: 290px;
+  overflow: hidden;
+}
+
+.profile_picture {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background-color: black;
+  position: absolute;
+  bottom: -65px;
+  left: 50px;
+  z-index: 50;
+  object-fit: cover;
+  border: 1px solid white;
+}
+
+.profile_display {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+  padding: 80px 3vw 0px;
+}
+
+.profile_display--left {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+}
+
+.profile_display--right {
+  height: 100vh;
+  width: 100%;
+}
+
+.profile_location {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.profile_name {
+  margin-bottom: 10px;
+}
+
+.profile_detail {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  color: rgb(76, 76, 76);
+  padding: 1px 0px;
+}
+.profile_detail img {
+  display: inline-block;
 }
 
 *,

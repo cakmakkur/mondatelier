@@ -1,5 +1,4 @@
-import { use, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Modal from "./Modal";
 import Login from "./Login";
 import accountIcon from "../../public/account_box_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
@@ -9,19 +8,30 @@ import cartIcon from "../../public/shopping_cart_24dp_FFFFFF_FILL0_wght400_GRAD0
 import menuIcon from "../../public/dehaze_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import mailIcon from "../../public/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import { useAuthContext } from "../auth/AuthContext";
+import { useModalContext } from "../context/ModalContext";
+import { useEffect, useState } from "react";
 
 type Component = "login" | "signup";
 
 export default function NavBar() {
+  const location = useLocation();
   const { auth } = useAuthContext();
-  const [renderModal, setRenderModal] = useState<Component | null>(null);
+  const { renderModal, setRenderModal } = useModalContext();
+  const [isHomepage, setIsHomepage] = useState(true);
+
+  useEffect(() => {
+    setIsHomepage(location.pathname === "/");
+  }, [location.pathname]);
 
   const handleClick = (component: Component) => {
     setRenderModal(component);
   };
 
   return (
-    <div className="navBar">
+    <div
+      style={isHomepage ? { backgroundColor: "rgba(0,0,0,0)" } : {}}
+      className="navBar"
+    >
       <div className="navBar__left">
         <Link className="navBar__left" to="/">
           <img className="navBar__favicon" src="/favicon.png" alt="" />
@@ -32,10 +42,10 @@ export default function NavBar() {
       </div>
       <div className="navBar__right">
         {auth ? (
-          <a className="navBar_nav" href="#">
+          <Link className="navBar_nav" to="/profile">
             <img src={accountIcon} alt="" />
             Account
-          </a>
+          </Link>
         ) : (
           <>
             <button
@@ -52,30 +62,30 @@ export default function NavBar() {
             </button>
           </>
         )}
-        <a className="navBar_nav" href="#">
+        <Link className="navBar_nav" to="#">
           <img src={communityIcon} alt="" />
           Community
-        </a>
-        <a className="navBar_nav" href="#">
+        </Link>
+        <Link className="navBar_nav" to="#">
           <img src={artworksIcon} alt="" />
           Artworks
-        </a>
-        <a className="navBar_nav" href="#">
+        </Link>
+        <Link className="navBar_nav" to="#">
           <img src={cartIcon} alt="" />
           Cart
-        </a>
+        </Link>
         {auth ? (
-          <a className="navBar_nav" href="#">
+          <Link className="navBar_nav" to="#">
             <img src={mailIcon} alt="" />
             Messages
-          </a>
+          </Link>
         ) : (
           ""
         )}
-        <a className="navBar_nav" href="#">
+        <Link className="navBar_nav" to="#">
           <img src={menuIcon} alt="" />
           Menu
-        </a>
+        </Link>
       </div>
       {renderModal === "login" ? (
         <Modal setRenderModal={setRenderModal}>

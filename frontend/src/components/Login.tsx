@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
+import { useModalContext } from "../context/ModalContext";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setRenderModal } = useModalContext();
 
   const { login } = useAuthContext();
 
@@ -11,6 +13,8 @@ export default function Login() {
     e.preventDefault();
     try {
       await login({ email, password });
+      // short success message
+      setRenderModal(null);
     } catch (error) {
       console.error("Login failed:", error);
     }

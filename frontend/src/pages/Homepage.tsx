@@ -15,13 +15,7 @@ export default function Homepage() {
   const phaseOffsets = useRef<number[]>([]);
 
   useEffect(() => {
-    function handleLoad() {
-      setIsPageLoaded(true);
-    }
-    window.addEventListener("load", handleLoad);
-    return () => {
-      window.removeEventListener("load", handleLoad);
-    };
+    setIsPageLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -130,7 +124,6 @@ export default function Homepage() {
 
   return (
     <section className="homepage_container">
-      <NavBar />
       <canvas
         ref={canvasRef}
         className="homepage__canvas absoluteFullScreen"
