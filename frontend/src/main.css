@@ -10,6 +10,7 @@
   padding: 1.8vh 2vw 0px;
   font-family: Papyrus, fantasy;
   background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(1px);
 }
 .navBar::after {
   content: "";
@@ -315,36 +316,62 @@
 .profile_display--right {
   display: flex;
   flex-direction: column;
-  row-gap: 3vh;
+  row-gap: 2vh;
 }
 
 .display_nav {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
   border-bottom: 1px solid rgb(121, 121, 121);
+  border-radius: 3px;
   font-size: 1.2rem;
   display: flex;
   flex-direction: row;
   column-gap: 20px;
+  position: relative;
+  box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, 0.224);
 }
 .display_nav button {
   border: none;
   background-color: transparent;
+  color: rgb(44, 44, 44);
 }
 .display_nav button:hover {
   cursor: pointer;
   filter: brightness(1.2);
 }
 
-.art_container {
+.artwork_container {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+}
+
+.types_container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.art_type {
+  padding: 5px 10px;
+  width: auto;
+  height: 27px;
+  border-radius: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.457);
+}
+.art_type span {
+  transform: translateY(2px);
 }
 
 .sidebar {
   background-color: rgba(0, 0, 0, 0.7);
   position: absolute;
   top: 85px;
-  right: -20vw;
+  right: 0px;
+  transform: translateX(20vw);
   width: 20vw;
   height: calc(100vh - 65px);
   padding: 1vh 1vw 5vh;
@@ -355,15 +382,20 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  backdrop-filter: blur(1px);
 }
 .sidebar::after {
   content: "";
   position: absolute;
   top: -20px;
-  left: 0;
+  left: 0px;
   width: 100%;
   height: 20px;
   background: linear-gradient(0deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+.sidebar_open {
+  transform: translateX(0);
 }
 
 .sidebar_list {
@@ -397,6 +429,55 @@
 
 .stream_dot_flash {
   opacity: 0;
+}
+
+.display_nav--highlight {
+  height: 2px;
+  background-color: black;
+  transition: 0.3s;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.art_type_1 {
+  background-color: #196eb8;
+}
+
+.art_type_2 {
+  background-color: #006030;
+}
+
+.art_type_3 {
+  background-color: #00809a;
+}
+
+.art_type_4 {
+  background-color: #009889;
+}
+
+.art_type_5 {
+  background-color: #f69b13;
+}
+
+.art_type_6 {
+  background-color: #d31010;
+}
+
+.art_type_7 {
+  background-color: #561b86;
+}
+
+.art_type_8 {
+  background-color: #569710;
+}
+
+.art_type_9 {
+  background-color: #f30051;
+}
+
+.art_type_10 {
+  background-color: #b2be00;
 }
 
 *,

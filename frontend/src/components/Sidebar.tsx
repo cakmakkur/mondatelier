@@ -11,15 +11,6 @@ export default function Sidebar({ isSidebarOpen }: SidebarProps) {
   const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!sidebarDivRef.current) return;
-    if (!isSidebarOpen) {
-      sidebarDivRef.current.style.transform = "translateX(-20vw)";
-    } else {
-      sidebarDivRef.current.style.transform = "translateX(0)";
-    }
-  });
-
-  useEffect(() => {
     if (!playDotRef.current) return;
 
     intervalRef.current = setInterval(() => {
@@ -31,7 +22,10 @@ export default function Sidebar({ isSidebarOpen }: SidebarProps) {
   }, []);
 
   return (
-    <div ref={sidebarDivRef} className="sidebar">
+    <div
+      ref={sidebarDivRef}
+      className={`sidebar ${isSidebarOpen ? "sidebar_open" : ""}`}
+    >
       <nav>
         <ul className="sidebar_list">
           <li>

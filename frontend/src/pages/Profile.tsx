@@ -3,13 +3,10 @@ import About from "../components/profile/About";
 import Art from "../components/profile/Art";
 import Collections from "../components/profile/Collections";
 import Follow from "../components/profile/Follow";
+import ProfileDisplaySections from "../components/profile/ProfileDisplaySections";
 
 export default function Profile() {
-  const [section, setSection] = useState("about");
-
-  const handleSectionChange = (newSection: string) => {
-    setSection(newSection);
-  };
+  const [section, setSection] = useState<string>("about");
 
   return (
     <div className="profile_main_div">
@@ -80,19 +77,7 @@ export default function Profile() {
           </div>
         </div>
         <div className="profile_display--right">
-          <div className="display_nav">
-            <button onClick={() => handleSectionChange("about")}>About</button>
-            <button onClick={() => handleSectionChange("art")}>Art</button>
-            <button onClick={() => handleSectionChange("collections")}>
-              Collections
-            </button>
-            <button onClick={() => handleSectionChange("followers")}>
-              Followers
-            </button>
-            <button onClick={() => handleSectionChange("following")}>
-              Following
-            </button>
-          </div>
+          <ProfileDisplaySections setSection={setSection} />
           <div className="display_innercontainer">
             {section === "about" ? (
               <About />

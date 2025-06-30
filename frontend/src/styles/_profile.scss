@@ -121,19 +121,23 @@
 .profile_display--right {
   display: flex;
   flex-direction: column;
-  row-gap: 3vh;
+  row-gap: 2vh;
 }
 
 .display_nav {
-  padding-bottom: 10px;
+  padding-bottom: 3px;
   border-bottom: 1px solid rgb(121, 121, 121);
+  border-radius: 3px;
   font-size: 1.2rem;
   display: flex;
   flex-direction: row;
   column-gap: 20px;
+  position: relative;
+  box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, 0.224);
   & button {
     border: none;
     background-color: transparent;
+    color: rgb(44, 44, 44);
     &:hover {
       cursor: pointer;
       filter: brightness(1.2);
