@@ -1,0 +1,50 @@
+package com.cakmak.mondatelier.Model;
+
+import com.cakmak.mondatelier.converter.ProfileTypesConverter;
+import com.cakmak.mondatelier.enums.ProfileTypes;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.Date;
+
+@Entity
+@Table(name = "profiles")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Profile {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Convert(converter = ProfileTypesConverter.class)
+    @Column(name = "profile_type_id")
+    private ProfileTypes type;
+
+    private String firstname;
+
+    private String lastname;
+
+    private Date dob;
+
+    private String bio;
+
+    private String personalWebsite;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "country_id")
+    private Country country;
+
+    private String bannerPath;
+
+    private String profilePicturePath;
+}

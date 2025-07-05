@@ -1,6 +1,7 @@
 package com.cakmak.mondatelier.Model;
 
-
+import com.cakmak.mondatelier.converter.UserTypesConverter;
+import com.cakmak.mondatelier.enums.UserTypes;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,6 +28,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Convert(converter = UserTypesConverter.class)
+    @Column(name = "user_type_id")
+    private UserTypes userType;
+
     private String email;
 
     private String password;
@@ -40,7 +45,12 @@ public class User implements UserDetails {
     private Date updatedAt;
 
     @Column(name = "active", nullable = false)
-    private Boolean isEnabled = true;
+    private Boolean isActive = true;
+
+    // mappings
+
+    @OneToOne(mappedBy = "user")
+    private Profile profile;
 
     /*Security overrides*/
 
@@ -76,6 +86,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.isEnabled;
+        return this.isActive;
     }
 }
