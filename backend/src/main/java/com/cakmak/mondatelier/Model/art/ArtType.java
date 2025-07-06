@@ -1,4 +1,4 @@
-package com.cakmak.mondatelier.Model;
+package com.cakmak.mondatelier.Model.art;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,23 +6,28 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "continents")
+@Table(name = "art_types")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Continent {
+public class ArtType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "continent", fetch = FetchType.LAZY)
-    private List<Country> countries;
+    private String name;
 
-    private String continent;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private ArtCategory artCategory;
+
+    @ManyToMany(mappedBy = "artTypes")
+    private Set<Artwork> artworks;
+
 }

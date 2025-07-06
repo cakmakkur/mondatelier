@@ -1,28 +1,30 @@
-package com.cakmak.mondatelier.Model;
+package com.cakmak.mondatelier.Model.art;
 
+import com.cakmak.mondatelier.Model.Continent;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
-@Table(name = "continents")
+@Table(name = "art_media_types")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Continent {
+public class ArtMediaType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    @OneToMany(mappedBy = "continent", fetch = FetchType.LAZY)
-    private List<Country> countries;
+    private String name;
 
-    private String continent;
+    @OneToMany(mappedBy = "mediaType", fetch = FetchType.LAZY)
+    private Set<ArtCategory> artCategories;
+
 }

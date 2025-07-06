@@ -1,7 +1,7 @@
 package com.cakmak.mondatelier.Service;
 
 import com.cakmak.mondatelier.Exception.ArtworkNotFoundException;
-import com.cakmak.mondatelier.Model.Artwork;
+import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Repository.ArtworkRepository;
 import com.cakmak.mondatelier.dto.ArtworkDTO;
 import org.springframework.stereotype.Service;
