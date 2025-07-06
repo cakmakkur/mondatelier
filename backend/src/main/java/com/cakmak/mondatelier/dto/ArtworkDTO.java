@@ -7,5 +7,7 @@ public record ArtworkDTO (
     String artCategory,
     Boolean salable,
     Integer price,
-    Integer releaseYear
+    Integer releaseYear,
+    String dimensions,
+    Integer duration
 ) {}

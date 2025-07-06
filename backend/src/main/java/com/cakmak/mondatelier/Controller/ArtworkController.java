@@ -2,6 +2,7 @@ package com.cakmak.mondatelier.Controller;
 
 import com.cakmak.mondatelier.Service.ArtworkService;
 import com.cakmak.mondatelier.dto.ArtworkDTO;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,13 +25,13 @@ public class ArtworkController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<ArtworkDTO>> getArtworksByArtist(
+    public ResponseEntity<Page<ArtworkDTO>> getArtworksByArtist(
             @RequestParam String profileId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy
     ) {
-        List<ArtworkDTO> list = artworkService.getArtworksByArtist(profileId, page, size, sortBy);
-        return ResponseEntity.ok(list);
+        Page<ArtworkDTO> artworkPage = artworkService.getArtworksByArtist(profileId, page, size, sortBy);
+        return ResponseEntity.ok(artworkPage);
     }
 }
