@@ -34,4 +34,5 @@ public class ArtworkController {
         Page<ArtworkDTO> artworkPage = artworkService.getArtworksByArtist(profileId, page, size, sortBy);
         return ResponseEntity.ok(artworkPage);
     }
+
 }

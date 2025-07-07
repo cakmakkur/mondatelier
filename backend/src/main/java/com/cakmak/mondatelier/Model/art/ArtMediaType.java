@@ -22,9 +22,8 @@ public class ArtMediaType {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String name;
+    private String type;
 
     @OneToMany(mappedBy = "mediaType", fetch = FetchType.LAZY)
     private Set<ArtCategory> artCategories;
-
 }

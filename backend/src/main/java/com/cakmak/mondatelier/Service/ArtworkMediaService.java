@@ -6,6 +6,7 @@ import com.cakmak.mondatelier.Repository.ArtworkMediaRepository;
 import com.cakmak.mondatelier.dto.MediaResourceDTO;
 import com.cakmak.mondatelier.enums.LogTypes;
 import com.cakmak.mondatelier.util.Logger;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -30,17 +31,19 @@ public class ArtworkMediaService {
         ArtworkMedia artworkMedia = artworkMediaRepository.findByArtworkId(artworkId)
                 .orElseThrow(MediaNotFoundException::new);
 
-        Path filePath = Paths.get(artworkMedia.getPath());
-        String contentType = determineContentType(filePath.toString());
 
         try {
-            Resource resource = new UrlResource(filePath.toUri());
+            // Load from classpath resources/uploads/
+            ClassPathResource resource = new ClassPathResource("uploads/" + artworkMedia.getPath());
             if (!resource.exists() || !resource.isReadable()) {
                 throw new MediaNotFoundException("File not found or unreadable");
             }
-            return new MediaResourceDTO(resource, contentType, filePath.getFileName().toString());
 
-        } catch (MalformedURLException e) {
+            String contentType = determineContentType(resource.getFilename());
+
+            return new MediaResourceDTO(resource, contentType, resource.getFilename());
+
+        } catch (Exception e) {
             logger.log(LogTypes.ERROR, "Error reading file: " + e);
             throw new RuntimeException("Error reading file", e);
         }

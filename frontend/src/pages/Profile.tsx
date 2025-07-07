@@ -1,6 +1,6 @@
 import { useState } from "react";
 import About from "../components/profile/About";
-import Art from "../components/profile/Art";
+import Art from "../components/profile/art/Art";
 import Collections from "../components/profile/Collections";
 import Follow from "../components/profile/Follow";
 import ProfileDisplaySections from "../components/profile/ProfileDisplaySections";

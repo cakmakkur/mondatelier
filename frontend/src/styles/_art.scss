@@ -1,6 +1,23 @@
-.artwork_container {
+.artwork_column_displayer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  column-gap: 10px;
+  row-gap: 10px;
+  align-items: start;
+}
+
+.artwork_column_displayer__artwork {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+}
+
+.column_artwork_details {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .types_container {
@@ -19,7 +36,14 @@
   align-items: center;
   justify-content: center;
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.457);
+  border: 1px solid rgba(0, 0, 0, 0.227);
+  transition: 0.2s;
+  &:hover {
+    cursor: pointer;
+    filter: brightness(1.2);
+  }
   & span {
     transform: translateY(2px);
+    color: white;
   }
 }

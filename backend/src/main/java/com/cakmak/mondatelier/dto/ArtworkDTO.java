@@ -9,5 +9,7 @@ public record ArtworkDTO (
     Integer price,
     Integer releaseYear,
     String dimensions,
-    Integer duration
+    Integer duration,
+    String[] artTypes,
+    String mediaType
 ) {}

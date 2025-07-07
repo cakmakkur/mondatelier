@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 @RestController
-@RequestMapping("/media")
+@RequestMapping("/api/media")
 public class ArtworkMediaController {
 
     private final ArtworkMediaService artworkMediaService;
