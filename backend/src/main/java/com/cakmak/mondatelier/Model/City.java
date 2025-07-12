@@ -6,27 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
-@Table(name = "countries")
+@Table(name = "cities")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Country {
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String country;
+    private String city;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "continent_id")
-    private Continent continent;
-
-    @OneToMany(mappedBy = "country",fetch = FetchType.LAZY)
-    private List<City> cities;
+    @JoinColumn(name = "country_id")
+    private Country country;
 }

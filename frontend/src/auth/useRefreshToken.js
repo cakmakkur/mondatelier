@@ -1,4 +1,4 @@
-import { useAuthContext } from "../global_variables/AuthContext";
+import { useAuthContext } from "./AuthContext";
 
 const REFRESH = import.meta.env.VITE_URL_REFRESH;
 

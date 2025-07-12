@@ -1,4 +1,4 @@
-package com.cakmak.mondatelier.Model;
+package com.cakmak.mondatelier.Model.event;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,24 +9,20 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name = "countries")
+@Table(name = "event_types")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Country {
+public class EventType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String country;
+    private String type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "continent_id")
-    private Continent continent;
-
-    @OneToMany(mappedBy = "country",fetch = FetchType.LAZY)
-    private List<City> cities;
+    @OneToMany(mappedBy = "type", fetch = FetchType.LAZY)
+    private List<Event> events;
 }

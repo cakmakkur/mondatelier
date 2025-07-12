@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Model;
 
+import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.converter.ProfileTypesConverter;
 import com.cakmak.mondatelier.enums.ProfileTypes;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "profiles")
@@ -47,4 +49,7 @@ public class Profile {
     private String bannerPath;
 
     private String profilePicturePath;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Event> events;
 }

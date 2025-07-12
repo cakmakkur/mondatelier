@@ -61,8 +61,13 @@ export default function Art() {
         );
         if (!response.ok) throw new Error("Failed to fetch artworks");
         const data = await response.json();
+        if (data.content.length === 0) {
+          setIsLoaded(true);
+          return;
+        }
         setArtworks(data.content);
         extractCategories(data.content);
+        setSelectedCategory(data.content[0].artCategory);
         setIsLoaded(true);
       } catch (error) {
         console.error("Error fetching artworks:", error);
@@ -70,7 +75,7 @@ export default function Art() {
     }
 
     fetchArtworks();
-  }, []);
+  }, [page, size, sortBy]);
 
   if (!isLoaded) return <div>Loading...</div>;
 
@@ -81,7 +86,11 @@ export default function Art() {
           <div
             onClick={() => selectCategory(categoryMedia.category)}
             key={categoryMedia.category}
-            className={`art_type art_type_${index + 1}`}
+            className={`art_type art_type_${index + 1} ${
+              selectedCategory === categoryMedia.category
+                ? "art_type--selected"
+                : ""
+            }`}
           >
             <span>{categoryMedia.category}</span>
           </div>

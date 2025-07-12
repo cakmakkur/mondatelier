@@ -5,15 +5,21 @@ import App from "./App.tsx";
 import "./main.css";
 import { AuthContextProvider } from "./auth/AuthContext.tsx";
 import { ModalContextProvider } from "./context/ModalContext.tsx";
+import { UserPreferencesContextProvider } from "./context/UserPreferencesContext.tsx";
+import { CookieContextProvider } from "./context/CookiesContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthContextProvider>
-      <BrowserRouter>
-        <ModalContextProvider>
-          <App />
-        </ModalContextProvider>
-      </BrowserRouter>
+      <CookieContextProvider>
+        <UserPreferencesContextProvider>
+          <BrowserRouter>
+            <ModalContextProvider>
+              <App />
+            </ModalContextProvider>
+          </BrowserRouter>
+        </UserPreferencesContextProvider>
+      </CookieContextProvider>
     </AuthContextProvider>
   </StrictMode>
 );

@@ -1,7 +1,8 @@
 @import "variables";
 
 .profile_main_div {
-  background-color: white;
+  background-color: rgb(243, 243, 243);
+  background-color: lighten($moon-yellow, 9%);
   width: 100%;
   min-height: 100vh;
 }
