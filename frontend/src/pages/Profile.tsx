@@ -1,28 +1,123 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import About from "../components/profile/About";
 import Art from "../components/profile/art/Art";
 import Collections from "../components/profile/Collections";
 import Follow from "../components/profile/Follow";
 import ProfileDisplaySections from "../components/profile/ProfileDisplaySections";
+import { useAuthContext } from "../auth/AuthContext";
+import { useParams } from "react-router-dom";
+import type { Profile } from "../dto/Profile";
+import { useProfileContext } from "../context/ProfileContext";
+import type Freelance from "../dto/Freelance";
+import type Masterclass from "../dto/Masterclass";
+import { FormatUrl } from "../util/formatUrl";
+
+const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
+const FREELANCE_PATH = import.meta.env.VITE_FREELANCE_PATH;
+const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
 
 export default function Profile() {
   const [section, setSection] = useState<string>("about");
+  const { auth } = useAuthContext();
+  const { profile } = useProfileContext();
+  const [isOwnProfile, setIsOwnProfile] = useState<boolean>(false);
+  const { profileId } = useParams();
+  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
+  const [freelances, setFreelances] = useState<Freelance[]>([]);
+  const [masterclasses, setMasterclasses] = useState<Masterclass[]>([]);
+
+  const fetchMasterclasses = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/${MASTERCLASS_PATH}?profileId=${profileId}`
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to fetch masterclasses");
+      }
+      setMasterclasses(data);
+    } catch (error) {
+      console.error("Error fetching masterclasses:", error);
+    }
+  };
+
+  const fetchFreelances = async () => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/${FREELANCE_PATH}?profileId=${profileId}`
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error("Failed to fetch masterclasses");
+      }
+      setFreelances(data);
+    } catch (error) {
+      console.error("Error fetching freelances:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (auth?.profileId === profileId) {
+      setIsOwnProfile(true);
+      if (profile) {
+        setCurrentProfile(profile);
+      } else {
+        fetchProfile();
+      }
+    } else {
+      fetchProfile();
+    }
+    fetchMasterclasses();
+    fetchFreelances();
+  }, [auth?.profileId, profileId]);
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/${PROFILE_PATH}/${profileId}`);
+      const data = await response.json();
+      setCurrentProfile(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  if (!currentProfile) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="profile_main_div">
       <div className="banner">
         <div className="banner_img_div">
-          <img src="../../public/dev_files/painting-18.jpeg" alt="" />
+          <img src={`${UPLOADS_PATH}${currentProfile?.bannerPath}`} alt="" />
         </div>
-        <img
-          className="profile_picture"
-          src="../../public/dev_files/painting-31.jpeg"
-          alt=""
-        />
+        {isOwnProfile ? (
+          <button className="banner_edit_button profile_edit_button">
+            <img src="../../public/edit1.svg" alt="" />
+          </button>
+        ) : (
+          ""
+        )}
+        <div className="profile_picture_div">
+          <img
+            className="profile_picture"
+            src={`${UPLOADS_PATH}${currentProfile?.profilePicturePath}`}
+            alt=""
+          />
+          {isOwnProfile ? (
+            <button className="pp_edit_button profile_edit_button">
+              <img src="../../public/edit1.svg" alt="" />
+            </button>
+          ) : (
+            ""
+          )}
+        </div>
       </div>
       <div className="profile_display">
         <div className="profile_display--left">
-          <h2 className="profile_name">Kürsat Cakmak</h2>
+          <h2 className="profile_name">{currentProfile.firstname}</h2>
           <div className="profile_follow">
             <h5>
               <span>7</span> followers
@@ -36,44 +131,65 @@ export default function Profile() {
               src="../../public/pin_drop_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""
             />
-            Austria
+            {currentProfile.country}
           </div>
-          <div className="profile_detail">
-            <img
-              src="../../public/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
-            />
-            Available as freelancer
-          </div>
-          <div className="profile_detail">
-            <img
-              src="../../public/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
-            />
-            www.cakmakkursat.com
-          </div>
-          <div className="profile_detail">
-            <img
-              src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
-            />
-            Masterclasses available
-          </div>
+          {freelances.length > 0 ? (
+            <div className="profile_detail">
+              <img
+                src="../../public/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                alt=""
+              />
+              Available as freelancer
+            </div>
+          ) : (
+            ""
+          )}
+          {currentProfile.personalWebsite ? (
+            <div className="profile_detail">
+              <img
+                src="../../public/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                alt=""
+              />
+              {FormatUrl.toUser(currentProfile.personalWebsite)}
+            </div>
+          ) : (
+            ""
+          )}
+          {masterclasses.length > 0 ? (
+            <div className="profile_detail">
+              <img
+                src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                alt=""
+              />
+              Masterclass{masterclasses.length > 1 ? "es" : ""} available
+            </div>
+          ) : (
+            ""
+          )}
           <div className="profile_connect_buttons">
-            <button className="follow">
-              <img
-                src="../../public/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
-              />
-              Follow
-            </button>
-            <button className="message">
-              <img
-                src="../../public/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
-              />
-              Message
-            </button>
+            {isOwnProfile ? (
+              ""
+            ) : (
+              <button className="follow">
+                <img
+                  src="../../public/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                Follow
+              </button>
+            )}
+
+            {isOwnProfile ? (
+              ""
+            ) : (
+              <button className="message">
+                <img
+                  src="../../public/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                Message
+              </button>
+            )}
           </div>
         </div>
         <div className="profile_display--right">

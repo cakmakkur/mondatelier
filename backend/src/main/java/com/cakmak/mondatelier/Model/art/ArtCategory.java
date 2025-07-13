@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Model.art;
 
+import com.cakmak.mondatelier.Model.Freelance;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,8 @@ public class ArtCategory {
 
     @OneToMany(mappedBy = "artCategory", fetch = FetchType.LAZY)
     private List<ArtType> artTypes;
+
+    @OneToMany(mappedBy = "artCategory", fetch = FetchType.LAZY)
+    private List<Freelance> freelances;
 
 }

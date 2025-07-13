@@ -19,6 +19,13 @@
   width: 100%;
   height: 280px;
   overflow: hidden;
+  position: relative;
+}
+
+.banner_edit_button {
+  top: 260px;
+  right: 1vw;
+  background-color: $moon-yellow;
 }
 
 .profile_picture {
@@ -33,6 +40,27 @@
   object-fit: cover;
   border: 2px solid white;
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
+}
+
+.pp_edit_button {
+  bottom: -65px;
+  left: 140px;
+  z-index: 100;
+  background-color: $moon-yellow;
+  border-radius: 50%;
+}
+
+.profile_edit_button {
+  position: absolute;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  z-index: 100;
+  border: 1px solid white;
 }
 
 .profile_display {

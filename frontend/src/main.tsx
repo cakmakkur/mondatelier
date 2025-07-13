@@ -7,18 +7,21 @@ import { AuthContextProvider } from "./auth/AuthContext.tsx";
 import { ModalContextProvider } from "./context/ModalContext.tsx";
 import { UserPreferencesContextProvider } from "./context/UserPreferencesContext.tsx";
 import { CookieContextProvider } from "./context/CookiesContext.tsx";
+import { ProfileContextProvider } from "./context/ProfileContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthContextProvider>
       <CookieContextProvider>
-        <UserPreferencesContextProvider>
-          <BrowserRouter>
-            <ModalContextProvider>
-              <App />
-            </ModalContextProvider>
-          </BrowserRouter>
-        </UserPreferencesContextProvider>
+        <ProfileContextProvider>
+          <UserPreferencesContextProvider>
+            <BrowserRouter>
+              <ModalContextProvider>
+                <App />
+              </ModalContextProvider>
+            </BrowserRouter>
+          </UserPreferencesContextProvider>
+        </ProfileContextProvider>
       </CookieContextProvider>
     </AuthContextProvider>
   </StrictMode>

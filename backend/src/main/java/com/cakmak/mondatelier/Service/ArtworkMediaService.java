@@ -7,13 +7,7 @@ import com.cakmak.mondatelier.dto.MediaResourceDTO;
 import com.cakmak.mondatelier.enums.LogTypes;
 import com.cakmak.mondatelier.util.Logger;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 public class ArtworkMediaService {
@@ -34,7 +28,7 @@ public class ArtworkMediaService {
 
         try {
             // Load from classpath resources/uploads/
-            ClassPathResource resource = new ClassPathResource("uploads/" + artworkMedia.getPath());
+            ClassPathResource resource = new ClassPathResource("static/" + artworkMedia.getPath());
             if (!resource.exists() || !resource.isReadable()) {
                 throw new MediaNotFoundException("File not found or unreadable");
             }

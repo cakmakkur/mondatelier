@@ -3,6 +3,7 @@ package com.cakmak.mondatelier.Controller.auth;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.auth.AuthenticationService;
 import com.cakmak.mondatelier.Service.auth.JWTService;
+import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 import com.cakmak.mondatelier.dto.auth.UserAuthDTO;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +37,13 @@ public class AuthenticationController {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
         String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(jwtToken);
-        loginResponse.setExpiresIn(jwtService.getExpirationTime());
-        loginResponse.setUserId(authenticatedUser.getId());
+        LoginResponse loginResponse = DTOMappers.toLoginResponseDTO(
+                jwtToken,
+                jwtService.getExpirationTime(),
+                authenticatedUser.getId(),
+                authenticatedUser.getProfile().getId()
+        );
+
         return ResponseEntity.ok(loginResponse);
     }
 }

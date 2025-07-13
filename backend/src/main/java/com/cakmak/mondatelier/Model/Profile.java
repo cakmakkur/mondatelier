@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,9 @@ public class Profile {
 
     private String personalWebsite;
 
+    @Column(name = "profile_name")
+    private String profileName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")
     private Country country;
@@ -52,4 +56,10 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Event> events;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Freelance> freelances;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Masterclass> masterclasses;
 }

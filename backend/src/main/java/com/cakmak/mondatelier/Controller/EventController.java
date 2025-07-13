@@ -19,13 +19,13 @@ public class EventController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> getEvent(@PathVariable String id) {
-        User user = AuthUtil.getCurrentUser();
         EventDTO eventDTO = eventService.getEventById(id);
         return ResponseEntity.ok(eventDTO);
     };
 
     @PostMapping
     public ResponseEntity<Void> createEvent(@RequestBody EventDTO eventDTO) {
+        User user = AuthUtil.getCurrentUser();
         eventService.createEvent(eventDTO);
         return ResponseEntity.ok().build();
     }

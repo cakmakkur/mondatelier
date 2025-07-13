@@ -5,6 +5,7 @@ interface AuthState {
   userId: string;
   roles: number[];
   accessToken: string;
+  profileId: string;
 }
 
 interface credentials {
@@ -62,9 +63,10 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         userId: response.data.userId,
         roles: [1000],
         accessToken: response.data.token,
+        profileId: response.data.profileId,
       });
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login failed: ", error);
     }
   };
 

@@ -2,7 +2,7 @@ package com.cakmak.mondatelier.dto;
 
 public record PublicProfileDTO(
     String id,
-    String profileType,
+    int profileType,
     String profileName,
     String firstname,
     String lastname,

@@ -44,4 +44,5 @@ public class AuthenticationService {
         return userRepository.findByEmail(input.email())
                 .orElseThrow();
     }
+
 }

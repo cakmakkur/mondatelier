@@ -32,10 +32,13 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/signup",
                                 "/auth/login",
-                                "/api/questions").permitAll()
+                                "/uploads/**",
+                                "/api/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+/*
                         .anyRequest().permitAll()
-                        // .anyRequest().authenticated()
+*/
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
