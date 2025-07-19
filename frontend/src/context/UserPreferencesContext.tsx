@@ -2,14 +2,25 @@ import { createContext, useContext, useEffect, useState } from "react";
 // @ts-expect-error axios context usage
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
-import { useCookieContext } from "./CookiesContext";
-import { CookieType } from "../enums/CookieType";
 
 const USER_PREFERENCES_PATH = import.meta.env.USER_PREFERENCES_PATH;
 const BASE_URL = import.meta.env.BASE_URL;
 
 interface UserPreferencesType {
-  updateUserPreferences: (preferencesArr: string[]) => void;
+  updateUserPreferences: (settings: Settings) => void;
+  clearUserPreferences: () => void;
+  settings: Settings | null;
+}
+
+interface Settings {
+  profileId: string;
+  theme: string;
+  language: string;
+  notifications: boolean;
+  darkMode: boolean;
+  cookieConsent: boolean;
+  eventPreferredCity: string;
+  animations: boolean;
 }
 
 const UserPreferencesContext = createContext<UserPreferencesType | null>(null);
@@ -32,79 +43,64 @@ export const UserPreferencesContextProvider = ({
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuthContext();
-  const { updateCookies, isEnabled } = useCookieContext();
-
-  const [theme, setTheme] = useState<string>("");
-  const [language, setLanguage] = useState<string>("");
-  const [eventPreferredLocation, setEventPreferredLocation] =
-    useState<string>("");
-  const [animations, setAnimations] = useState<boolean>(false);
+  const [settings, setSettings] = useState<Settings | null>(null);
 
   useEffect(() => {
-    const initializeUserPreferencesContext = async () => {
-      const cookies = Object.fromEntries(
-        document.cookie.split("; ").map((c) => c.split("="))
-      );
-
-      if (Object.keys(cookies).length === 0 && auth) {
-        try {
-          const response = await axiosPrivate.get(
-            `${BASE_URL}/${USER_PREFERENCES_PATH}/${auth.userId}`
-          );
-          if (response.status === 200) {
-            const { theme, language, eventPreferredCity, animations } =
-              response.data;
-            if (theme && language && eventPreferredCity && animations) {
-              updateUserPreferences([
-                `${CookieType.THEME}=${theme}`,
-                `${CookieType.LANGUAGE}=${language}`,
-                `${CookieType.EVENT_PREFERRED_CITY}=${eventPreferredCity}`,
-                `${CookieType.ANIMATIONS}=${animations}`,
-              ]);
-            }
-          }
-        } catch (error) {
-          console.error("Can't initiate user preferences." + error);
+    const fetchUserSettings = async () => {
+      if (!auth) return;
+      try {
+        const response = await axiosPrivate.get(
+          `${BASE_URL}/${USER_PREFERENCES_PATH}/${auth.userId}`
+        );
+        if (response.status === 200) {
+          return response.data;
         }
+      } catch (error) {
+        console.error("Error fetching user settings:", error);
+        return null;
+      }
+    };
+
+    const initializeUserPreferencesContext = async () => {
+      const storedData = localStorage.getItem("settings");
+
+      if (storedData) {
+        const localSettings: Settings = JSON.parse(storedData);
+
+        if (auth) {
+          if (localSettings.profileId === auth.profileId) {
+            setSettings(localSettings);
+            return;
+          } else {
+            clearUserPreferences();
+            const userSettings = await fetchUserSettings();
+            if (userSettings) updateUserPreferences(userSettings);
+          }
+        } else {
+          updateUserPreferences(localSettings);
+        }
+      } else if (auth) {
+        const userSettings = await fetchUserSettings();
+        if (userSettings) updateUserPreferences(userSettings);
       }
     };
     initializeUserPreferencesContext();
-  }, []);
+  }, [auth]);
 
-  const updateUserPreferences = (preferencesArr: string[]) => {
-    for (const preference of preferencesArr) {
-      const [key, value] = preference.split("=");
-      if (key === CookieType.THEME) {
-        setTheme(value);
-        if (isEnabled) {
-          updateCookies([`${CookieType.THEME}=${value}`], "/");
-        }
-      } else if (key === CookieType.LANGUAGE) {
-        setLanguage(value);
-        if (isEnabled) {
-          updateCookies([`${CookieType.LANGUAGE}=${value}`], "/");
-        }
-      } else if (key === CookieType.EVENT_PREFERRED_CITY) {
-        setEventPreferredLocation(value);
-        if (isEnabled) {
-          updateCookies([`${CookieType.EVENT_PREFERRED_CITY}=${value}`], "/");
-        }
-      } else if (key === CookieType.ANIMATIONS) {
-        setAnimations(value === "true");
-        if (isEnabled) {
-          updateCookies([`${CookieType.ANIMATIONS}=${value}`], "/");
-        }
-      }
-    }
-    console.log("User preferences updated");
-    console.log("Theme:", theme);
-    console.log("Language:", language);
-    console.log("Event Preferred Location:", eventPreferredLocation);
-    console.log("Animations:", animations);
+  const updateUserPreferences = (settings: Settings) => {
+    localStorage.setItem("settings", JSON.stringify(settings));
+    setSettings(settings);
+  };
+
+  const clearUserPreferences = () => {
+    localStorage.removeItem("settings");
+    setSettings(null);
   };
 
   const value: UserPreferencesType = {
+    settings,
     updateUserPreferences,
+    clearUserPreferences,
   };
 
   return (

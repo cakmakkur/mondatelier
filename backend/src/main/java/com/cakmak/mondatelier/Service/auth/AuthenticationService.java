@@ -5,8 +5,10 @@ import com.cakmak.mondatelier.Repository.UserRepository;
 import com.cakmak.mondatelier.dto.auth.UserAuthDTO;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class AuthenticationService {
@@ -33,7 +35,7 @@ public class AuthenticationService {
         return userRepository.save(user);
     }
 
-    public User authenticate(UserAuthDTO input) {
+    public User authenticate(UserAuthDTO input) throws AuthenticationException {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.email(),

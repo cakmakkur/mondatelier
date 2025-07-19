@@ -1,13 +1,15 @@
 import React, { createContext, useState, useContext } from "react";
-import type { ReactNode } from "react";
+import type { ComponentType, ReactNode } from "react";
+import Login from "../components/Login";
+import Signup from "../components/Signup";
+import CookiesConsent from "../components/CookiesConsent";
 
 interface ModalContextType {
-  renderModal: "login" | "signup" | null;
-  setRenderModal: React.Dispatch<
-    React.SetStateAction<"login" | "signup" | null>
-  >;
-  isSidebarOpen: boolean;
-  setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  Component: ComponentType<never> | undefined;
+  setComponentState: (
+    component: ComponentType<never> | undefined,
+    props?: Record<string, never>
+  ) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
@@ -30,19 +32,55 @@ interface ModalContextProviderProps {
 export const ModalContextProvider = ({
   children,
 }: ModalContextProviderProps) => {
-  const [renderModal, setRenderModal] = useState<"login" | "signup" | null>(
-    null
+  const [Component, setComponent] = useState<ComponentType<never> | undefined>(
+    undefined
   );
-  const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  const [props, setProps] = useState<Record<string, never>>({});
+
+  if (Object.keys(props).length > 0) {
+    setProps(props);
+  }
+
+  const setComponentState = (
+    component: ComponentType<never> | undefined,
+    props: Record<string, never> = {}
+  ) => {
+    setComponent(() => component);
+    if (Object.keys(props).length > 0) {
+      setProps(props);
+    }
+  };
 
   const value: ModalContextType = {
-    renderModal,
-    setRenderModal,
-    isSidebarOpen,
-    setIsSidebarOpen,
+    Component,
+    setComponentState,
+  };
+
+  const stopModal = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setComponent(undefined);
   };
 
   return (
-    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
+    <ModalContext.Provider value={value}>
+      {children}
+      {Component && (
+        <div
+          onClick={(e) => {
+            stopModal(e);
+          }}
+          className="modal_backdrop"
+        >
+          {Component === Login ? (
+            <Login {...props} />
+          ) : Component === Signup ? (
+            <Signup {...props} />
+          ) : Component === CookiesConsent ? (
+            <CookiesConsent {...props} />
+          ) : null}
+        </div>
+      )}
+    </ModalContext.Provider>
   );
 };

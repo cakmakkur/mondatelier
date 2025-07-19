@@ -1,37 +1,27 @@
 import { Link, useLocation } from "react-router-dom";
-import Modal from "./Modal";
 import Login from "./Login";
 import { useAuthContext } from "../auth/AuthContext";
 import { useModalContext } from "../context/ModalContext";
 import { useEffect, useState } from "react";
+import Signup from "./Signup";
+import Sidebar from "./Sidebar";
 
-type Component = "login" | "signup";
-
-interface NavBarProps {
-  setIsSidebarOpen?: (isOpen: boolean) => void;
-  isSidebarOpen: boolean;
-}
-
-export default function NavBar({
-  setIsSidebarOpen,
-  isSidebarOpen,
-}: NavBarProps) {
+export default function NavBar() {
   const location = useLocation();
   const { auth } = useAuthContext();
-  const { renderModal, setRenderModal } = useModalContext();
+  const { Component, setComponentState } = useModalContext();
   const [isHomepage, setIsHomepage] = useState(true);
 
   useEffect(() => {
     setIsHomepage(location.pathname === "/");
   }, [location.pathname]);
 
-  const handleClick = (component: Component) => {
-    setRenderModal(component);
-  };
-
   const toggleMenu = () => {
-    if (setIsSidebarOpen) {
-      setIsSidebarOpen(!isSidebarOpen);
+    if (Component === Sidebar) {
+      setComponentState(undefined);
+      return;
+    } else {
+      setComponentState(Sidebar, {});
     }
   };
 
@@ -43,22 +33,20 @@ export default function NavBar({
       <div className="navBar__left">
         <Link className="navBar__left" to="/">
           <img className="navBar__favicon" src="/favicon.png" alt="" />
-          <a className="navBar_nav navBar__title" href="#">
-            mondatelier
-          </a>
+          <span className="navBar_nav navBar__title">mondatelier</span>
         </Link>
       </div>
       <div className="navBar__right">
         {!auth ? (
           <>
             <button
-              onClick={() => handleClick("login")}
+              onClick={() => setComponentState(Login)}
               className="navBar_btn navBar_btn--login"
             >
               LOGIN
             </button>
             <button
-              onClick={() => handleClick("login")}
+              onClick={() => setComponentState(Signup)}
               className="navBar_btn navBar_btn--signup"
             >
               SIGNUP
@@ -121,13 +109,6 @@ export default function NavBar({
           Menu
         </button>
       </div>
-      {renderModal === "login" ? (
-        <Modal setRenderModal={setRenderModal}>
-          <Login />
-        </Modal>
-      ) : renderModal === "signup" ? (
-        <Modal setRenderModal={setRenderModal}>signup</Modal>
-      ) : null}
     </div>
   );
 }

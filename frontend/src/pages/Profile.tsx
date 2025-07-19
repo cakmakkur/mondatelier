@@ -116,6 +116,14 @@ export default function Profile() {
         </div>
       </div>
       <div className="profile_display">
+        {!isOwnProfile ? (
+          ""
+        ) : (
+          <button className="edit_profile_button">
+            <img src="../../public/edit.svg" alt="" />
+            Edit Profile
+          </button>
+        )}
         <div className="profile_display--left">
           <h2 className="profile_name">{currentProfile.firstname}</h2>
           <div className="profile_follow">
@@ -188,6 +196,42 @@ export default function Profile() {
                   alt=""
                 />
                 Message
+              </button>
+            )}
+
+            {!isOwnProfile ? (
+              ""
+            ) : (
+              <button className="message">
+                <img
+                  src="../../public/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                New Event
+              </button>
+            )}
+
+            {!isOwnProfile ? (
+              ""
+            ) : (
+              <button className="message">
+                <img
+                  src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                New Masterclass
+              </button>
+            )}
+
+            {!isOwnProfile ? (
+              ""
+            ) : (
+              <button className="message">
+                <img
+                  src="../../public/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                Freelance
               </button>
             )}
           </div>

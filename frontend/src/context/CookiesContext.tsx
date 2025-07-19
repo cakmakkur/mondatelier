@@ -4,8 +4,6 @@ interface CookieContextType {
   cookies: string[];
   setCookies: React.Dispatch<React.SetStateAction<string[]>>;
   updateCookies: (newCookies: string[], path: string) => void;
-  isEnabled: boolean;
-  setIsEnabled: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CookieContext = createContext<CookieContextType | undefined>(undefined);
@@ -57,8 +55,6 @@ export const CookieContextProvider = ({
     cookies,
     setCookies,
     updateCookies,
-    isEnabled,
-    setIsEnabled,
   };
 
   return (

@@ -5,16 +5,21 @@ import { useModalContext } from "../context/ModalContext";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setRenderModal } = useModalContext();
+  const { setComponentState } = useModalContext();
 
   const { login } = useAuthContext();
 
   const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      await login({ email, password });
-      // short success message
-      setRenderModal(null);
+      const response = await login({ email, password });
+      console.log("Login response:", response);
+      if (response && response.status === 200) {
+        // close the modal on successful login
+        setComponentState(undefined);
+      } else if (response?.status === 400) {
+        console.error("Bad credentials");
+      }
     } catch (error) {
       console.error("Login failed:", error);
     }
@@ -22,7 +27,7 @@ export default function Login() {
 
   return (
     <div className="auth_div">
-      <form className="auth_form_div">
+      <form onClick={(e) => e.stopPropagation()} className="auth_form_div">
         <h2>Login</h2>
 
         <label htmlFor="email">Email:</label>
@@ -47,7 +52,7 @@ export default function Login() {
           placeholder="Enter your password"
         />
 
-        <button onClick={handleClick}>Login</button>
+        <button onClick={(e) => handleClick(e)}>Login</button>
       </form>
     </div>
   );

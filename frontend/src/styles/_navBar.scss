@@ -8,11 +8,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 50;
+  z-index: 1000;
   padding: 1.8vh 2vw 0px;
   // font-family: Papyrus, fantasy;
   background-color: $transparent-black;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(2px);
 
   &::after {
     content: "";
@@ -37,7 +37,7 @@
 }
 
 .navBar_nav {
-  color: white;
+  color: rgb(243, 243, 243);
   font-size: 1rem;
   transition: 0.2s;
   display: flex;
@@ -63,12 +63,22 @@
 .navBar_btn--signup {
   border: 1px solid black;
   font-weight: 700;
+  width: 100px;
+  background-color: rgb(243, 243, 243);
+  &:hover {
+    filter: brightness(1.3);
+  }
 }
 
 .navBar_btn--login {
-  background-color: black;
-  border: 1px solid white;
-  color: white;
+  background: transparent;
+  border: 1px solid rgb(243, 243, 243);
+  color: rgb(243, 243, 243);
+  width: 100px;
+  &:hover {
+    color: white;
+    border: 1px solid white;
+  }
 }
 
 .navBar__title {
@@ -92,22 +102,6 @@
   transform: translateY(-5px);
   width: 50px;
   height: 50px;
-}
-
-.auth_div {
-  width: 300px;
-  height: 400px;
-  background-color: white;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.auth_form_div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
 }
 
 .account_circle {
@@ -145,8 +139,4 @@
     cursor: pointer;
     filter: brightness(1.3);
   }
-}
-
-.sidebar_lastnav {
-  font-size: 0.9rem;
 }

@@ -6,6 +6,7 @@
 @import "sidebar";
 @import "artTypeColors";
 @import "cookiesConsent";
+@import "popupWindows";
 
 *,
 *::before,
@@ -150,17 +151,18 @@ input:focus {
   min-width: 1180px;
 }
 
-.modal {
+.modal_backdrop {
   position: absolute;
-  position: fixed;
   top: 0;
   left: 0;
-  z-index: 100;
+  z-index: 500;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(2px);
+  backdrop-filter: blur(1px);
+}
+
+.modalElement {
+  position: absolute;
+  z-index: 1000;
 }

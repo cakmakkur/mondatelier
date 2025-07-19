@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 import { createContext, useState, useContext, useEffect } from "react";
 
 interface AuthState {
@@ -15,7 +15,9 @@ interface credentials {
 
 type AuthContextType = {
   auth: AuthState | undefined;
-  login: (credentials: credentials) => Promise<void>;
+  login: (
+    credentials: credentials
+  ) => Promise<AxiosResponse<unknown, unknown> | undefined>;
   logout: () => void;
   persist: boolean;
   setPersist: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,17 +58,38 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   }, [auth]);
 
-  const login = async (credentials: credentials) => {
+  const login = async (
+    credentials: credentials
+  ): Promise<AxiosResponse<unknown, unknown> | undefined> => {
+    const controller = new AbortController();
+    setAuth(undefined);
+    const timeout = setTimeout(() => {
+      controller.abort();
+    }, 10000);
+
     try {
-      const response = await axios.post(LOGIN_URL, credentials);
-      setAuth({
-        userId: response.data.userId,
-        roles: [1000],
-        accessToken: response.data.token,
-        profileId: response.data.profileId,
+      const response = await axios.post(LOGIN_URL, credentials, {
+        signal: controller.signal,
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+
+      if (response.status === 200) {
+        clearTimeout(timeout);
+        setAuth({
+          userId: response.data.userId,
+          roles: [1000],
+          accessToken: response.data.token,
+          profileId: response.data.profileId,
+        });
+      }
+      return response;
     } catch (error) {
       console.error("Login failed: ", error);
+      clearTimeout(timeout);
+      return;
     }
   };
 

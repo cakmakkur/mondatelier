@@ -44,8 +44,10 @@ export default function ProfileDisplaySections({
         "Art",
         "Collections",
         "Masterclasses",
+        "Freelance",
         "Followers",
         "Following",
+        "Liked",
       ].map((label, i) => (
         <button
           key={label}
@@ -55,7 +57,7 @@ export default function ProfileDisplaySections({
           style={focusPosition === i ? { color: "black" } : {}}
           onClick={() => handleClick(label.toLowerCase(), i)}
         >
-          {["Followers", "Following"].includes(label) ? (
+          {["Followers", "Following", "Liked"].includes(label) ? (
             <span style={{ fontSize: "1rem" }}>{label}</span>
           ) : (
             label

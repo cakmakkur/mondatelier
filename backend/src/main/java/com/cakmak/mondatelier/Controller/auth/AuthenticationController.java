@@ -7,6 +7,7 @@ import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 import com.cakmak.mondatelier.dto.auth.UserAuthDTO;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,18 +33,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody UserAuthDTO loginUserDto) {
+    public ResponseEntity<LoginResponse> authenticate(@RequestBody UserAuthDTO userAuthDto) {
+        try {
+            User authenticatedUser = authenticationService.authenticate(userAuthDto);
+            String jwtToken = jwtService.generateToken(authenticatedUser);
 
-        User authenticatedUser = authenticationService.authenticate(loginUserDto);
-        String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = DTOMappers.toLoginResponseDTO(
-                jwtToken,
-                jwtService.getExpirationTime(),
-                authenticatedUser.getId(),
-                authenticatedUser.getProfile().getId()
-        );
-
-        return ResponseEntity.ok(loginResponse);
+            LoginResponse loginResponse = DTOMappers.toLoginResponseDTO(
+                    jwtToken,
+                    jwtService.getExpirationTime(),
+                    authenticatedUser.getId(),
+                    authenticatedUser.getProfile().getId()
+            );
+            return ResponseEntity.ok(loginResponse);
+        }
+        catch (AuthenticationException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

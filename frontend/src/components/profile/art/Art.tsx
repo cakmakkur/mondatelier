@@ -77,8 +77,6 @@ export default function Art() {
     fetchArtworks();
   }, [page, size, sortBy]);
 
-  if (!isLoaded) return <div>Loading...</div>;
-
   return (
     <div className="art_container">
       <div className="types_container">

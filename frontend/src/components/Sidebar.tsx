@@ -1,14 +1,12 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useModalContext } from "../context/ModalContext";
 
-interface SidebarProps {
-  isSidebarOpen: boolean;
-}
-
-export default function Sidebar({ isSidebarOpen }: SidebarProps) {
+export default function Sidebar() {
   const sidebarDivRef = useRef<HTMLDivElement>(null);
   const playDotRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | null>(null);
+  const { Component } = useModalContext();
 
   useEffect(() => {
     if (!playDotRef.current) return;
@@ -24,7 +22,7 @@ export default function Sidebar({ isSidebarOpen }: SidebarProps) {
   return (
     <div
       ref={sidebarDivRef}
-      className={`sidebar ${isSidebarOpen ? "sidebar_open" : ""}`}
+      className={`sidebar ${Component === Sidebar ? "sidebar_open" : ""}`}
     >
       <nav>
         <ul className="sidebar_list">
