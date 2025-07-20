@@ -158,7 +158,9 @@ export default function Profile() {
                 src="../../public/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
-              {FormatUrl.toUser(currentProfile.personalWebsite)}
+              <a target="_blank" href={currentProfile.personalWebsite}>
+                {FormatUrl.toUser(currentProfile.personalWebsite)}
+              </a>
             </div>
           ) : (
             ""

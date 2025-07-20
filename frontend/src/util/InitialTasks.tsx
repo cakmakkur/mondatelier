@@ -1,8 +1,8 @@
-import { useCookieContext } from "../context/CookiesContext";
 import CookiesConsent from "../components/CookiesConsent";
+import { useUserPreferencesContext } from "../context/UserPreferencesContext";
 
 export default function InitialTasks() {
-  const { isEnabled } = useCookieContext();
+  const { settings } = useUserPreferencesContext();
 
-  return isEnabled ? null : <CookiesConsent />;
+  return settings?.cookieConsent ? null : <CookiesConsent />;
 }

@@ -1,19 +1,23 @@
 import { Link, useLocation } from "react-router-dom";
-import Login from "./Login";
-import { useAuthContext } from "../auth/AuthContext";
-import { useModalContext } from "../context/ModalContext";
+import Login from "../auth/Login";
+import { useAuthContext } from "../../auth/AuthContext";
+import { useModalContext } from "../../context/ModalContext";
 import { useEffect, useState } from "react";
-import Signup from "./Signup";
+import Signup from "../auth/Signup";
 import Sidebar from "./Sidebar";
+import { useProfileContext } from "../../context/ProfileContext";
+
+const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 
 export default function NavBar() {
   const location = useLocation();
   const { auth } = useAuthContext();
   const { Component, setComponentState } = useModalContext();
-  const [isHomepage, setIsHomepage] = useState(true);
+  const [isTransparent, setIsTransparent] = useState(false);
+  const { profile } = useProfileContext();
 
   useEffect(() => {
-    setIsHomepage(location.pathname === "/");
+    setIsTransparent(location.pathname !== "/");
   }, [location.pathname]);
 
   const toggleMenu = () => {
@@ -21,13 +25,14 @@ export default function NavBar() {
       setComponentState(undefined);
       return;
     } else {
+      // seems to be working, check if this is the right way to do it
       setComponentState(Sidebar, {});
     }
   };
 
   return (
     <div
-      style={isHomepage ? { backgroundColor: "rgba(0,0,0,0)" } : {}}
+      style={isTransparent ? { backgroundColor: "rgba(0,0,0,0)" } : {}}
       className="navBar"
     >
       <div className="navBar__left">
@@ -41,13 +46,13 @@ export default function NavBar() {
           <>
             <button
               onClick={() => setComponentState(Login)}
-              className="navBar_btn navBar_btn--login"
+              className="default_btn navBar_btn--login"
             >
               LOGIN
             </button>
             <button
               onClick={() => setComponentState(Signup)}
-              className="navBar_btn navBar_btn--signup"
+              className="default_btn navBar_btn--signup"
             >
               SIGNUP
             </button>
@@ -92,12 +97,12 @@ export default function NavBar() {
             <span>Publish</span>
           </Link>
         ) : null}
-        {auth ? (
-          <Link className="navBar_nav" to="#">
+        {auth && profile ? (
+          <Link className="navBar_nav" to={`/profile/${profile.id}`}>
             <img
               className="account_circle"
-              src="/dev_files/painting-31.jpeg"
-              alt=""
+              src={`${UPLOADS_PATH}${profile.profilePicturePath}`}
+              alt="profile picture of the user"
             />
           </Link>
         ) : null}

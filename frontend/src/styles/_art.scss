@@ -64,9 +64,9 @@
 }
 
 .art_type {
-  padding: 5px 10px;
+  padding: 6px 16px;
   width: auto;
-  height: 27px;
+  height: 30px;
   border-radius: 40px;
   display: flex;
   align-items: center;
@@ -74,6 +74,8 @@
   box-shadow: 0px 0px 10px 1px rgba(0, 0, 0, 0.457);
   border: 1px solid rgba(0, 0, 0, 0.227);
   transition: 0.2s;
+  font-size: 1.1rem;
+  font-weight: 600;
   &:hover {
     cursor: pointer;
     filter: brightness(1.2);

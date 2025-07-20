@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext } from "react";
 import type { ComponentType, ReactNode } from "react";
-import Login from "../components/Login";
-import Signup from "../components/Signup";
+import Login from "../components/auth/Login";
+import Signup from "../components/auth/Signup";
 import CookiesConsent from "../components/CookiesConsent";
 
 interface ModalContextType {

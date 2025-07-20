@@ -93,9 +93,9 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   };
 
-  const logout = async () => {
+  const logout = () => {
     try {
-      await axios.post("/api/logout", {}, { withCredentials: true });
+      axios.post("/api/logout", {}, { withCredentials: true });
       setAuth(undefined);
     } catch (error) {
       console.error("Logout failed:", error);
@@ -103,7 +103,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   };
 
   const value: AuthContextType = {
-    auth: auth,
+    auth,
     login,
     logout,
     persist,

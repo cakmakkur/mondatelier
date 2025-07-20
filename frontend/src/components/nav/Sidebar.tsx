@@ -1,12 +1,14 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { useModalContext } from "../context/ModalContext";
+import { useModalContext } from "../../context/ModalContext";
+import { useAuthContext } from "../../auth/AuthContext";
 
 export default function Sidebar() {
   const sidebarDivRef = useRef<HTMLDivElement>(null);
   const playDotRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | null>(null);
-  const { Component } = useModalContext();
+  const { Component, setComponentState } = useModalContext();
+  const { auth, logout } = useAuthContext();
 
   useEffect(() => {
     if (!playDotRef.current) return;
@@ -19,6 +21,10 @@ export default function Sidebar() {
     };
   }, []);
 
+  const closeSidebar = () => {
+    setComponentState(undefined);
+  };
+
   return (
     <div
       ref={sidebarDivRef}
@@ -27,7 +33,11 @@ export default function Sidebar() {
       <nav>
         <ul className="sidebar_list">
           <li>
-            <Link className="sidebar_option" to="/artworks">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/artworks"
+            >
               <img
                 src="/shopping_cart_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -36,7 +46,7 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/music">
+            <Link onClick={closeSidebar} className="sidebar_option" to="/music">
               <img
                 src="/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -45,7 +55,11 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <img
                 src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -54,7 +68,11 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <img
                 src="/school_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -63,7 +81,11 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <img
                 src="/wall_art_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -72,7 +94,11 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <img
                 src="/handshake_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -81,7 +107,11 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <span
                 ref={playDotRef}
                 style={{
@@ -101,7 +131,11 @@ export default function Sidebar() {
       <nav>
         <ul>
           <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/digital"
+            >
               <img
                 src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -109,17 +143,27 @@ export default function Sidebar() {
               <span style={{ color: "red" }}>Publish</span>
             </Link>
           </li>
+          {auth ? (
+            <li>
+              <Link
+                onClick={closeSidebar}
+                className="sidebar_option"
+                to={auth.profileId ? `/profile/${auth.profileId}` : "/"}
+              >
+                <img
+                  src="/account_box_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt=""
+                />
+                Profile
+              </Link>
+            </li>
+          ) : null}
           <li>
-            <Link className="sidebar_option" to="/digital">
-              <img
-                src="/account_box_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
-              />
-              Profile
-            </Link>
-          </li>
-          <li>
-            <Link className="sidebar_option" to="/digital">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/preferences"
+            >
               <img
                 src="/settings_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -132,11 +176,20 @@ export default function Sidebar() {
               🇬🇧 Language
             </Link>
           </li>
-          <li>
-            <Link className="sidebar_option" to="/profile">
-              Logout
-            </Link>
-          </li>
+          {auth ? (
+            <li>
+              <Link
+                onClick={() => {
+                  closeSidebar();
+                  logout();
+                }}
+                className="sidebar_option"
+                to="/"
+              >
+                Logout
+              </Link>
+            </li>
+          ) : null}
         </ul>
       </nav>
       <span className="sidebar_separator"></span>
@@ -144,22 +197,34 @@ export default function Sidebar() {
       <nav className="sidebar_lastnav">
         <ul>
           <li>
-            <Link className="sidebar_option" to="/3d">
+            <Link onClick={closeSidebar} className="sidebar_option" to="/3d">
               Help
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/collections">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/collections"
+            >
               Contact us
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/community">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/community"
+            >
               Impressum
             </Link>
           </li>
           <li>
-            <Link className="sidebar_option" to="/profile">
+            <Link
+              onClick={closeSidebar}
+              className="sidebar_option"
+              to="/profile"
+            >
               Terms and Conditions
             </Link>
           </li>

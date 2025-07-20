@@ -5,6 +5,7 @@ import Profile from "./pages/Profile";
 import InitialTasks from "./util/InitialTasks";
 import Events from "./pages/Events";
 import { ModalContextProvider } from "./context/ModalContext";
+import Preferences from "./pages/Preferences";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
             <Route index element={<Homepage />} />
             <Route path="/profile/:profileId" element={<Profile />} />
             <Route path="events" element={<Events />} />
+            <Route path="/preferences" element={<Preferences />} />
           </Route>
         </Routes>
       </ModalContextProvider>

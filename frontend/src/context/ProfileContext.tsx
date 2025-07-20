@@ -36,15 +36,13 @@ export const ProfileContextProvider = ({
       fetch(`${BASE_URL}/${PROFILE_PATH}/${auth?.profileId}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-
           setProfile(data);
         })
         .catch((error) => {
           console.error("Error fetching profile:", error);
         });
     }
-  }, [auth?.profileId]);
+  }, [auth]);
 
   const value = {
     profile,

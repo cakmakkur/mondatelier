@@ -1,20 +1,109 @@
-.auth_div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+@import "variables";
 
 .auth_form_div {
-  width: 300px;
-  height: 400px;
+  width: 400px;
+  height: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: white;
+  row-gap: 2vh;
+  position: absolute;
+  left: calc(50% - 200px);
+  top: calc(50% - 200px);
+  padding: 3vw;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.5);
+}
+
+.login__input {
+  padding-left: 10px;
+  height: 40px;
+  font-size: 1.2rem;
+}
+
+.login__input:focus {
+  background-color: $moon-yellow;
+  border: 1px solid rgb(150, 150, 150);
+  border-radius: 2px;
+}
+
+.popup_login_btn {
+  background-color: white;
+  width: 100px;
+  border: 1px solid black;
+  font-size: 1.3rem;
+  transition: 0.2s;
+  &:hover {
+    background-color: $moon-yellow;
+    cursor: pointer;
+  }
+}
+
+.form__ph__text--active {
+  top: 3px;
+  background-color: white;
+  padding: 0px 4px;
+  font-size: 0.7rem;
+}
+
+.login__label {
+  position: relative;
+}
+
+.form__ph__text {
+  position: absolute;
+  left: 10px;
+  top: 7px;
+  transition: 0.15s;
+  font-size: 1.2rem;
+}
+
+.form__ph__text--active {
+  top: -11px;
+  padding: 0px 4px;
+  font-size: 0.8rem;
+}
+
+.error__message__span {
+  width: 100%;
+  font-size: 0.7rem;
+  color: red;
+  padding-top: 4px;
+}
+
+.forgot_psw_btn {
+  color: blue;
+  transition: 0.2s;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.login_div_create_account {
+  border: 1px solid gray;
+  background-color: rgba(11, 203, 69, 0.095);
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  & h4 {
+    color: $transparent-black;
+  }
+  & a {
+    text-decoration: underline;
+    font-weight: 600;
+    color: blue;
+  }
+}
+
+.login_div_btns {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }

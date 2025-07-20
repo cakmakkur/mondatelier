@@ -35,10 +35,10 @@ public class SecurityConfig {
                                 "/uploads/**",
                                 "/api/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-/*
                         .anyRequest().permitAll()
-*/
+/*
                         .anyRequest().authenticated()
+*/
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
