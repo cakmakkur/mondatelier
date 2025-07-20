@@ -20,4 +20,12 @@ public class ProfileService {
         return DTOMappers.toPublicProfileDTO(profile);
     }
 
+    public void createProfile(PublicProfileDTO publicProfileDTO) {
+
+    }
+
+    public void updateProfile(PublicProfileDTO publicProfileDTO) {
+
+    }
+
 }

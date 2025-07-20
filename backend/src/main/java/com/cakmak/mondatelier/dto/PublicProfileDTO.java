@@ -10,5 +10,6 @@ public record PublicProfileDTO(
     String personalWebsite,
     String country,
     String bannerPath,
-    String profilePicturePath
+    String profilePicturePath,
+    Boolean showRealName
 ) {}

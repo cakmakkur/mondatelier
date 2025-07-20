@@ -43,8 +43,13 @@ public class Profile {
 
     private String personalWebsite;
 
+    @Column(name = "show_real_name")
+    private Boolean showRealName;
+
     @Column(name = "profile_name")
     private String profileName;
+
+    private Boolean active;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "country_id")

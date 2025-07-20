@@ -749,33 +749,56 @@
   transition: 0.3s;
 }
 
-.auth_form_div {
+.auth_wrapper {
   width: 400px;
   height: 500px;
+  left: calc(50% - 200px);
+  top: calc(50% - 200px);
+  overflow: hidden;
+  position: absolute;
+  z-index: 1200;
+  border-radius: 4px;
+}
+
+.auth_slider_div {
+  width: 820px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+  transition: 0.3s;
+  z-index: 1000;
+}
+
+.auth_form_div {
+  width: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: white;
   row-gap: 2vh;
-  position: absolute;
-  left: calc(50% - 200px);
-  top: calc(50% - 200px);
   padding: 3vw;
   border-radius: 5px;
   box-shadow: 0px 0px 10px 1px rgba(255, 255, 255, 0.5);
+  position: relative;
+  z-index: 2000;
 }
 
-.login__input {
-  padding-left: 10px;
-  height: 40px;
-  font-size: 1.2rem;
-}
-
-.login__input:focus {
+.popup_continue_btn {
+  margin-top: 20px;
   background-color: rgb(255, 255, 207);
-  border: 1px solid rgb(150, 150, 150);
-  border-radius: 2px;
+  width: 210px;
+  height: 55px;
+  border: 1px solid black;
+  font-size: 1.3rem;
+  transition: 0.2s;
+  font-weight: 600;
+  color: rgb(23, 22, 0);
+}
+.popup_continue_btn:hover {
+  background-color: rgb(255, 255, 207);
+  cursor: pointer;
 }
 
 .popup_login_btn {
@@ -804,7 +827,7 @@
 .form__ph__text {
   position: absolute;
   left: 10px;
-  top: 7px;
+  top: 3px;
   transition: 0.15s;
   font-size: 1.2rem;
 }
@@ -839,6 +862,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 50px;
+  transition: 0.2s;
 }
 .login_div_create_account h4 {
   color: rgba(0, 0, 0, 0.748);
@@ -846,7 +871,12 @@
 .login_div_create_account a {
   text-decoration: underline;
   font-weight: 600;
-  color: blue;
+  font-size: 1.2rem;
+  color: rgb(1, 23, 2);
+}
+.login_div_create_account:hover {
+  cursor: pointer;
+  filter: brightness(1.2);
 }
 
 .login_div_btns {
@@ -855,6 +885,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.login__input {
+  width: 210px;
+}
+
+.section_7 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+  background-color: white;
+  opacity: 1;
+  transition: 1s;
+}
+
+.section_7__canvas_2 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 40;
+  opacity: 0.08;
 }
 
 *,
