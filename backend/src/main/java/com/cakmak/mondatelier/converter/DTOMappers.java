@@ -62,7 +62,8 @@ public class DTOMappers {
                 profile.getPersonalWebsite(),
                 profile.getCountry().getCountry(),
                 profile.getBannerPath(),
-                profile.getProfilePicturePath()
+                profile.getProfilePicturePath(),
+                profile.getShowRealName()
         );
     }
 
