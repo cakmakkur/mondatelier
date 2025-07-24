@@ -1,20 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { createContext, useState, useContext } from "react";
 import type { ComponentType, ReactNode } from "react";
-import Login from "../components/auth/Login";
-import Signup from "../components/auth/Signup";
-import CookiesConsent from "../components/CookiesConsent";
 
 interface ModalContextType {
-  Component: ComponentType<never> | undefined;
+  Component: ComponentType | undefined;
   setComponentState: (
-    component: ComponentType<never> | undefined,
-    props?: Record<string, never>
+    component: ComponentType | undefined,
+    props?: Record<string, any>
   ) => void;
 }
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useModalContext = (): ModalContextType => {
   const context = useContext(ModalContext);
   if (!context) {
@@ -32,19 +29,15 @@ interface ModalContextProviderProps {
 export const ModalContextProvider = ({
   children,
 }: ModalContextProviderProps) => {
-  const [Component, setComponent] = useState<ComponentType<never> | undefined>(
+  const [Component, setComponent] = useState<ComponentType<any> | undefined>(
     undefined
   );
 
-  const [props, setProps] = useState<Record<string, never>>({});
-
-  if (Object.keys(props).length > 0) {
-    setProps(props);
-  }
+  const [props, setProps] = useState<Record<string, unknown>>({});
 
   const setComponentState = (
-    component: ComponentType<never> | undefined,
-    props: Record<string, never> = {}
+    component: ComponentType<any> | undefined,
+    props: Record<string, any> = {}
   ) => {
     setComponent(() => component);
     if (Object.keys(props).length > 0) {
@@ -66,19 +59,10 @@ export const ModalContextProvider = ({
     <ModalContext.Provider value={value}>
       {children}
       {Component && (
-        <div
-          onClick={(e) => {
-            stopModal(e);
-          }}
-          className="modal_backdrop"
-        >
-          {Component === Login ? (
-            <Login {...props} />
-          ) : Component === Signup ? (
-            <Signup {...props} />
-          ) : Component === CookiesConsent ? (
-            <CookiesConsent {...props} />
-          ) : null}
+        <div onClick={stopModal} className="modal_backdrop">
+          <div onClick={(e) => e.stopPropagation()}>
+            <Component {...props} />
+          </div>
         </div>
       )}
     </ModalContext.Provider>

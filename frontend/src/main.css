@@ -637,8 +637,8 @@
 
 .sidebar {
   background-color: rgba(0, 0, 0, 0.748);
-  position: absolute;
-  top: 85px;
+  position: fixed;
+  top: 70px;
   right: 0px;
   transform: translateX(190px);
   width: 240px;
@@ -653,22 +653,13 @@
   justify-content: space-between;
   backdrop-filter: blur(1px);
 }
-.sidebar::after {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 0px;
-  width: 100%;
-  height: 20px;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0.748) 0%, rgba(0, 0, 0, 0) 100%);
-}
 .sidebar:hover {
   filter: brightness(1.1);
 }
 
 .sidebar_overlay {
-  position: absolute;
-  top: -15px;
+  position: fixed;
+  top: 0px;
   right: 0px;
   width: 240px;
   height: calc(100vh - 65px);
@@ -800,7 +791,8 @@
 }
 
 .auth_slider_div {
-  width: 820px;
+  width: 1200px;
+  height: 500px;
   position: absolute;
   top: 0;
   left: 0;
@@ -816,7 +808,6 @@
   display: flex;
   flex-direction: column;
   align-items: end;
-  justify-content: center;
   justify-content: space-between;
   padding: 40px 30px;
   border-radius: 5px;
@@ -890,9 +881,24 @@
 .forgot_psw_btn {
   color: blue;
   transition: 0.2s;
+  background: none;
+  border: none;
 }
 .forgot_psw_btn:hover {
   text-decoration: underline;
+  cursor: pointer;
+}
+
+.already_have_account_btn {
+  display: block;
+  background: none;
+  border: none;
+  color: blue;
+  height: 10px;
+}
+.already_have_account_btn:hover {
+  cursor: pointer;
+  filter: brightness(1.2);
 }
 
 .login_div_create_account {
@@ -904,18 +910,23 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 20px;
   transition: 0.2s;
   box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.223);
 }
 .login_div_create_account h4 {
   color: rgba(0, 0, 0, 0.748);
 }
-.login_div_create_account a {
+.login_div_create_account button {
   text-decoration: underline;
   font-weight: 600;
   font-size: 1.2rem;
   color: rgb(1, 23, 2);
+  background: none;
+  border: none;
+}
+.login_div_create_account button:hover {
+  cursor: pointer;
 }
 .login_div_create_account:hover {
   cursor: pointer;
@@ -1119,7 +1130,7 @@ input:focus {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 800;
+  z-index: 2500;
   width: 100%;
   height: 100vh;
   overflow: hidden;
@@ -1128,5 +1139,5 @@ input:focus {
 
 .modalElement {
   position: absolute;
-  z-index: 1000;
+  z-index: 3000;
 }

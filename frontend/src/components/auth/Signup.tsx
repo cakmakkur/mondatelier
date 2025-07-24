@@ -4,6 +4,7 @@ import { useModalContext } from "../../context/ModalContext";
 import AuthBgEffect from "./AuthBgEffect";
 import type { SignupDto } from "../../dto/Signup";
 import emailValidator from "email-validator";
+import Login from "./Login";
 
 const defaultSignupBody: SignupDto = {
   email: "",
@@ -43,10 +44,10 @@ export default function Signup() {
 
   const [signupBody, setSignupBody] = useState<SignupDto>(defaultSignupBody);
 
-  useEffect(() => {
-    if (!sliderDivRef.current) return;
-    sliderDivRef.current.style.transform = "translateX(-400px)";
-  }, []);
+  // useEffect(() => {
+  //   if (!sliderDivRef.current) return;
+  //   sliderDivRef.current.style.transform = "translateX(-400px)";
+  // }, []);
 
   /**
   * Fetches the list of countries from the API.
@@ -110,6 +111,17 @@ export default function Signup() {
       dobPhRef.current?.classList.add("form__ph__text--active");
     }
   }, [focus, signupBody, repeatPassword]);
+
+  //**
+  // Nav
+  // **
+
+  const handleAccountPresent = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setComponentState(Login);
+  };
 
   //**
   // Input
@@ -277,12 +289,12 @@ export default function Signup() {
               Create an account
             </button>
           </div>
-          <div style={{ width: "300px", marginTop: "50px" }}>
+          <div
+            onClick={(e) => handleAccountPresent(e)}
+            style={{ width: "300px", marginTop: "50px" }}
+          >
             Already have an account?
-            <a style={{ marginTop: "15px" }} className="forgot_psw_btn" href="">
-              <br />
-              Login
-            </a>
+            <button className="already_have_account_btn">Login</button>
           </div>
         </form>
         {/* Second Form */}
@@ -302,6 +314,8 @@ export default function Signup() {
                   firstname: e.target.value,
                 }))
               }
+              onFocus={() => setFocus("firstname")}
+              onBlur={() => setFocus("")}
               maxLength={30}
               required
             />

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
 import AuthBgEffect from "./AuthBgEffect";
+import Signup from "./Signup";
+import ForgotPassword from "./ForgotPassword";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -60,6 +62,14 @@ export default function Login() {
     }
   };
 
+  const handleForgotPassword = () => {
+    setComponentState(ForgotPassword);
+  };
+
+  const handleCreateAccount = () => {
+    setComponentState(Signup);
+  };
+
   return (
     <div onClick={(e) => e.stopPropagation()} className="auth_wrapper">
       <AuthBgEffect />
@@ -104,9 +114,13 @@ export default function Login() {
             Password
           </span>
           <div style={{ marginTop: "3px" }}>
-            <a style={{ marginTop: "15px" }} className="forgot_psw_btn" href="">
+            <button
+              onClick={handleForgotPassword}
+              style={{ marginTop: "15px" }}
+              className="forgot_psw_btn"
+            >
               Forgot password?
-            </a>
+            </button>
           </div>
         </label>
         {error && <span className="error__message__span">{error}</span>}
@@ -116,9 +130,9 @@ export default function Login() {
           </button>
         </div>
 
-        <div className="login_div_create_account">
+        <div onClick={handleCreateAccount} className="login_div_create_account">
           <h4>Don't have an account yet?</h4>
-          <a href="">Create an Account Now</a>
+          <button>Create an Account Now</button>
         </div>
       </form>
     </div>
