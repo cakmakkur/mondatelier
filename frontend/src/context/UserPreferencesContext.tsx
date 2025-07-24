@@ -65,12 +65,12 @@ export const UserPreferencesContextProvider = ({
             setSettings(localSettings);
             return;
           } else {
-            clearUserPreferences();
-            const userSettings = await fetchUserSettings();
-            if (userSettings)
-              Object.keys(userSettings).forEach((key) => {
-                updateUserPreferences(key, userSettings[key as keyof Settings]);
-              });
+            // clearUserPreferences();
+            // const userSettings = await fetchUserSettings();
+            // if (userSettings)
+            //   Object.keys(userSettings).forEach((key) => {
+            //     updateUserPreferences(key, userSettings[key as keyof Settings]);
+            //   });
             updateUserPreferences("profileId", auth.profileId);
           }
         } else {

@@ -18,6 +18,9 @@ export default function Login() {
   const emailPhRef = useRef<HTMLSpanElement>(null);
   const passwordPhRef = useRef<HTMLSpanElement>(null);
   const [focus, setFocus] = useState("");
+  const timerRef = useRef<number | undefined>(undefined);
+
+  const confirmationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     emailPhRef.current?.classList.remove("form__ph__text--active");
@@ -35,7 +38,7 @@ export default function Login() {
   const sanitize = (input: string) => input.trim().replace(/[^\w\s@.]/gi, "");
 
   const handleSetUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedUsername = sanitize(e.target.value);
+    const sanitizedUsername = e.target.value;
     setEmail(sanitizedUsername);
   };
 
@@ -50,8 +53,13 @@ export default function Login() {
       const response = await login({ email, password });
       console.log("Login response:", response);
       if (response && response.status === 200) {
-        // close the modal on successful login
-        setComponentState(undefined);
+        if (!confirmationRef.current) return;
+        confirmationRef.current.classList.add(
+          "login_confirmation_animation--open"
+        );
+        timerRef.current = setTimeout(() => {
+          setComponentState(undefined);
+        }, 1000);
       } else if (response?.status === 400) {
         console.error("Bad credentials");
         setError("Wrong email or password");
@@ -135,6 +143,10 @@ export default function Login() {
           <button>Create an Account Now</button>
         </div>
       </form>
+      {/* confirmation animation*/}
+      <div ref={confirmationRef} className="login_confirmation_animation">
+        Success
+      </div>
     </div>
   );
 }

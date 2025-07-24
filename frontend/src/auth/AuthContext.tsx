@@ -48,6 +48,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
   });
 
   const LOGIN_URL = import.meta.env.VITE_LOGIN_URL;
+  const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userId, setUserId] = useState<string>("");
@@ -102,7 +103,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       controller.abort();
     }, 10000);
     try {
-      const response = await axios.post("/auth/signup", credentials, {
+      const response = await axios.post(SIGNUP_URL, credentials, {
         signal: controller.signal,
         withCredentials: true,
         headers: {

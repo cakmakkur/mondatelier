@@ -76,6 +76,8 @@ export default function Signup() {
   const dobPhRef = useRef<HTMLSpanElement>(null);
   const countryPhRef = useRef<HTMLSpanElement>(null);
   const sliderDivRef = useRef<HTMLDivElement>(null);
+  const timerRef = useRef<number | undefined>(undefined);
+  const confirmationRef = useRef<HTMLDivElement>(null);
 
   const [focus, setFocus] = useState("");
 
@@ -189,17 +191,26 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     try {
       const response = await signup(signupBody);
       console.log("Login response:", response);
       if (response && response.status === 200) {
-        // close the modal on successful login
-        setComponentState(undefined);
+        if (!confirmationRef.current) return;
+        confirmationRef.current.classList.add(
+          "signup_confirmation_animation--open"
+        );
+        timerRef.current = setTimeout(() => {
+          setComponentState(undefined);
+        }, 1000);
       } else if (response?.status === 400) {
+        if (!sliderDivRef.current) return;
+        sliderDivRef.current.style.transform = "translateX(0px)";
         console.error("Bad credentials");
       }
     } catch (error) {
       console.error("Login failed:", error);
+      setComponentState(undefined);
     }
   };
 
@@ -217,7 +228,7 @@ export default function Signup() {
       <div ref={sliderDivRef} className="auth_slider_div">
         {/* First Form */}
         <form className="auth_form_div">
-          <h1>Signup</h1>
+          <h1>Create an account</h1>
           <label htmlFor="userType"></label>
           <label htmlFor="email" className="login__label">
             <input
@@ -286,7 +297,7 @@ export default function Signup() {
               className="default_btn popup_continue_btn"
               type="button"
             >
-              Create an account
+              Confirm
             </button>
           </div>
           <div
@@ -440,6 +451,10 @@ export default function Signup() {
             </button>
           </div>
         </form>
+        {/* confirmation animation*/}
+        <div ref={confirmationRef} className="signup_confirmation_animation">
+          Success
+        </div>
       </div>
     </div>
   );

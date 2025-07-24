@@ -15,7 +15,6 @@ public record SignupDTO(
         @NotBlank
         @Size(min = 6, max = 25)
         String password,
-        @NotBlank
         @Max(3)
         Integer userType,
         @Size(max = 25)
