@@ -68,7 +68,9 @@ export default function Login() {
         className="auth_form_div"
         onSubmit={(e) => handleClick(e)}
       >
-        <h1 style={{ color: "black", marginBottom: "30px" }}>Login</h1>
+        <h1 style={{ color: "black", marginBottom: "30px" }}>
+          Log in your account
+        </h1>
 
         <label htmlFor="email" className="login__label">
           <input
@@ -103,7 +105,7 @@ export default function Login() {
           </span>
           <div style={{ marginTop: "3px" }}>
             <a style={{ marginTop: "15px" }} className="forgot_psw_btn" href="">
-              Forgot password
+              Forgot password?
             </a>
           </div>
         </label>

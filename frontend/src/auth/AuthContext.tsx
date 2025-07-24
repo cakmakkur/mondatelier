@@ -13,7 +13,7 @@ interface AuthState {
 type AuthContextType = {
   auth: AuthState | undefined;
   login: (
-    credentials: SignupDto
+    credentials: LoginDto
   ) => Promise<AxiosResponse<unknown, unknown> | undefined>;
   logout: () => void;
   signup: (

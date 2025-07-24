@@ -106,12 +106,11 @@ export default function NavBar() {
             />
           </Link>
         ) : null}
-        <button onClick={toggleMenu} className="navBar_nav">
+        <button onClick={toggleMenu} className="menu_button">
           <img
             src="/dehaze_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
-          Menu
         </button>
       </div>
     </div>
