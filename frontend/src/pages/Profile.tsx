@@ -11,6 +11,8 @@ import { useProfileContext } from "../context/ProfileContext";
 import type Freelance from "../dto/Freelance";
 import type Masterclass from "../dto/Masterclass";
 import { FormatUrl } from "../util/formatUrl";
+import CreateEvent from "../components/userEvents/CreateEvent";
+import { useModalContext } from "../context/ModalContext";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -27,6 +29,7 @@ export default function Profile() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [freelances, setFreelances] = useState<Freelance[]>([]);
   const [masterclasses, setMasterclasses] = useState<Masterclass[]>([]);
+  const { setComponentState } = useModalContext();
 
   const fetchMasterclasses = async () => {
     try {
@@ -204,7 +207,10 @@ export default function Profile() {
             {!isOwnProfile ? (
               ""
             ) : (
-              <button className="message">
+              <button
+                onClick={() => setComponentState(CreateEvent)}
+                className="message"
+              >
                 <img
                   src="../../public/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""

@@ -21,6 +21,8 @@ export default function Login() {
   const timerRef = useRef<number | undefined>(undefined);
 
   const confirmationRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     emailPhRef.current?.classList.remove("form__ph__text--active");
@@ -53,13 +55,12 @@ export default function Login() {
       const response = await login({ email, password });
       console.log("Login response:", response);
       if (response && response.status === 200) {
-        if (!confirmationRef.current) return;
-        confirmationRef.current.classList.add(
-          "login_confirmation_animation--open"
-        );
+        confirmationRef.current?.classList.add("auth_success--fade-in");
+        containerRef.current?.classList.add("auth_wrapper--success");
+        formRef.current?.classList.add("auth_form_div--fade-out");
         timerRef.current = setTimeout(() => {
           setComponentState(undefined);
-        }, 1000);
+        }, 800);
       } else if (response?.status === 400) {
         console.error("Bad credentials");
         setError("Wrong email or password");
@@ -79,9 +80,14 @@ export default function Login() {
   };
 
   return (
-    <div onClick={(e) => e.stopPropagation()} className="auth_wrapper">
+    <div
+      ref={containerRef}
+      onClick={(e) => e.stopPropagation()}
+      className="auth_wrapper"
+    >
       <AuthBgEffect />
       <form
+        ref={formRef}
         onClick={(e) => e.stopPropagation()}
         className="auth_form_div"
         onSubmit={(e) => handleClick(e)}
@@ -144,8 +150,8 @@ export default function Login() {
         </div>
       </form>
       {/* confirmation animation*/}
-      <div ref={confirmationRef} className="login_confirmation_animation">
-        Success
+      <div ref={confirmationRef} className="auth_success">
+        <img src="/check_60dp_48752C_FILL0_wght400_GRAD0_opsz48.svg" alt="" />
       </div>
     </div>
   );

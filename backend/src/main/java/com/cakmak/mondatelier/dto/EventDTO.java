@@ -10,6 +10,7 @@ public record EventDTO (
         String description,
         Date createdAt,
         Date date,
-        String profileId
+        String profileId,
+        String thumbnail_url
 ) {
 }

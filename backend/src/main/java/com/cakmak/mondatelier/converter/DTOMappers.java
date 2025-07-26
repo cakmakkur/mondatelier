@@ -34,7 +34,8 @@ public class DTOMappers {
                 event.getDescription(),
                 event.getCreatedAt(),
                 event.getDate(),
-                event.getProfile().getId()
+                event.getProfile().getId(),
+                event.getThumbnailUrl()
         );
     }
 

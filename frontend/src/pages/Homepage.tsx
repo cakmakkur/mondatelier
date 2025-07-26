@@ -1,17 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 // @ts-expect-error importing THREE.js assets
 import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
 // prettier-ignore
 import {moon,anchor} from "../assets/visual_effects/homepage_canvas_components.js";
+import { useModalContext } from "../context/ModalContext.js";
+import Signup from "../components/auth/Signup.js";
 
 export default function Homepage() {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [startAnimation, setStartAnimation] = useState(false);
+  const [startApproachMoon, setStartApproachMoon] = useState(false);
+  const approachMoonRef = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const stars = useRef<THREE.Mesh[]>([]);
   const phaseOffsets = useRef<number[]>([]);
+
+  const { setComponentState } = useModalContext();
 
   useEffect(() => {
     setIsPageLoaded(true);
@@ -21,6 +26,10 @@ export default function Homepage() {
     if (!isPageLoaded) return;
     setStartAnimation(true);
   }, [isPageLoaded]);
+
+  useEffect(() => {
+    approachMoonRef.current = startApproachMoon;
+  }, [startApproachMoon]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -93,9 +102,23 @@ export default function Homepage() {
       directionalLight.position.y = window.scrollY * 0.05;
       moon.rotation.y += 0.0002;
 
+      // camera second position:
+      camera.position.set(17, 5, 6);
+
       camera.updateProjectionMatrix();
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
+
+      // zoom into moon animation
+      // if (approachMoonRef.current) {
+      //   const target = new THREE.Vector3(
+      //     moon.position.x + 5,
+      //     moon.position.y + 5,
+      //     moon.position.z + 6
+      //   );
+      //   camera.position.lerp(target, 0.02);
+      //   // camera.lookAt(moon.position);
+      // }
     }
 
     animate();
@@ -133,9 +156,18 @@ export default function Homepage() {
           Whether you're here to showcase your work, find a new home for it or
           simply be inspired by others — you're in the right place.{" "}
         </p>
-        <Link to="/exposition">
-          <button className="start_tour_btn">Create an account</button>
-        </Link>
+        <button
+          onClick={() => setComponentState(Signup)}
+          className="homepage_create_account"
+        >
+          Create an account
+        </button>
+        <button
+          style={{ background: "none", border: "none" }}
+          onClick={() => setStartApproachMoon(true)}
+        >
+          A
+        </button>
       </div>
 
       <div className="footer">&copy; Kursat Cakmak</div>

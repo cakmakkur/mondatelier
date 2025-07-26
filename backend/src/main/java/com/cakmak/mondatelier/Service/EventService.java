@@ -13,6 +13,7 @@ import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.util.SanitizeInput;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class EventService {
@@ -36,7 +37,9 @@ public class EventService {
         return DTOMappers.toEventDTO(event);
     }
 
-    public void createEvent(EventDTO eventDTO) {
+    public void createEvent(EventDTO eventDTO, MultipartFile imageFile) {
+
+        // save event
         Event event = new Event();
         event.setTitle(SanitizeInput.sanitize(eventDTO.title()));
         event.setDescription(SanitizeInput.sanitize(eventDTO.description()));
@@ -47,6 +50,11 @@ public class EventService {
         event.setDate(eventDTO.date());
         Profile profile = profileRepository.findById(eventDTO.profileId()).orElseThrow(ProfileNotFoundException::new);
         event.setProfile(profile);
+        event.setThumbnailUrl(eventDTO.thumbnail_url());
         eventRepository.save(event);
+
+        // save photo
+        // handla upload logic here
+
     }
 }

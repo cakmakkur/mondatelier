@@ -26,6 +26,9 @@ public class Event {
 
     private String title;
 
+    @Column(name = "thumbnail_id")
+    private String thumbnailUrl;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "type_id")
     private EventType type;
