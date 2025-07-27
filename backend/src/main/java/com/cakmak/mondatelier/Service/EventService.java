@@ -12,8 +12,17 @@ import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.util.SanitizeInput;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
+
 
 @Service
 public class EventService {
@@ -21,6 +30,9 @@ public class EventService {
     private final EventTypeRepository eventTypeRepository;
     private final CityRepository cityRepository;
     private final ProfileRepository profileRepository;
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
 
     public EventService(EventRepository eventRepository,
                         EventTypeRepository eventTypeRepository,
@@ -50,11 +62,27 @@ public class EventService {
         event.setDate(eventDTO.date());
         Profile profile = profileRepository.findById(eventDTO.profileId()).orElseThrow(ProfileNotFoundException::new);
         event.setProfile(profile);
-        event.setThumbnailUrl(eventDTO.thumbnail_url());
-        eventRepository.save(event);
 
         // save photo
-        // handla upload logic here
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get(uploadDir + "/events");
+
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+                event.setThumbnailUrl("/uploads/events/" + fileName);
+                eventRepository.save(event);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save image file", e);
+            }
+        }
 
     }
 }

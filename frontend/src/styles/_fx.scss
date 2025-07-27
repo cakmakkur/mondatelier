@@ -1,4 +1,6 @@
-.section_7 {
+@import "variables";
+
+.canvas_1_wrapper {
   position: absolute;
   top: 0;
   left: 0;
@@ -11,7 +13,7 @@
   transition: 1s;
 }
 
-.section_7__canvas_2 {
+.canvas_1 {
   position: absolute;
   top: 0;
   left: 0;

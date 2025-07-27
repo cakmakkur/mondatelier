@@ -11,7 +11,6 @@ public record MasterclassDTO (
         Integer sessionDuration,
         Integer sessionPrice,
         Date createdAt,
-        String artCategory
-) {
-
-}
+        String artCategory,
+        String city
+) {}

@@ -87,7 +87,8 @@ public class DTOMappers {
                 masterclass.getSessionDuration(),
                 masterclass.getSessionPrice(),
                 masterclass.getCreatedAt(),
-                masterclass.getArtCategory().getName()
+                masterclass.getArtCategory().getName(),
+                masterclass.getCity().getCity()
         );
     }
  }

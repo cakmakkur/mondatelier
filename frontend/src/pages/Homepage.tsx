@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
 // prettier-ignore
-import {moon,anchor} from "../assets/visual_effects/homepage_canvas_components.js";
+import {moon,anchor} from "../components/fx/homepage_canvas_components.js";
 import { useModalContext } from "../context/ModalContext.js";
 import Signup from "../components/auth/Signup.js";
 

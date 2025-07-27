@@ -32,6 +32,10 @@ public class Masterclass {
 
     private Integer sessions;
 
+    @ManyToOne
+    @JoinColumn(name = "city_id")
+    private City city;
+
     @Column(name = "session_duration")
     private Integer sessionDuration;
 

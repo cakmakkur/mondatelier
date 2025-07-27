@@ -1,29 +1,24 @@
 import { useEffect, useRef } from "react";
 // @ts-expect-error importing canvas class
-import FlowFieldEffect from "../../assets/visual_effects/effect2.js";
+import FlowFieldEffect from "./effect2.js";
 
 export default function BgFx1() {
-  const canvasRef2 = useRef<HTMLCanvasElement>(null);
-  const effectRef2 = useRef<FlowFieldEffect>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const effectRef = useRef<FlowFieldEffect>(null);
 
   useEffect(() => {
-    effectRef2.current?.stop();
-
-    if (canvasRef2.current) {
-      const canvas2 = canvasRef2.current;
-      const ctx2 = canvas2.getContext("2d");
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const ctx2 = canvas.getContext("2d");
       if (!ctx2) return;
-      canvas2.width = window.innerWidth / 2;
-      canvas2.height = window.innerHeight / 2;
-      effectRef2.current = new FlowFieldEffect(
-        ctx2,
-        canvas2.width,
-        canvas2.height
-      );
+      canvas.width = 800;
+      canvas.height = 500;
+      const effect = new FlowFieldEffect(ctx2, canvas.width, canvas.height);
+      effectRef.current = effect;
 
-      effectRef2.current.animate();
+      requestAnimationFrame(effect.animate.bind(effect));
     }
   }, []);
 
-  return <canvas ref={canvasRef2} className="canvas_2"></canvas>;
+  return <canvas ref={canvasRef} className="canvas_2"></canvas>;
 }

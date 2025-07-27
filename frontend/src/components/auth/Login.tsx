@@ -53,7 +53,6 @@ export default function Login() {
     e.preventDefault();
     try {
       const response = await login({ email, password });
-      console.log("Login response:", response);
       if (response && response.status === 200) {
         confirmationRef.current?.classList.add("auth_success--fade-in");
         containerRef.current?.classList.add("auth_wrapper--success");
