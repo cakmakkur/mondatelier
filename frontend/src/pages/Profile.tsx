@@ -14,6 +14,7 @@ import { FormatUrl } from "../util/formatUrl";
 import CreateEvent from "../components/userActions/CreateEvent";
 import { useModalContext } from "../context/ModalContext";
 import CreateMasterclass from "../components/userActions/CreateMasterclass";
+import CreateFreelance from "../components/userActions/CreateFreelance";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -99,7 +100,7 @@ export default function Profile() {
         </div>
         {isOwnProfile ? (
           <button className="banner_edit_button profile_edit_button">
-            <img src="../../public/edit1.svg" alt="" />
+            <img src="/edit.svg" alt="" />
           </button>
         ) : (
           ""
@@ -112,7 +113,7 @@ export default function Profile() {
           />
           {isOwnProfile ? (
             <button className="pp_edit_button profile_edit_button">
-              <img src="../../public/edit1.svg" alt="" />
+              <img src="/edit.svg" alt="" />
             </button>
           ) : (
             ""
@@ -124,7 +125,7 @@ export default function Profile() {
           ""
         ) : (
           <button className="edit_profile_button">
-            <img src="../../public/edit.svg" alt="" />
+            <img src="/edit.svg" alt="" />
             Edit Profile
           </button>
         )}
@@ -140,7 +141,7 @@ export default function Profile() {
           <div className="profile_detail">
             <img
               style={{ display: "inline-block" }}
-              src="../../public/pin_drop_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+              src="/pin_drop_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""
             />
             {currentProfile.country}
@@ -148,7 +149,7 @@ export default function Profile() {
           {freelances.length > 0 ? (
             <div className="profile_detail">
               <img
-                src="../../public/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                src="/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
               Available as freelancer
@@ -159,7 +160,7 @@ export default function Profile() {
           {currentProfile.personalWebsite ? (
             <div className="profile_detail">
               <img
-                src="../../public/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                src="/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
               <a target="_blank" href={currentProfile.personalWebsite}>
@@ -172,7 +173,7 @@ export default function Profile() {
           {masterclasses.length > 0 ? (
             <div className="profile_detail">
               <img
-                src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                src="/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
               Masterclass{masterclasses.length > 1 ? "es" : ""} available
@@ -186,7 +187,7 @@ export default function Profile() {
             ) : (
               <button className="follow">
                 <img
-                  src="../../public/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""
                 />
                 Follow
@@ -198,7 +199,7 @@ export default function Profile() {
             ) : (
               <button className="message">
                 <img
-                  src="../../public/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""
                 />
                 Message
@@ -213,7 +214,7 @@ export default function Profile() {
                 className="message"
               >
                 <img
-                  src="../../public/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""
                 />
                 New Event
@@ -228,7 +229,7 @@ export default function Profile() {
                 className="message"
               >
                 <img
-                  src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""
                 />
                 New Masterclass
@@ -238,9 +239,12 @@ export default function Profile() {
             {!isOwnProfile ? (
               ""
             ) : (
-              <button className="message">
+              <button
+                onClick={() => setComponentState(CreateFreelance)}
+                className="message"
+              >
                 <img
-                  src="../../public/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
+                  src="/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""
                 />
                 Freelance

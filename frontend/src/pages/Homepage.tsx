@@ -2,19 +2,14 @@ import { useEffect, useRef, useState } from "react";
 // @ts-expect-error importing THREE.js assets
 import * as THREE from "three";
 // @ts-expect-error importing THREE.js assets
-// prettier-ignore
-import {moon,anchor} from "../components/fx/homepage_canvas_components.js";
+import { moon } from "../components/fx/homepage_canvas_components.js";
 import { useModalContext } from "../context/ModalContext.js";
 import Signup from "../components/auth/Signup.js";
 
 export default function Homepage() {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [startAnimation, setStartAnimation] = useState(false);
-  const [startApproachMoon, setStartApproachMoon] = useState(false);
-  const approachMoonRef = useRef(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const stars = useRef<THREE.Mesh[]>([]);
-  const phaseOffsets = useRef<number[]>([]);
 
   const { setComponentState } = useModalContext();
 
@@ -26,10 +21,6 @@ export default function Homepage() {
     if (!isPageLoaded) return;
     setStartAnimation(true);
   }, [isPageLoaded]);
-
-  useEffect(() => {
-    approachMoonRef.current = startApproachMoon;
-  }, [startApproachMoon]);
 
   useEffect(() => {
     if (!canvasRef.current) return;
@@ -59,66 +50,20 @@ export default function Homepage() {
       1,
       1000
     );
-    camera.position.set(0, 0, 30);
+    camera.position.set(17, 5, 6);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
 
     scene.add(moon);
-    scene.add(anchor);
 
-    const addStars = (xRange: number[], yRange: number[], zRange: number[]) => {
-      const geometry = new THREE.SphereGeometry(0.05, 24, 24);
-      const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-      const star = new THREE.Mesh(geometry, material);
-      const x = THREE.MathUtils.randFloat(xRange[0], xRange[1]);
-      const y = THREE.MathUtils.randFloat(yRange[0], yRange[1]);
-      const z = THREE.MathUtils.randFloat(zRange[0], zRange[1]);
-
-      phaseOffsets.current.push(Math.random() * Math.PI * 2);
-      stars.current.push(star);
-      star.position.set(x, y, z);
-      anchor.add(star);
-    };
-
-    const xRange = [-100, 100];
-    const yRange = [-40, 40];
-    const zRange = [-110, 110];
-    Array(600)
-      .fill(null)
-      .forEach(() => addStars(xRange, yRange, zRange));
-
-    const clock = new THREE.Clock();
     function animate() {
-      const elapsedTime = clock.getElapsedTime();
-
-      stars.current.forEach((star, i) => {
-        const scale =
-          0.5 + Math.abs(Math.sin(elapsedTime + phaseOffsets.current[i]));
-        star.scale.set(scale, scale, scale);
-      });
-
-      anchor.rotation.y += 0.0001;
       directionalLight.position.x = window.scrollY * 0.05;
       directionalLight.position.y = window.scrollY * 0.05;
       moon.rotation.y += 0.0002;
 
-      // camera second position:
-      camera.position.set(17, 5, 6);
-
       camera.updateProjectionMatrix();
       requestAnimationFrame(animate);
       renderer.render(scene, camera);
-
-      // zoom into moon animation
-      // if (approachMoonRef.current) {
-      //   const target = new THREE.Vector3(
-      //     moon.position.x + 5,
-      //     moon.position.y + 5,
-      //     moon.position.z + 6
-      //   );
-      //   camera.position.lerp(target, 0.02);
-      //   // camera.lookAt(moon.position);
-      // }
     }
 
     animate();
@@ -161,12 +106,6 @@ export default function Homepage() {
           className="homepage_create_account"
         >
           Create an account
-        </button>
-        <button
-          style={{ background: "none", border: "none" }}
-          onClick={() => setStartApproachMoon(true)}
-        >
-          A
         </button>
       </div>
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 // @ts-expect-error importing canvas class
-import Effect from "./sec7_canvas_2.js";
+import Effect from "./effect1.js";
 
 export default function BgFx1() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,7 +10,6 @@ export default function BgFx1() {
   useEffect(() => {
     effectRef2.current?.stop();
 
-    // canvas 2 --- background
     if (canvasRef.current) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext("2d");

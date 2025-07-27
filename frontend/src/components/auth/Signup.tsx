@@ -77,7 +77,10 @@ export default function Signup() {
   const countryPhRef = useRef<HTMLSpanElement>(null);
   const sliderDivRef = useRef<HTMLDivElement>(null);
   const timerRef = useRef<number | undefined>(undefined);
+
   const confirmationRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const [focus, setFocus] = useState("");
 
@@ -195,13 +198,12 @@ export default function Signup() {
     try {
       const response = await signup(signupBody);
       if (response && response.status === 200) {
-        if (!confirmationRef.current) return;
-        confirmationRef.current.classList.add(
-          "signup_confirmation_animation--open"
-        );
+        confirmationRef.current?.classList.add("auth_success--fade-in");
+        containerRef.current?.classList.add("auth_wrapper--success");
+        formRef.current?.classList.add("auth_form_div--fade-out");
         timerRef.current = setTimeout(() => {
           setComponentState(undefined);
-        }, 1000);
+        }, 80000);
       } else if (response?.status === 400) {
         if (!sliderDivRef.current) return;
         sliderDivRef.current.style.transform = "translateX(0px)";
@@ -222,7 +224,11 @@ export default function Signup() {
   };
 
   return (
-    <div onClick={(e) => e.stopPropagation()} className="auth_wrapper">
+    <div
+      ref={containerRef}
+      onClick={(e) => e.stopPropagation()}
+      className="auth_wrapper"
+    >
       <BgFx1 />
       <div ref={sliderDivRef} className="auth_slider_div">
         {/* First Form */}
@@ -308,7 +314,7 @@ export default function Signup() {
           </div>
         </form>
         {/* Second Form */}
-        <form className="auth_form_div" onSubmit={handleSubmit}>
+        <form ref={formRef} className="auth_form_div" onSubmit={handleSubmit}>
           <h1>Complete your account</h1>
 
           <label htmlFor="firstname" className="login__label">
@@ -450,10 +456,10 @@ export default function Signup() {
             </button>
           </div>
         </form>
-        {/* confirmation animation*/}
-        <div ref={confirmationRef} className="signup_confirmation_animation">
-          Success
-        </div>
+      </div>
+      {/* confirmation animation*/}
+      <div ref={confirmationRef} className="auth_success--fade-in">
+        <img src="/check_60dp_48752C_FILL0_wght400_GRAD0_opsz48.svg" alt="" />
       </div>
     </div>
   );

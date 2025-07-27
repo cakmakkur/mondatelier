@@ -6,6 +6,10 @@ import InitialTasks from "./util/InitialTasks";
 import Events from "./pages/Events";
 import { ModalContextProvider } from "./context/ModalContext";
 import Preferences from "./pages/Preferences";
+import Help from "./pages/Help";
+import TermsAndConditions from "./pages/TermsAndConditions";
+import Impressum from "./pages/Impressum";
+import Contact from "./pages/Help";
 
 export default function App() {
   return (
@@ -17,6 +21,13 @@ export default function App() {
             <Route index element={<Homepage />} />
             <Route path="/profile/:profileId" element={<Profile />} />
             <Route path="events" element={<Events />} />
+            <Route path="/help" element={<Help />} />
+            <Route
+              path="/termsandconditions"
+              element={<TermsAndConditions />}
+            />
+            <Route path="/impressum" element={<Impressum />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/preferences" element={<Preferences />} />
           </Route>
         </Routes>

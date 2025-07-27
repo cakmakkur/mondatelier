@@ -234,7 +234,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/3d"
+              to="/help"
             >
               {Component === Sidebar ? "Help" : "Hel.."}
             </Link>
@@ -243,7 +243,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/collections"
+              to="/contact"
             >
               {Component === Sidebar ? "Contact us" : "Con.."}
             </Link>
@@ -252,7 +252,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/community"
+              to="/impressum"
             >
               {Component === Sidebar ? "Impressum" : "Imp.."}
             </Link>
@@ -261,7 +261,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/profile"
+              to="/termsandconditions"
             >
               {Component === Sidebar ? "Terms and Conditions" : "Ter.."}
             </Link>
