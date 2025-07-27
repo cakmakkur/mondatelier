@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
-import AuthBgEffect from "./AuthBgEffect";
 import type { SignupDto } from "../../dto/Signup";
 import emailValidator from "email-validator";
 import Login from "./Login";
+import BgFx1 from "../fx/BgFx1";
 
 const defaultSignupBody: SignupDto = {
   email: "",
@@ -224,7 +224,7 @@ export default function Signup() {
 
   return (
     <div onClick={(e) => e.stopPropagation()} className="auth_wrapper">
-      <AuthBgEffect />
+      <BgFx1 />
       <div ref={sliderDivRef} className="auth_slider_div">
         {/* First Form */}
         <form className="auth_form_div">

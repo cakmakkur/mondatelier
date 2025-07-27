@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
-import AuthBgEffect from "./AuthBgEffect";
 import Signup from "./Signup";
 import ForgotPassword from "./ForgotPassword";
+import BgFx1 from "../fx/BgFx1";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -85,7 +85,7 @@ export default function Login() {
       onClick={(e) => e.stopPropagation()}
       className="auth_wrapper"
     >
-      <AuthBgEffect />
+      <BgFx1 />
       <form
         ref={formRef}
         onClick={(e) => e.stopPropagation()}

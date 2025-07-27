@@ -4,6 +4,8 @@ import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.EventService;
 import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.util.AuthUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,14 +29,11 @@ public class EventController {
     };
 
     @PostMapping(
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createEvent(
-            @RequestPart("event") @Valid EventDTO eventDTO,
-            @RequestPart("image") MultipartFile imageFile
+            @RequestPart("event") EventDTO eventDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
-        User user = AuthUtil.getCurrentUser();
         eventService.createEvent(eventDTO, imageFile);
         return ResponseEntity.ok().build();
     }

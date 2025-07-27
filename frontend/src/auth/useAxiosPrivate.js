@@ -20,6 +20,9 @@ const useAxiosPrivate = () => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
         }
+        if (config.data instanceof FormData) {
+          delete config.headers["Content-Type"];
+        }
         return config;
       },
       (err) => Promise.reject(err)

@@ -26,7 +26,7 @@ public class Event {
 
     private String title;
 
-    @Column(name = "thumbnail_id")
+    @Column(name = "thumbnail_url")
     private String thumbnailUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)

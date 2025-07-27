@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 // @ts-expect-error importing canvas class
 import Effect2 from "../../assets/visual_effects/sec7_canvas_2.js";
 
-export default function Section7() {
+export default function BgFx1() {
   const canvasRef2 = useRef<HTMLCanvasElement>(null);
   const sectionDivRef = useRef<HTMLDivElement>(null);
   const effectRef2 = useRef<Effect2>(null);
