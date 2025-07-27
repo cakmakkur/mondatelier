@@ -21,7 +21,7 @@ public class Country {
     @Column(nullable = false, updatable = false)
     private Long id;
 
-    private String country;
+    private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "continent_id")

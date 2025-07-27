@@ -11,8 +11,9 @@ import { useProfileContext } from "../context/ProfileContext";
 import type Freelance from "../dto/Freelance";
 import type Masterclass from "../dto/Masterclass";
 import { FormatUrl } from "../util/formatUrl";
-import CreateEvent from "../components/userEvents/CreateEvent";
+import CreateEvent from "../components/userActions/CreateEvent";
 import { useModalContext } from "../context/ModalContext";
+import CreateMasterclass from "../components/userActions/CreateMasterclass";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -222,7 +223,10 @@ export default function Profile() {
             {!isOwnProfile ? (
               ""
             ) : (
-              <button className="message">
+              <button
+                onClick={() => setComponentState(CreateMasterclass)}
+                className="message"
+              >
                 <img
                   src="../../public/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                   alt=""

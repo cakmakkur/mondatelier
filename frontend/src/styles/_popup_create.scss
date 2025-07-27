@@ -1,17 +1,20 @@
 @import "variables";
 
-.new_event_wrapper {
+.create_popup_wrapper {
   width: 800px;
-  height: 500px;
+  height: 600px;
   left: calc(50% - 400px);
-  top: calc(50% - 250px);
+  top: calc(50% - 300px);
   overflow-y: scroll;
   scrollbar-width: none;
   position: absolute;
   z-index: 1000;
+  border-radius: 5px;
+  box-shadow: inset 1px 0px 10px 5px $moon-yellow;
+  border: 1px solid $moon-yellow;
 }
 
-.create_event_wrapper {
+.popup_form {
   width: 100%;
   border-radius: 5px;
   border: 1px solid rgba(0, 0, 0, 0.281);
@@ -25,7 +28,7 @@
   padding: 30px 50px;
 }
 
-.create_event_wrapper__image {
+.popup_form__image {
   border: 1px dotted white;
   position: relative;
   background-color: rgb(155, 161, 125);
@@ -42,7 +45,7 @@
   }
 }
 
-.create_event_wrapper__image_input {
+.popup_form__image_input {
   width: 300px;
   aspect-ratio: 1;
   background-color: gray;
@@ -53,7 +56,7 @@
   }
 }
 
-.create_event_image_overlay {
+.popup_form__image_overlay {
   position: absolute;
   left: 0;
   top: 0;
@@ -62,7 +65,7 @@
   z-index: 3000;
 }
 
-.create_event_wrapper__input {
+.popup_form__input {
   background-color: black;
   color: white;
   border: 1px solid gray;
@@ -73,7 +76,7 @@
   font-size: 1.3rem;
 }
 
-.create_event_wrapper__date_input {
+.popup_form__date_input {
   background-color: black;
   color: white;
   border: 1px solid gray;
@@ -85,7 +88,7 @@
   width: 150px;
 }
 
-.create_event_wrapper__textarea {
+.popup_form__textarea {
   background-color: black;
   color: white;
   border: 1px solid gray;
@@ -97,7 +100,7 @@
   height: 120px;
 }
 
-.create_event_wrapper__dropdown {
+.popup_form__dropdown {
   background-color: black;
   color: white;
   border: 1px solid gray;
@@ -110,35 +113,83 @@
   padding-left: 7px;
 }
 
-.create_event_wrapper__location {
+.popup_form__location {
   display: flex;
   column-gap: 10px;
 }
 
-.event_submit_btn {
+.popup_form__submit {
   background-color: black;
   border: 1px solid gray;
   color: black;
   font-weight: 700;
   font-size: 1.5rem;
   height: 50px;
-  width: 200px;
+  width: 215px;
   border-radius: 3px;
   background-color: $moon-yellow;
   transition: 0.2s;
+  margin-top: 15px;
   &:hover {
     cursor: pointer;
     filter: brightness(1.08);
   }
 }
 
-.create_event_wrapper__digital {
+.popup_form__digital {
   color: rgb(201, 201, 201);
   font-size: 1.3rem;
   column-gap: 10px;
   display: flex;
 }
 
-.create_event_wrapper--fade-out {
+.popup_form__submit--fade-out {
   opacity: 0;
+}
+
+.popup_form__number {
+  background-color: black;
+  color: white;
+  border: 1px solid gray;
+  border-radius: 3px;
+  align-items: center;
+  width: 70px;
+  text-align: center;
+}
+
+// disabling arrows in number input field
+/* Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.popup_form__session {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+}
+
+.popup_form__sessions_text {
+  color: rgb(255, 255, 255);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background-color: rgba(255, 166, 0, 0.624);
+  width: 230px;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.popup_form__is_digital_text {
+  color: rgb(255, 255, 255);
+  background-color: rgba(255, 166, 0, 0.624);
+  padding-left: 10px;
+  width: 190px;
+  border-radius: 3px;
 }

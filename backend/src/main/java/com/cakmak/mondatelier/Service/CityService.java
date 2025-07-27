@@ -20,7 +20,7 @@ public class CityService {
     }
 
     public List<City> getCitiesByCountryId (String c) {
-        Country country = countryRepository.findByCountry(c);
+        Country country = countryRepository.findByName(c);
         return country.getCities();
     }
 }

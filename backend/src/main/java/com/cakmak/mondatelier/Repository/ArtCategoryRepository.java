@@ -1,10 +1,9 @@
 package com.cakmak.mondatelier.Repository;
 
-import com.cakmak.mondatelier.Model.Country;
+import com.cakmak.mondatelier.Model.art.ArtCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CountryRepository extends JpaRepository<Country, Long> {
-    Country findByName(String country);
+public interface ArtCategoryRepository extends JpaRepository<ArtCategory, Long> {
 }

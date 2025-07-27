@@ -50,4 +50,6 @@ public class Masterclass {
     @JoinColumn(name = "art_category_id")
     private ArtCategory artCategory;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
 }

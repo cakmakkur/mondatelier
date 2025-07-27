@@ -26,7 +26,7 @@ public class CityController {
         List<City> cities = cityService.getCitiesByCountryId(country);
         List<String> cityNames = new ArrayList<>();
         for (City city : cities) {
-            cityNames.add(city.getCity());
+            cityNames.add(city.getName());
         }
         return ResponseEntity.ok(cityNames);
     }

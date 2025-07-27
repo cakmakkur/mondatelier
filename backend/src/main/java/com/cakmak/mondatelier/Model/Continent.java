@@ -24,5 +24,5 @@ public class Continent {
     @OneToMany(mappedBy = "continent", fetch = FetchType.LAZY)
     private List<Country> countries;
 
-    private String continent;
+    private String name;
 }

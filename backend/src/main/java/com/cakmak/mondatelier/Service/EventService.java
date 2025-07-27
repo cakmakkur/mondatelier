@@ -57,7 +57,7 @@ public class EventService {
         event.setDescription(SanitizeInput.sanitize(eventDTO.description()));
         EventType eventType = eventTypeRepository.findById(Long.valueOf(eventDTO.type())).orElseThrow(() -> {throw new RuntimeException("Type not found");});
         event.setType(eventType);
-        City city = cityRepository.findByCity(eventDTO.city()).orElseThrow(() -> {throw new RuntimeException("City not found");});
+        City city = cityRepository.findByName(eventDTO.city()).orElseThrow(() -> {throw new RuntimeException("City not found");});
         event.setCity(city);
         event.setDate(eventDTO.date());
         Profile profile = profileRepository.findById(eventDTO.profileId()).orElseThrow(ProfileNotFoundException::new);

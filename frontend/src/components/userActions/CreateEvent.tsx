@@ -26,7 +26,6 @@ export default function CreateEvent() {
     city: "",
     description: "",
     date: "",
-    created_at: new Date(),
     profileId: "",
     thumbnail_url: "",
   });
@@ -50,7 +49,7 @@ export default function CreateEvent() {
 
     try {
       const response = await axiosPrivate.post(
-        `${BASE_URL}/${EVENTS_PATH}`,
+        `${BASE_URL}/${EVENTS_PATH}/create`,
         formData,
         { headers }
       );
@@ -126,20 +125,20 @@ export default function CreateEvent() {
   }, [selectedCountry]);
 
   return (
-    <div className="new_event_wrapper">
+    <div className="create_popup_wrapper">
       <BgFx2 />
-      <form className="create_event_wrapper" onSubmit={(e) => postEvent(e)}>
+      <form className="popup_form" onSubmit={(e) => postEvent(e)}>
         <h1 style={{ color: "white" }}>Create new event</h1>
         <div
           style={{ display: "flex", flexDirection: "row", columnGap: "30px" }}
         >
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <label className="create_event_wrapper__image">
-              <div className="create_event_image_overlay">
+            <label className="popup_form__image">
+              <div className="popup_form__image_overlay">
                 {imageFile && <img src={URL.createObjectURL(imageFile)} />}
               </div>
               <input
-                className="create_event_wrapper__image_input"
+                className="popup_form__image_input"
                 type="file"
                 name="image"
                 accept="image/*"
@@ -159,9 +158,9 @@ export default function CreateEvent() {
           <div
             style={{ display: "flex", flexDirection: "column", rowGap: "10px" }}
           >
-            <label className="create_event_wrapper__title">
+            <label className="popup_form__title">
               <input
-                className="create_event_wrapper__input"
+                className="popup_form__input"
                 type="text"
                 name="title"
                 value={formValues.title}
@@ -170,30 +169,33 @@ export default function CreateEvent() {
               />
             </label>
 
-            <label className="create_event_wrapper__description">
+            <label className="popup_form__description">
               <textarea
-                className="create_event_wrapper__textarea"
+                className="popup_form__textarea"
                 name="description"
                 value={formValues.description}
                 onChange={handleChange}
                 placeholder="Event description"
               />
             </label>
-            <label className="create_event_wrapper__date">
+            <div style={{ color: "white" }}>Date:</div>
+
+            <label className="popup_form__date">
               <input
-                className="create_event_wrapper__date_input"
+                className="popup_form__date_input"
                 type="date"
                 name="date"
                 value={formValues.date}
                 onChange={handleChange}
               />
             </label>
-            <div className="create_event_wrapper__location">
-              <label className="create_event_wrapper__country">
+            <div style={{ color: "white" }}>Location:</div>
+            <div className="popup_form__location">
+              <label className="popup_form__country">
                 <select
                   value={selectedCountry}
                   onChange={(e) => setSelectedCountry(e.target.value)}
-                  className="create_event_wrapper__dropdown"
+                  className="popup_form__dropdown"
                   required
                 >
                   <option value="">Select country</option>
@@ -205,7 +207,7 @@ export default function CreateEvent() {
                 </select>
               </label>
 
-              <label className="create_event_wrapper__city">
+              <label className="popup_form__city">
                 <select
                   value={formValues.city}
                   onChange={(e) =>
@@ -213,7 +215,7 @@ export default function CreateEvent() {
                   }
                   disabled={!selectedCountry}
                   required
-                  className="create_event_wrapper__dropdown"
+                  className="popup_form__dropdown"
                 >
                   <option value="">Select city</option>
                   {cities.map((city, i) => (
@@ -224,10 +226,7 @@ export default function CreateEvent() {
                 </select>
               </label>
             </div>
-            <label
-              htmlFor="isDigital"
-              className="create_event_wrapper__digital"
-            >
+            <label htmlFor="isDigital" className="popup_form__digital">
               <input
                 type="checkbox"
                 id="type"
@@ -241,9 +240,11 @@ export default function CreateEvent() {
                   }
                 }}
               />
-              Is this event digital?
+              <span className="popup_form__is_digital_text">
+                Is this event digital?
+              </span>
             </label>
-            <button type="submit" className="event_submit_btn">
+            <button type="submit" className="popup_form__submit">
               Create Event
             </button>
           </div>

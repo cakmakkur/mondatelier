@@ -30,7 +30,7 @@ public class DTOMappers {
                 event.getId(),
                 event.getTitle(),
                 event.getType().getId(),
-                event.getCity().getCity(),
+                event.getCity().getName(),
                 event.getDescription(),
                 event.getCreatedAt(),
                 event.getDate(),
@@ -61,7 +61,7 @@ public class DTOMappers {
                 profile.getLastname(),
                 profile.getBio(),
                 profile.getPersonalWebsite(),
-                profile.getCountry().getCountry(),
+                profile.getCountry().getName(),
                 profile.getBannerPath(),
                 profile.getProfilePicturePath(),
                 profile.getShowRealName()
@@ -88,7 +88,8 @@ public class DTOMappers {
                 masterclass.getSessionPrice(),
                 masterclass.getCreatedAt(),
                 masterclass.getArtCategory().getName(),
-                masterclass.getCity().getCity()
+                masterclass.getCity().getName(),
+                masterclass.getThumbnailUrl()
         );
     }
  }

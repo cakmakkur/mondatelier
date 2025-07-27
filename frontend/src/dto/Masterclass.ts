@@ -8,4 +8,5 @@ export default interface Masterclass {
   sessionPrice: number;
   createdAt: string;
   artCategory: string;
+  city: string;
 }

@@ -21,7 +21,7 @@ public class ProfileController {
         return ResponseEntity.ok(publicProfileDTO);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Void> createPublicProfile(@RequestBody PublicProfileDTO publicProfileDTO) {
         return ResponseEntity.ok().build();
     }

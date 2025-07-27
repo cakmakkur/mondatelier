@@ -74,7 +74,7 @@ public class AuthenticationService {
         profile.setLastname(SanitizeInput.sanitize(signupDTO.lastname()));
         profile.setDob(signupDTO.dob());
         profile.setShowRealName(signupDTO.showRealName());
-        profile.setCountry(countryRepository.findByCountry(SanitizeInput.sanitize(signupDTO.country())));
+        profile.setCountry(countryRepository.findByName(SanitizeInput.sanitize(signupDTO.country())));
         user.setIsActive(false);
         profileRepository.save(profile);
 

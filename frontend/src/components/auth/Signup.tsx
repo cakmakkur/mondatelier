@@ -194,7 +194,6 @@ export default function Signup() {
 
     try {
       const response = await signup(signupBody);
-      console.log("Login response:", response);
       if (response && response.status === 200) {
         if (!confirmationRef.current) return;
         confirmationRef.current.classList.add(

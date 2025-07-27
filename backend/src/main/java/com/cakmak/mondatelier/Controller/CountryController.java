@@ -1,6 +1,5 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Model.Country;
 import com.cakmak.mondatelier.Repository.CountryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +24,7 @@ public class CountryController {
     public ResponseEntity<List<String>> getCountries () {
         List<String> countries = new ArrayList<>();
                 countryRepository.findAll().forEach(country -> {
-            countries.add(country.getCountry());
+            countries.add(country.getName());
         });
         return ResponseEntity.ok(countries);
     }
