@@ -4,44 +4,74 @@ import { useProfileContext } from "../../context/ProfileContext";
 // @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
+import { useModalContext } from "../../context/ModalContext";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
-const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
-const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
-const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
+const FREELANCE_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function CreateFreelance() {
   const { profile } = useProfileContext();
   const axiosPrivate = useAxiosPrivate();
-
+  const { setComponentState } = useModalContext();
+  const overlayRef = useRef<HTMLDivElement>(null);
   const confirmationRef = useRef<HTMLDivElement>(null);
-  const [countries, setCountries] = useState<string[]>([]);
-  const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
   const [artCategories, setArtCategories] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [formValues, setFormValues] = useState({
-    id: "",
-    title: "",
-    city: "",
-    description: "",
-    sessions: undefined,
-    sessionDuration: undefined,
-    sessionPrice: undefined,
-    artCategory: "",
     profileId: "",
-    thumbnail_url: "",
+    artCategory: "",
+    description: "",
   });
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
+    {
+      artCategory: "",
+      description: "",
+    }
+  );
+
+  const validateForm = () => {
+    let newErrorMessages = errorMessages;
+    let errorOccured = false;
+    if (formValues.artCategory === "") {
+      newErrorMessages = {
+        ...newErrorMessages,
+        artCategory: "Select a category",
+      };
+      errorOccured = true;
+    }
+    if (formValues.description === "") {
+      newErrorMessages = {
+        ...newErrorMessages,
+        description: "Give a description",
+      };
+      errorOccured = true;
+    }
+    if (formValues.description.length > 1024) {
+      newErrorMessages = { ...newErrorMessages, description: "Too long" };
+      errorOccured = true;
+    }
+    setErrorMessages(newErrorMessages);
+    setTimeout(() => {
+      setErrorMessages({
+        description: "",
+        artCategory: "",
+      });
+    }, 2500);
+    return !errorOccured;
+  };
 
   const postMasterclass = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     const formData = new FormData();
     const eventBlob = new Blob([JSON.stringify(formValues)], {
       type: "application/json",
     });
-    formData.append("masterclass", eventBlob);
 
+    formData.append("masterclass", eventBlob);
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -60,6 +90,10 @@ export default function CreateFreelance() {
       );
       if (response.status === 200) {
         // return success
+        overlayRef.current!.style.opacity = "1";
+        setTimeout(() => {
+          setComponentState(undefined);
+        }, 1700);
         return response.data;
       } else {
         // handle error
@@ -86,32 +120,9 @@ export default function CreateFreelance() {
     }
   };
 
-  const fetchCountries = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
-      setCountries(await response.json());
-    } catch (error) {
-      console.error("Error fetching countries:", error);
-    }
-  };
-  const getCitiesByCountry = async (country: string) => {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/${CITIES_PATH}/by_country/${country}`
-      );
-      const data = await response.json();
-      setCities(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
     const initiateEventForm = async () => {
-      await fetchCountries();
       if (!profile) return;
-      setSelectedCountry(profile.country);
       await fetchArtCategories();
       setFormValues((prev) => {
         return {
@@ -120,27 +131,18 @@ export default function CreateFreelance() {
         };
       });
     };
-
     initiateEventForm();
   }, [profile]);
 
-  useEffect(() => {
-    const getCities = async () => {
-      const cities = await getCitiesByCountry(selectedCountry);
-      if (!cities) return;
-      setFormValues((prev) => {
-        return {
-          ...prev,
-          city: cities[0] || "",
-        };
-      });
-      setCities(cities);
-    };
-    getCities();
-  }, [selectedCountry]);
-
   return (
     <div className="create_popup_wrapper">
+      <div ref={overlayRef} className="create_popup_wrapper__overlay">
+        <img
+          src="/check_68dp_314D1C_FILL0_wght400_GRAD0_opsz48.svg"
+          alt="check symbol"
+        />
+        <span>Successful. Good luck!</span>
+      </div>
       <BgFx2 />
       <form className="popup_form" onSubmit={(e) => postMasterclass(e)}>
         <h1 style={{ color: "white" }}>Start Freelancing</h1>
@@ -195,7 +197,7 @@ export default function CreateFreelance() {
           <div
             style={{ display: "flex", flexDirection: "column", rowGap: "10px" }}
           >
-            <label className="popup_form__title">
+            {/* <label className="popup_form__title">
               <input
                 className="popup_form__input"
                 type="text"
@@ -204,7 +206,7 @@ export default function CreateFreelance() {
                 onChange={handleChange}
                 placeholder="Masterclass title"
               />
-            </label>
+            </label> */}
 
             <label className="popup_form__description">
               <textarea
@@ -218,7 +220,7 @@ export default function CreateFreelance() {
 
             <div style={{ color: "white" }}>Sessions: </div>
             <div className="popup_form__session">
-              <label className="popup_form__sessions">
+              {/* <label className="popup_form__sessions">
                 <input
                   type="number"
                   name="sessions"
@@ -256,7 +258,7 @@ export default function CreateFreelance() {
                   className="popup_form__number"
                   required
                 ></input>
-              </label>
+              </label> */}
             </div>
             <span className="popup_form__sessions_text">
               Duration and Price for single session
@@ -280,7 +282,7 @@ export default function CreateFreelance() {
                 </select>
               </label>
 
-              <label className="popup_form__city">
+              {/* <label className="popup_form__city">
                 <select
                   value={formValues.city}
                   onChange={(e) =>
@@ -297,7 +299,7 @@ export default function CreateFreelance() {
                     </option>
                   ))}
                 </select>
-              </label>
+              </label> */}
             </div>
 
             <button

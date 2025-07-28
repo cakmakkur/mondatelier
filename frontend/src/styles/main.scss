@@ -9,6 +9,7 @@
 @import "fx";
 @import "popup_create";
 @import "popup_auth";
+@import "tooltip";
 
 *,
 *::before,
@@ -167,4 +168,7 @@ input:focus {
 .modalElement {
   position: absolute;
   z-index: 3000;
+}
+
+.tooltip {
 }

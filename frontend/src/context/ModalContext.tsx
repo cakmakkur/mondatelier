@@ -12,6 +12,7 @@ interface ModalContextType {
 
 const ModalContext = createContext<ModalContextType | undefined>(undefined);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useModalContext = (): ModalContextType => {
   const context = useContext(ModalContext);
   if (!context) {
@@ -32,8 +33,13 @@ export const ModalContextProvider = ({
   const [Component, setComponent] = useState<ComponentType<any> | undefined>(
     undefined
   );
-
   const [props, setProps] = useState<Record<string, unknown>>({});
+
+  const addEscButtonListener = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      setComponent(undefined);
+    }
+  };
 
   const setComponentState = (
     component: ComponentType<any> | undefined,
@@ -42,6 +48,11 @@ export const ModalContextProvider = ({
     setComponent(() => component);
     if (Object.keys(props).length > 0) {
       setProps(props);
+    }
+    if (component !== undefined) {
+      window.addEventListener("keydown", addEscButtonListener);
+    } else {
+      window.removeEventListener("keydown", addEscButtonListener);
     }
   };
 

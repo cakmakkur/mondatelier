@@ -888,6 +888,10 @@
   font-size: 1.3rem;
 }
 
+.popup_form__date {
+  width: 150px;
+}
+
 .popup_form__date_input {
   background-color: black;
   color: white;
@@ -953,7 +957,7 @@
   display: flex;
 }
 
-.popup_form__submit--fade-out {
+.popup_form--fade-out {
   opacity: 0;
 }
 
@@ -1001,6 +1005,48 @@ input[type=number] {
   padding-left: 10px;
   width: 190px;
   border-radius: 3px;
+}
+
+.create_popup_wrapper__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 6000;
+  background-color: black;
+  transition: 0.5s;
+  opacity: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.create_popup_wrapper__overlay img {
+  width: 100px;
+  height: 100px;
+}
+.create_popup_wrapper__overlay span {
+  color: rgb(55, 76, 35);
+  font-size: 1.3rem;
+}
+
+.create_popup_wrapper__overlay--open {
+  opacity: 1;
+  animation: shineAnimation 1s linear 0.2s 1 forwards;
+}
+
+@keyframes shineAnimation {
+  0% {
+    filter: brightness(1);
+  }
+  100% {
+    filter: brightness(2);
+  }
+}
+.popup_form__label {
+  position: relative;
 }
 
 .auth_wrapper {
@@ -1205,7 +1251,7 @@ input[type=number] {
   z-index: 3000;
   position: absolute;
   top: 0;
-  left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -1249,6 +1295,51 @@ input[type=number] {
 .signup_confirmation_animation--open {
   transform: scale(1);
   color: black;
+}
+
+.tooltip_wrapper {
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(11, 14, 1, 0.762);
+  background-color: rgb(255, 255, 207);
+  font-size: 1rem;
+  opacity: 0;
+  position: absolute;
+  padding: 10px 5px;
+  z-index: 8000;
+  white-space: nowrap;
+  max-width: 100%;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.tooltip_top {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  width: 40px;
+  height: 60px;
+  background: none;
+  top: 0;
+  opacity: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 30px solid rgb(255, 255, 207);
+  z-index: 5000;
+}
+
+.tooltip_bottom {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 40px;
+  height: 60px;
+  background-color: none;
+  opacity: 0;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-top: 30px solid rgb(255, 255, 207);
 }
 
 *,

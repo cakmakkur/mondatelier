@@ -5,11 +5,14 @@ import * as THREE from "three";
 import { moon } from "../components/fx/homepage_canvas_components.js";
 import { useModalContext } from "../context/ModalContext.js";
 import Signup from "../components/auth/Signup.js";
+import { useAuthContext } from "../auth/AuthContext.js";
+import { Link } from "react-router-dom";
 
 export default function Homepage() {
   const [isPageLoaded, setIsPageLoaded] = useState(false);
   const [startAnimation, setStartAnimation] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { auth } = useAuthContext();
 
   const { setComponentState } = useModalContext();
 
@@ -101,12 +104,18 @@ export default function Homepage() {
           Whether you're here to showcase your work, find a new home for it or
           simply be inspired by others — you're in the right place.{" "}
         </p>
-        <button
-          onClick={() => setComponentState(Signup)}
-          className="homepage_create_account"
-        >
-          Create an account
-        </button>
+        {auth ? (
+          <Link to="/explore" className="homepage_create_account">
+            Explore artwors
+          </Link>
+        ) : (
+          <button
+            onClick={() => setComponentState(Signup)}
+            className="homepage_create_account"
+          >
+            Create an account
+          </button>
+        )}
       </div>
 
       <div className="footer">&copy; Kursat Cakmak</div>

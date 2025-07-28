@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useProfileContext } from "../../context/ProfileContext";
+import { useModalContext } from "../../context/ModalContext";
 
 // @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
+import ToolTip from "../fx/Tooltip";
 
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
 const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
@@ -13,8 +15,15 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export default function CreateEvent() {
   const { profile } = useProfileContext();
   const axiosPrivate = useAxiosPrivate();
-
-  const confirmationRef = useRef<HTMLDivElement>(null);
+  const { setComponentState } = useModalContext();
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
+    {
+      title: "",
+      description: "",
+      date: "",
+    }
+  );
   const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
@@ -30,14 +39,53 @@ export default function CreateEvent() {
     thumbnail_url: "",
   });
 
+  const validateForm = () => {
+    let newErrorMessages = errorMessages;
+    let errorOccured = false;
+    if (formValues.title.length > 128) {
+      newErrorMessages = { ...newErrorMessages, title: "Too long" };
+      errorOccured = true;
+    }
+    if (formValues.title === "") {
+      newErrorMessages = { ...newErrorMessages, title: "Give a title" };
+      errorOccured = true;
+    }
+    if (formValues.description.length > 1024) {
+      newErrorMessages = { ...newErrorMessages, description: "Too long" };
+      errorOccured = true;
+    }
+    if (formValues.description === "") {
+      newErrorMessages = {
+        ...newErrorMessages,
+        description: "Give a description",
+      };
+      errorOccured = true;
+    }
+    if (formValues.date === "") {
+      newErrorMessages = { ...newErrorMessages, date: "Select a date" };
+      errorOccured = true;
+    }
+    setErrorMessages(newErrorMessages);
+    setTimeout(() => {
+      setErrorMessages({
+        title: "",
+        description: "",
+        date: "",
+      });
+    }, 2500);
+    return !errorOccured;
+  };
+
   const postEvent = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     const formData = new FormData();
     const eventBlob = new Blob([JSON.stringify(formValues)], {
       type: "application/json",
     });
-    formData.append("event", eventBlob);
 
+    formData.append("event", eventBlob);
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -55,6 +103,10 @@ export default function CreateEvent() {
       );
       if (response.status === 200) {
         // return success
+        overlayRef.current!.style.opacity = "1";
+        setTimeout(() => {
+          setComponentState(undefined);
+        }, 1700);
         return response.data;
       } else {
         // handle error
@@ -126,6 +178,13 @@ export default function CreateEvent() {
 
   return (
     <div className="create_popup_wrapper">
+      <div ref={overlayRef} className="create_popup_wrapper__overlay">
+        <img
+          src="/check_68dp_314D1C_FILL0_wght400_GRAD0_opsz48.svg"
+          alt="check symbol"
+        />
+        <span>Event posted successfully</span>
+      </div>
       <BgFx2 />
       <form className="popup_form" onSubmit={(e) => postEvent(e)}>
         <h1 style={{ color: "white" }}>Create new event</h1>
@@ -158,7 +217,7 @@ export default function CreateEvent() {
           <div
             style={{ display: "flex", flexDirection: "column", rowGap: "10px" }}
           >
-            <label className="popup_form__title">
+            <label className="popup_form__title popup_form__label">
               <input
                 className="popup_form__input"
                 type="text"
@@ -167,9 +226,17 @@ export default function CreateEvent() {
                 onChange={handleChange}
                 placeholder="Event title"
               />
+              {errorMessages.title !== "" ? (
+                <ToolTip
+                  text={errorMessages.title}
+                  tooltipPosition={"bottom"}
+                />
+              ) : (
+                ""
+              )}
             </label>
 
-            <label className="popup_form__description">
+            <label className="popup_form__description popup_form__label">
               <textarea
                 className="popup_form__textarea"
                 name="description"
@@ -177,10 +244,16 @@ export default function CreateEvent() {
                 onChange={handleChange}
                 placeholder="Event description"
               />
+              {errorMessages.description !== "" ? (
+                <ToolTip
+                  text={errorMessages.description}
+                  tooltipPosition={"bottom"}
+                />
+              ) : null}
             </label>
             <div style={{ color: "white" }}>Date:</div>
 
-            <label className="popup_form__date">
+            <label className="popup_form__date popup_form__label">
               <input
                 className="popup_form__date_input"
                 type="date"
@@ -188,6 +261,11 @@ export default function CreateEvent() {
                 value={formValues.date}
                 onChange={handleChange}
               />
+              {errorMessages.date !== "" ? (
+                <ToolTip text={errorMessages.date} tooltipPosition={"bottom"} />
+              ) : (
+                ""
+              )}
             </label>
             <div style={{ color: "white" }}>Location:</div>
             <div className="popup_form__location">
@@ -250,10 +328,6 @@ export default function CreateEvent() {
           </div>
         </div>
       </form>
-      {/* confirmation animation*/}
-      <div ref={confirmationRef} className="auth_success">
-        <img src="/check_60dp_48752C_FILL0_wght400_GRAD0_opsz48.svg" alt="" />
-      </div>
     </div>
   );
 }

@@ -92,7 +92,7 @@ export default function Login() {
         onSubmit={(e) => handleClick(e)}
       >
         <h1 style={{ color: "black", marginBottom: "30px" }}>
-          Log in your account
+          Log in to your account
         </h1>
 
         <label htmlFor="email" className="login__label">

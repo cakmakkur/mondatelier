@@ -29,6 +29,7 @@ public class EventController {
     };
 
     @PostMapping(
+            path = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createEvent(
             @RequestPart("event") EventDTO eventDTO,

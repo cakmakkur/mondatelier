@@ -4,6 +4,7 @@ import { useProfileContext } from "../../context/ProfileContext";
 // @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
+import { useModalContext } from "../../context/ModalContext";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
@@ -14,6 +15,8 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 export default function CreateMasterclass() {
   const { profile } = useProfileContext();
   const axiosPrivate = useAxiosPrivate();
+  const { setComponentState } = useModalContext();
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   const confirmationRef = useRef<HTMLDivElement>(null);
   const [countries, setCountries] = useState<string[]>([]);
@@ -22,7 +25,6 @@ export default function CreateMasterclass() {
   const [artCategories, setArtCategories] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [formValues, setFormValues] = useState({
-    id: "",
     title: "",
     city: "",
     description: "",
@@ -31,17 +33,55 @@ export default function CreateMasterclass() {
     sessionPrice: undefined,
     artCategory: "",
     profileId: "",
-    thumbnail_url: "",
   });
+  const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
+    {
+      title: "",
+      description: "",
+      city: "",
+      sessions: "",
+      sessionDuration: "",
+      sessionPrice: "",
+      artCategory: "",
+      profileId: "",
+    }
+  );
+
+  const validateForm = () => {
+    let newErrorMessages = errorMessages;
+    let errorOccured = false;
+    if (formValues.artCategory === "") {
+      newErrorMessages = { ...newErrorMessages, title: "Select a category" };
+      errorOccured = true;
+    }
+    if (formValues.description === "") {
+      newErrorMessages = { ...newErrorMessages, title: "Give a description" };
+      errorOccured = true;
+    }
+    if (formValues.description.length > 1024) {
+      newErrorMessages = { ...newErrorMessages, description: "Too long" };
+      errorOccured = true;
+    }
+    setErrorMessages(newErrorMessages);
+    setTimeout(() => {
+      setErrorMessages({
+        description: "",
+        artCategory: "",
+      });
+    }, 2500);
+    return !errorOccured;
+  };
 
   const postMasterclass = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
     const formData = new FormData();
     const eventBlob = new Blob([JSON.stringify(formValues)], {
       type: "application/json",
     });
-    formData.append("masterclass", eventBlob);
 
+    formData.append("masterclass", eventBlob);
     if (imageFile) {
       formData.append("image", imageFile);
     }
@@ -60,6 +100,10 @@ export default function CreateMasterclass() {
       );
       if (response.status === 200) {
         // return success
+        overlayRef.current!.style.opacity = "1";
+        setTimeout(() => {
+          setComponentState(undefined);
+        }, 1700);
         return response.data;
       } else {
         // handle error
@@ -141,6 +185,13 @@ export default function CreateMasterclass() {
 
   return (
     <div className="create_popup_wrapper">
+      <div ref={overlayRef} className="create_popup_wrapper__overlay">
+        <img
+          src="/check_68dp_314D1C_FILL0_wght400_GRAD0_opsz48.svg"
+          alt="check symbol"
+        />
+        <span>Masterclass added</span>
+      </div>
       <BgFx2 />
       <form className="popup_form" onSubmit={(e) => postMasterclass(e)}>
         <h1 style={{ color: "white" }}>Create new masterclass</h1>
