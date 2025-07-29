@@ -1,3 +1,5 @@
+// event type 1 = digital, 2 = physical
+
 export default interface Masterclass {
   id: string;
   profileId: string;
@@ -8,5 +10,6 @@ export default interface Masterclass {
   sessionPrice: number;
   createdAt: string;
   artCategory: string;
+  type: number;
   city: string;
 }

@@ -5,6 +5,7 @@ import { useProfileContext } from "../../context/ProfileContext";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import { useModalContext } from "../../context/ModalContext";
+import ToolTip from "../fx/Tooltip";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
@@ -18,7 +19,6 @@ export default function CreateMasterclass() {
   const { setComponentState } = useModalContext();
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  const confirmationRef = useRef<HTMLDivElement>(null);
   const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
@@ -28,30 +28,43 @@ export default function CreateMasterclass() {
     title: "",
     city: "",
     description: "",
-    sessions: undefined,
-    sessionDuration: undefined,
-    sessionPrice: undefined,
+    sessions: 1,
+    sessionDuration: 0,
+    sessionPrice: 0,
     artCategory: "",
     profileId: "",
+    type: 1,
   });
+  const emptyErrorMessages = {
+    title: "",
+    description: "",
+    sessions: "",
+    sessionDuration: "",
+    sessionPrice: "",
+    artCategory: "",
+    profileId: "",
+    type: "",
+  };
   const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
-    {
-      title: "",
-      description: "",
-      city: "",
-      sessions: "",
-      sessionDuration: "",
-      sessionPrice: "",
-      artCategory: "",
-      profileId: "",
-    }
+    emptyErrorMessages
   );
 
   const validateForm = () => {
     let newErrorMessages = errorMessages;
     let errorOccured = false;
+    if (formValues.title === "") {
+      newErrorMessages = { ...newErrorMessages, title: "Give a title" };
+      errorOccured = true;
+    }
+    if (formValues.title.length > 1024) {
+      newErrorMessages = { ...newErrorMessages, title: "Too long" };
+      errorOccured = true;
+    }
     if (formValues.artCategory === "") {
-      newErrorMessages = { ...newErrorMessages, title: "Select a category" };
+      newErrorMessages = {
+        ...newErrorMessages,
+        artCategoriy: "Select a category",
+      };
       errorOccured = true;
     }
     if (formValues.description === "") {
@@ -62,12 +75,17 @@ export default function CreateMasterclass() {
       newErrorMessages = { ...newErrorMessages, description: "Too long" };
       errorOccured = true;
     }
+    if (formValues.sessions === 0) {
+      newErrorMessages = { ...newErrorMessages, sessions: "Cannot be 0" };
+      errorOccured = true;
+    }
+    if (formValues.sessionPrice === 0) {
+      newErrorMessages = { ...newErrorMessages, sessionPrice: "Cannot be 0" };
+      errorOccured = true;
+    }
     setErrorMessages(newErrorMessages);
     setTimeout(() => {
-      setErrorMessages({
-        description: "",
-        artCategory: "",
-      });
+      setErrorMessages(emptyErrorMessages);
     }, 2500);
     return !errorOccured;
   };
@@ -241,6 +259,14 @@ export default function CreateMasterclass() {
                   </option>
                 ))}
               </select>
+              {errorMessages.category !== "" ? (
+                <ToolTip
+                  text={errorMessages.category}
+                  tooltipPosition={"bottom"}
+                />
+              ) : (
+                ""
+              )}
             </label>
           </div>
           <div
@@ -255,6 +281,14 @@ export default function CreateMasterclass() {
                 onChange={handleChange}
                 placeholder="Masterclass title"
               />
+              {errorMessages.title !== "" ? (
+                <ToolTip
+                  text={errorMessages.title}
+                  tooltipPosition={"bottom"}
+                />
+              ) : (
+                ""
+              )}
             </label>
 
             <label className="popup_form__description">
@@ -263,55 +297,41 @@ export default function CreateMasterclass() {
                 name="description"
                 value={formValues.description}
                 onChange={handleChange}
-                placeholder="Masterclass description"
+                placeholder="Describe your masterclass"
               />
+              {errorMessages.description !== "" ? (
+                <ToolTip
+                  text={errorMessages.description}
+                  tooltipPosition={"bottom"}
+                />
+              ) : (
+                ""
+              )}
             </label>
 
-            <div style={{ color: "white" }}>Sessions: </div>
-            <div className="popup_form__session">
-              <label className="popup_form__sessions">
-                <input
-                  type="number"
-                  name="sessions"
-                  min={0}
-                  max={25}
-                  placeholder="Sessions"
-                  value={formValues.sessions}
-                  onChange={handleChange}
-                  className="popup_form__number"
-                  required
-                ></input>
-              </label>
-              <label className="popup_form__sessions">
-                <input
-                  type="number"
-                  placeholder="Duration"
-                  name="sessionDuration"
-                  min={0}
-                  max={25}
-                  value={formValues.sessionDuration}
-                  onChange={handleChange}
-                  className="popup_form__number"
-                  required
-                ></input>
-              </label>
-              <label className="popup_form__sessions">
-                <input
-                  type="number"
-                  name="sessionPrice"
-                  placeholder="Price"
-                  min={0}
-                  max={25}
-                  value={formValues.sessionPrice}
-                  onChange={handleChange}
-                  className="popup_form__number"
-                  required
-                ></input>
-              </label>
-            </div>
-            <span className="popup_form__sessions_text">
-              Duration and Price for single session
-            </span>
+            <label htmlFor="isDigital" className="popup_form__digital">
+              <input
+                type="checkbox"
+                id="type"
+                name="type"
+                checked={formValues.type === 1}
+                onChange={() => {
+                  if (formValues.type === 1) {
+                    setFormValues((prev) => ({ ...prev, type: 2 }));
+                  } else {
+                    setFormValues((prev) => ({ ...prev, type: 1 }));
+                  }
+                }}
+              />
+              <span className="popup_form__is_digital_text">
+                Online Masterclass?
+              </span>
+              {errorMessages.type !== "" ? (
+                <ToolTip text={errorMessages.type} tooltipPosition={"bottom"} />
+              ) : (
+                ""
+              )}
+            </label>
 
             <div style={{ color: "white" }}>Location:</div>
             <div className="popup_form__location">
@@ -321,6 +341,8 @@ export default function CreateMasterclass() {
                   onChange={(e) => setSelectedCountry(e.target.value)}
                   className="popup_form__dropdown"
                   required
+                  disabled={formValues.type === 1}
+                  style={formValues.type === 1 ? { color: "gray" } : {}} // if event is digital, color is gray
                 >
                   <option value="">Select country</option>
                   {countries.map((country, i) => (
@@ -337,7 +359,8 @@ export default function CreateMasterclass() {
                   onChange={(e) =>
                     setFormValues((prev) => ({ ...prev, city: e.target.value }))
                   }
-                  disabled={!selectedCountry}
+                  disabled={!selectedCountry || formValues.type === 1}
+                  style={formValues.type === 1 ? { color: "gray" } : {}} // if event is digital, color is gray
                   required
                   className="popup_form__dropdown"
                 >
@@ -351,6 +374,76 @@ export default function CreateMasterclass() {
               </label>
             </div>
 
+            <div style={{ color: "white" }}>Sessions: </div>
+            <div className="popup_form__session">
+              <label className="popup_form__sessions">
+                <input
+                  type="number"
+                  name="sessions"
+                  min={0}
+                  max={25}
+                  placeholder="Sessions"
+                  value={formValues.sessions}
+                  onChange={handleChange}
+                  className="popup_form__number"
+                  required
+                ></input>
+                {errorMessages.sessions !== "" ? (
+                  <ToolTip
+                    text={errorMessages.sessions}
+                    tooltipPosition={"bottom"}
+                  />
+                ) : (
+                  ""
+                )}
+              </label>
+              <label className="popup_form__sessions">
+                <input
+                  type="number"
+                  placeholder="Duration"
+                  name="sessionDuration"
+                  min={0}
+                  max={25}
+                  value={formValues.sessionDuration}
+                  onChange={handleChange}
+                  className="popup_form__number"
+                  required
+                ></input>
+                {errorMessages.sessionDuration !== "" ? (
+                  <ToolTip
+                    text={errorMessages.sessionDuration}
+                    tooltipPosition={"bottom"}
+                  />
+                ) : (
+                  ""
+                )}
+              </label>
+              <label className="popup_form__sessions">
+                <input
+                  type="number"
+                  name="sessionPrice"
+                  placeholder="Price"
+                  min={0}
+                  max={25}
+                  value={formValues.sessionPrice}
+                  onChange={handleChange}
+                  className="popup_form__number"
+                  required
+                ></input>
+                {errorMessages.sessionPrice !== "" ? (
+                  <ToolTip
+                    text={errorMessages.sessionPrice}
+                    tooltipPosition={"bottom"}
+                  />
+                ) : (
+                  ""
+                )}
+              </label>
+            </div>
+            <span className="popup_form__sessions_text">
+              Duration and Price for single session
+            </span>
+
             <button
               style={{ width: "240px" }}
               type="submit"
@@ -361,10 +454,6 @@ export default function CreateMasterclass() {
           </div>
         </div>
       </form>
-      {/* confirmation animation*/}
-      <div ref={confirmationRef} className="auth_success">
-        <img src="/check_60dp_48752C_FILL0_wght400_GRAD0_opsz48.svg" alt="" />
-      </div>
     </div>
   );
 }

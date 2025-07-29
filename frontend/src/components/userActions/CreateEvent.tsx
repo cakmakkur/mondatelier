@@ -17,12 +17,13 @@ export default function CreateEvent() {
   const axiosPrivate = useAxiosPrivate();
   const { setComponentState } = useModalContext();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const emptyErrorMessages = {
+    title: "",
+    description: "",
+    date: "",
+  };
   const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
-    {
-      title: "",
-      description: "",
-      date: "",
-    }
+    emptyErrorMessages
   );
   const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
@@ -67,11 +68,7 @@ export default function CreateEvent() {
     }
     setErrorMessages(newErrorMessages);
     setTimeout(() => {
-      setErrorMessages({
-        title: "",
-        description: "",
-        date: "",
-      });
+      setErrorMessages(emptyErrorMessages);
     }, 2500);
     return !errorOccured;
   };
@@ -97,7 +94,7 @@ export default function CreateEvent() {
 
     try {
       const response = await axiosPrivate.post(
-        `${BASE_URL}/${EVENTS_PATH}/create`,
+        `${BASE_URL}/${EVENTS_PATH}`,
         formData,
         { headers }
       );
@@ -242,7 +239,7 @@ export default function CreateEvent() {
                 name="description"
                 value={formValues.description}
                 onChange={handleChange}
-                placeholder="Event description"
+                placeholder="Describe your event"
               />
               {errorMessages.description !== "" ? (
                 <ToolTip
