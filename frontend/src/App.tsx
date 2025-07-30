@@ -10,6 +10,9 @@ import Help from "./pages/Help";
 import TermsAndConditions from "./pages/TermsAndConditions";
 import Impressum from "./pages/Impressum";
 import Contact from "./pages/Help";
+import Discover from "./pages/Discover";
+import Community from "./pages/Community";
+import Publish from "./pages/Publish";
 
 export default function App() {
   return (
@@ -21,6 +24,9 @@ export default function App() {
             <Route index element={<Homepage />} />
             <Route path="/profile/:profileId" element={<Profile />} />
             <Route path="events" element={<Events />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/community" element={<Community />} />
+            <Route path={`/publish/:profileId`} element={<Publish />} />
             <Route path="/help" element={<Help />} />
             <Route
               path="/termsandconditions"

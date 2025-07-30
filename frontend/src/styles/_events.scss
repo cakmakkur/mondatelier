@@ -1,0 +1,29 @@
+.events_main {
+  padding-top: 130px;
+}
+
+.events_header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.events_header_title {
+  color: white;
+}
+
+.events_weekbox {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0px 130px;
+}
+
+.events_weekbox_day {
+  color: white;
+  border: 1px solid white;
+  aspect-ratio: 1.5/1;
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

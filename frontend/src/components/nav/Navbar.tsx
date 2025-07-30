@@ -58,21 +58,21 @@ export default function NavBar() {
             </button>
           </>
         ) : null}
-        <Link className="navBar_nav" to="#">
+        <Link className="navBar_nav" to="/community">
           <img
             src="/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
           Community
         </Link>
-        <Link className="navBar_nav" to="#">
+        <Link className="navBar_nav" to="/discover">
           <img
             src="/wall_art_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
           Discover
         </Link>
-        <Link className="navBar_nav" to="#">
+        <Link className="navBar_nav" to="/events">
           <img
             src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
@@ -88,8 +88,8 @@ export default function NavBar() {
             Messages
           </Link>
         ) : null}
-        {auth ? (
-          <Link className="publish_button" to="#">
+        {auth && profile ? (
+          <Link className="publish_button" to={`/publish/${profile.id}`}>
             <img
               src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""

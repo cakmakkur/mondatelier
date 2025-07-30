@@ -76,6 +76,7 @@ export default function Profile() {
     }
     fetchMasterclasses();
     fetchFreelances();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.profileId, profileId]);
 
   const fetchProfile = async () => {

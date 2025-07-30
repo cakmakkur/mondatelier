@@ -21,7 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
+import java.util.List;
 
 
 @Service
@@ -47,6 +47,10 @@ public class EventService {
     public EventDTO getEventById(String id) {
         Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
         return DTOMappers.toEventDTO(event);
+    }
+
+    public List<EventDTO> getEventsByFilter(Integer calenderWeek,Integer month,Integer year) {
+        return null;
     }
 
     public void createEvent(EventDTO eventDTO, MultipartFile imageFile) {

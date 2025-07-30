@@ -34,5 +34,22 @@ public class ArtworkController {
         Page<ArtworkDTO> artworkPage = artworkService.getArtworksByArtist(profileId, page, size, sortBy);
         return ResponseEntity.ok(artworkPage);
     }
-
 }
+
+/*Pageable response structure example:*/
+/*{
+        "content": [
+        { "id": 1, "name": "Event A", ... },
+        { "id": 2, "name": "Event B", ... }
+        ],
+        "pageable": { *//* metadata object *//* },
+        "totalPages": 10,
+        "totalElements": 95,
+        "last": false,
+        "size": 10,
+        "number": 0,
+        "sort": { *//* sort details *//* },
+        "first": true,
+        "numberOfElements": 10,
+        "empty": false
+}*/

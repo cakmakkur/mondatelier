@@ -23,6 +23,11 @@ public class Log {
     @Column(nullable = false, updatable = false)
     private Long id;
 
+    @PrePersist()
+    private void onCreate() {
+        time = Instant.now();
+    }
+
     private Instant time;
 
     @Enumerated(EnumType.STRING)

@@ -1,6 +1,6 @@
 // event type 1 = digital, 2 = physical
 
-export default interface Event {
+export interface Event {
   id: string;
   title: string;
   type: number;

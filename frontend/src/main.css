@@ -888,10 +888,6 @@
   font-size: 1.3rem;
 }
 
-.popup_form__date {
-  width: 150px;
-}
-
 .popup_form__date_input {
   background-color: black;
   color: white;
@@ -1028,7 +1024,7 @@ input[type=number] {
   height: 100px;
 }
 .create_popup_wrapper__overlay span {
-  color: rgb(55, 76, 35);
+  color: rgb(96, 131, 62);
   font-size: 1.3rem;
 }
 
@@ -1340,6 +1336,36 @@ input[type=number] {
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
   border-top: 30px solid rgb(255, 255, 207);
+}
+
+.events_main {
+  padding-top: 130px;
+}
+
+.events_header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.events_header_title {
+  color: white;
+}
+
+.events_weekbox {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  padding: 0px 130px;
+}
+
+.events_weekbox_day {
+  color: white;
+  border: 1px solid white;
+  aspect-ratio: 1.5/1;
+  font-size: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 *,
