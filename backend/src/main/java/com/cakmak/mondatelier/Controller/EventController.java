@@ -42,7 +42,7 @@ public class EventController {
         @RequestParam(required = false) Integer month,
         @RequestParam(required = false) Integer year)
     {
-        List<EventDTO> events = eventService.getEventsByFilter(calenderWeek, month, year);
+        List<EventDTO> events = eventService.getEventsByFilter(calenderWeek, month, year, city);
         return ResponseEntity.ok(events);
     }
 

@@ -49,7 +49,7 @@ public class EventService {
         return DTOMappers.toEventDTO(event);
     }
 
-    public List<EventDTO> getEventsByFilter(Integer calenderWeek,Integer month,Integer year) {
+    public List<EventDTO> getEventsByFilter(Integer calenderWeek,Integer month,Integer year, String city) {
         return null;
     }
 

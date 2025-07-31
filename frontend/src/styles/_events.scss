@@ -14,8 +14,14 @@
 
 .events_weekbox {
   display: grid;
+  grid-template-columns: 50px 1fr 50px;
+  padding: 0px 50px;
+  width: 100%;
+}
+
+.events_weekbox_days {
+  display: grid;
   grid-template-columns: repeat(7, 1fr);
-  padding: 0px 130px;
 }
 
 .events_weekbox_day {
@@ -26,4 +32,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.events_weekbox_day--current {
+}
+
+.events_weekbox_left_button {
+  width: 30px;
+}
+.events_weekbox_right_button {
+  width: 30px;
 }

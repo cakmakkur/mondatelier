@@ -1,6 +1,6 @@
 // event type 1 = digital, 2 = physical
 
-export interface Event {
+export interface EventDto {
   id: string;
   title: string;
   type: number;

@@ -1,4 +1,4 @@
-export interface Freelance {
+export default interface Freelance {
   id: string;
   profileId: string;
   artCategory: string;

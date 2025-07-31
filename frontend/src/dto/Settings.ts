@@ -5,6 +5,7 @@ export interface Settings {
   notifications: boolean;
   cookieConsent: boolean;
   eventPreferredCity: string;
+  eventPreferredCountry: string;
   animations: boolean;
 }
 
@@ -15,5 +16,6 @@ export const defaultSettings: Settings = {
   notifications: true,
   cookieConsent: false,
   eventPreferredCity: "",
+  eventPreferredCountry: "",
   animations: true,
 };
