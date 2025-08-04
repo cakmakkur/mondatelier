@@ -26,7 +26,7 @@ export default function Events() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
 
-  // initiate
+  // initiate events page
   const init = async () => {
     await fetchCountries();
     if (

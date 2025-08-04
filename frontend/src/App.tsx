@@ -13,6 +13,7 @@ import Contact from "./pages/Help";
 import Discover from "./pages/Discover";
 import Community from "./pages/Community";
 import Publish from "./pages/Publish";
+import LiveStreams from "./pages/LiveStreams";
 
 export default function App() {
   return (
@@ -28,6 +29,8 @@ export default function App() {
             <Route path="/community" element={<Community />} />
             <Route path={`/publish/:profileId`} element={<Publish />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/livestreams" element={<LiveStreams />} />
+
             <Route
               path="/termsandconditions"
               element={<TermsAndConditions />}

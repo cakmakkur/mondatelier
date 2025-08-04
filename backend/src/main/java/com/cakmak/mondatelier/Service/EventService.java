@@ -50,6 +50,7 @@ public class EventService {
     }
 
     public List<EventDTO> getEventsByFilter(Integer calenderWeek,Integer month,Integer year, String city) {
+
         return null;
     }
 
