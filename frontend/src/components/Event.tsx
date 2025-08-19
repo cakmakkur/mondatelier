@@ -22,9 +22,12 @@ export default function Event({ event }: EventPropTypes) {
     setPosterProfile(data);
   };
 
-  useEffect(() => {
-    fetchProfile();
-  }, []);
+  // here make a fetching mechanism that alsi caches the profiles
+  // maybe in the higher component
+
+  // useEffect(() => {
+  //   fetchProfile();
+  // }, []);
 
   return (
     <div className="event_main">
@@ -36,7 +39,7 @@ export default function Event({ event }: EventPropTypes) {
       </div>
       <div className="event_details">
         <div>{event.title}</div>
-        <div>{DateFormatter.extractDayMonth(event.date)}</div>
+        <div>{DateFormatter.extractDayMonth(new Date(event.date))}</div>
         <div>{event.description}</div>
         <div>
           <img

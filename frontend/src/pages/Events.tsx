@@ -65,7 +65,7 @@ export default function Events() {
   }, [settings]);
 
   useEffect(() => {
-    if (selectedCity === "") return;
+    if (!selectedCity) return;
     fetchEvents(weekNumber, month, year, selectedCity);
   }, [weekMode, weekNumber, month, year, selectedCity]);
 
@@ -94,8 +94,12 @@ export default function Events() {
   };
 
   useEffect(() => {
-    if (selectedCountry === "") return;
-    getCitiesByCountry(selectedCountry);
+    const updateCities = async () => {
+      if (!selectedCountry) return;
+      const data = await getCitiesByCountry(selectedCountry);
+      setSelectedCity(data?.[0] || "");
+    };
+    updateCities();
   }, [selectedCountry]);
 
   const fetchCountries = async () => {
@@ -113,8 +117,8 @@ export default function Events() {
         `${BASE_URL}/${CITIES_PATH}/by_country/${country}`
       );
       const data = await response.json();
-      setCities(data);
-      return data;
+      setCities(data ?? []);
+      return data ?? [];
     } catch (error) {
       console.error(error);
     }
@@ -154,11 +158,12 @@ export default function Events() {
               className="popup_form__dropdown"
             >
               <option value="">City</option>
-              {cities.map((city, i) => (
-                <option key={city + i} value={city}>
-                  {city}
-                </option>
-              ))}
+              {Array.isArray(cities) &&
+                cities.map((city, i) => (
+                  <option key={city + i} value={city}>
+                    {city}
+                  </option>
+                ))}
             </select>
           </label>
           <button
@@ -183,37 +188,37 @@ export default function Events() {
             <span>{DateFormatter.extractDayMonth(dateOfISOWeek)}</span>
           </div>
           <div className="events_weekbox_day">
-            Tu{" "}
+            Tu
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 1))}
             </span>
           </div>
           <div className="events_weekbox_day">
-            Wed{" "}
+            Wed
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 2))}
             </span>
           </div>
           <div className="events_weekbox_day">
-            Thu{" "}
+            Thu
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 3))}
             </span>
           </div>
           <div className="events_weekbox_day">
-            Fr{" "}
+            Fr
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 4))}
             </span>
           </div>
           <div className="events_weekbox_day">
-            Sa{" "}
+            Sa
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 5))}
             </span>
           </div>
           <div className="events_weekbox_day">
-            Sun{" "}
+            Sun
             <span>
               {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 6))}
             </span>
@@ -230,39 +235,81 @@ export default function Events() {
       </div>
       <div className="events_display_wrapper">
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 0))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 1))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 2))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 3))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 4))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 5))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
         <div className="events_display_day">
-          {events.map((e, i) => (
-            <SingleEvent key={i} event={e} />
-          ))}
+          {events
+            .filter(
+              (e) =>
+                DateFormatter.extractDayMonth(new Date(e.date)) ===
+                DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 6))
+            )
+            .map((e, i) => (
+              <SingleEvent key={i} event={e} />
+            ))}
         </div>
       </div>
     </div>

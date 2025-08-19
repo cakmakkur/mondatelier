@@ -21,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -49,30 +51,51 @@ public class EventService {
         return DTOMappers.toEventDTO(event);
     }
 
-    public List<EventDTO> getEventsByFilter(Integer calenderWeek,Integer month,Integer year, String city) {
+    public List<EventDTO> getEventsByFilter(Integer calendarWeek, Integer month, Integer year, String cityName) {
+        if (cityName == null) return new ArrayList<>();
 
-        return null;
+        City city = cityRepository.findByName(cityName)
+                .orElseThrow(() -> new RuntimeException("City not found"));
+
+        List<Event> events;
+
+        if (calendarWeek != null && year != null) {
+            events = eventRepository.findByCityAndWeekNumber(city, calendarWeek, year);
+        } else if (month != null && year != null) {
+            events = eventRepository.findByCityAndMonthYear(city, month, year);
+        } else {
+            events = eventRepository.findByCity(city);
+        }
+
+        return events.stream()
+                .map(DTOMappers::toEventDTO)
+                .collect(Collectors.toList());
     }
 
     public void createEvent(EventDTO eventDTO, MultipartFile imageFile) {
-
-        // save event
         Event event = new Event();
         event.setTitle(SanitizeInput.sanitize(eventDTO.title()));
         event.setDescription(SanitizeInput.sanitize(eventDTO.description()));
-        EventType eventType = eventTypeRepository.findById(Long.valueOf(eventDTO.type())).orElseThrow(() -> {throw new RuntimeException("Type not found");});
+
+        EventType eventType = eventTypeRepository.findById(Long.valueOf(eventDTO.type()))
+                .orElseThrow(() -> new RuntimeException("Type not found"));
         event.setType(eventType);
-        City city = cityRepository.findByName(eventDTO.city()).orElseThrow(() -> {throw new RuntimeException("City not found");});
+
+        City city = cityRepository.findByName(eventDTO.city())
+                .orElseThrow(() -> new RuntimeException("City not found"));
         event.setCity(city);
+
         event.setDate(eventDTO.date());
-        Profile profile = profileRepository.findById(eventDTO.profileId()).orElseThrow(ProfileNotFoundException::new);
+
+        Profile profile = profileRepository.findById(eventDTO.profileId())
+                .orElseThrow(ProfileNotFoundException::new);
         event.setProfile(profile);
 
-        // save photo
+        // Save image if exists
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-                Path uploadPath = Paths.get(uploadDir + "/events");
+                Path uploadPath = Paths.get(uploadDir, "events");
 
                 if (!Files.exists(uploadPath)) {
                     Files.createDirectories(uploadPath);
@@ -82,12 +105,13 @@ public class EventService {
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
                 event.setThumbnailUrl("/uploads/events/" + fileName);
-                eventRepository.save(event);
 
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save image file", e);
             }
         }
 
+        eventRepository.save(event); // save event regardless of image
     }
+
 }
