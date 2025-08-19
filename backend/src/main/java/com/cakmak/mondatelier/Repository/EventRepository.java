@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Repository;
 
+import com.cakmak.mondatelier.Model.City;
 import com.cakmak.mondatelier.Model.event.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,6 @@ Query query = entitymanager.createQuery( "Select e " + "from Employee e " + "whe
 @Repository
 public interface EventRepository extends JpaRepository<Event, String> {
 
+    List<Event> getEventByCity(City city);
 
-    List<Event> getEventByCity(String city);
 }

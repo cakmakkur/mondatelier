@@ -6,17 +6,20 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 0px 70px;
 }
 
 .events_header_title {
   color: white;
+  font-size: 6rem;
 }
 
 .events_weekbox {
   display: grid;
-  grid-template-columns: 50px 1fr 50px;
-  padding: 0px 50px;
+  grid-template-columns: 80px 1fr 80px;
+  padding: 0px 40px 0px 10px;
   width: 100%;
+  align-items: center;
 }
 
 .events_weekbox_days {
@@ -27,19 +30,54 @@
 .events_weekbox_day {
   color: white;
   border: 1px solid white;
-  aspect-ratio: 1.5/1;
-  font-size: 2.5rem;
+  font-size: 4rem;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  & span {
+    font-size: 1.5rem;
+  }
 }
 
 .events_weekbox_day--current {
 }
 
 .events_weekbox_left_button {
-  width: 30px;
+  & img {
+    width: 80px;
+    aspect-ratio: 1;
+  }
+  &:hover {
+    cursor: pointer;
+  }
 }
 .events_weekbox_right_button {
-  width: 30px;
+  & img {
+    width: 80px;
+    aspect-ratio: 1;
+  }
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.events_header_buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 30px;
+}
+
+.events_header_week_month_button {
+  font-size: 1.3rem;
+  background: none;
+  border: 1px solid rgb(219, 201, 201);
+  color: white;
+  padding: 10px 20px;
+  min-width: 200px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }

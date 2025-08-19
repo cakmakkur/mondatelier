@@ -1,10 +1,11 @@
 // here needed: the last country/city checked is the preferred ones
 
 import { useEffect, useState } from "react";
-import { getWeekNumber } from "../util/weekNumber";
+import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
 import type { EventDto } from "../dto/EventDto";
 import SingleEvent from "../components/Event";
 import { useUserPreferencesContext } from "../context/UserPreferencesContext";
+import { DateFormatter } from "../util/DateFormatter";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
@@ -18,6 +19,9 @@ export default function Events() {
 
   const date = new Date();
   const [weekNumber, setWeekNumber] = useState(getWeekNumber());
+  const [dateOfISOWeek, setDateOfISOWeek] = useState(
+    getDateOfISOWeek(weekNumber, date.getFullYear())
+  );
   const [month, setMonth] = useState(date.getUTCMonth());
   const [year, setYear] = useState(date.getFullYear());
 
@@ -29,14 +33,14 @@ export default function Events() {
   // initiate events page
   const init = async () => {
     await fetchCountries();
-    if (
-      settings &&
-      settings.eventPreferredCountry !== "" &&
-      settings.eventPreferredCity !== ""
-    ) {
+    if (settings) {
       setSelectedCountry(settings.eventPreferredCountry);
-      await getCitiesByCountry(settings.eventPreferredCountry);
-      setSelectedCity(settings.eventPreferredCity);
+      const data = await getCitiesByCountry(settings.eventPreferredCountry);
+      setSelectedCity(
+        settings.eventPreferredCity === ""
+          ? data[0]
+          : settings.eventPreferredCity
+      );
     }
   };
   useEffect(() => {
@@ -44,9 +48,30 @@ export default function Events() {
   }, []);
 
   useEffect(() => {
+    if (settings) {
+      const updateLocation = async () => {
+        setSelectedCountry(settings.eventPreferredCountry);
+        const data = await getCitiesByCountry(settings.eventPreferredCountry);
+        setSelectedCity(
+          settings.eventPreferredCity === ""
+            ? data[0]
+            : settings.eventPreferredCity
+        );
+      };
+      if (settings.eventPreferredCountry !== "") {
+        updateLocation();
+      }
+    }
+  }, [settings]);
+
+  useEffect(() => {
     if (selectedCity === "") return;
     fetchEvents(weekNumber, month, year, selectedCity);
   }, [weekMode, weekNumber, month, year, selectedCity]);
+
+  useEffect(() => {
+    setDateOfISOWeek(getDateOfISOWeek(weekNumber, year));
+  }, [weekNumber, year]);
 
   const fetchEvents = async (
     weekNumber: number,
@@ -58,7 +83,6 @@ export default function Events() {
       `city=${selectedCity}&` +
       (weekMode ? `calenderWeek=${weekNumber}` : `month=${month}&year=${year}`);
     try {
-      console.log(urlParams);
       const response = await fetch(`${BASE_URL}/${EVENTS_PATH}?${urlParams}`);
       if (response.status === 200) {
         const data = await response.json();
@@ -112,7 +136,7 @@ export default function Events() {
               className="popup_form__dropdown"
               required
             >
-              <option value="">Select country</option>
+              <option value="">Country</option>
               {countries.map((country, i) => (
                 <option key={country + i} value={country}>
                   {country}
@@ -129,7 +153,7 @@ export default function Events() {
               required
               className="popup_form__dropdown"
             >
-              <option value="">Select city</option>
+              <option value="">City</option>
               {cities.map((city, i) => (
                 <option key={city + i} value={city}>
                   {city}
@@ -137,31 +161,71 @@ export default function Events() {
               ))}
             </select>
           </label>
-          <button onClick={toggleView}>
-            {weekMode ? "Month View" : "Week View"}
+          <button
+            className="events_header_week_month_button"
+            onClick={toggleView}
+          >
+            {weekMode ? "Monthly View" : "Weekly View"}
           </button>
         </div>
       </div>
       <div className="events_weekbox">
         <div className="events_weekbox_left_button">
-          <button onClick={() => setWeekNumber((prev) => prev - 1)}>
-            Left
-          </button>
+          <img
+            onClick={() => setWeekNumber((prev) => prev - 1)}
+            src="/arrow_left.svg"
+            alt="events previous week button"
+          />
         </div>
         <div className="events_weekbox_days">
-          <div className="events_weekbox_day">Mo</div>
-          <div className="events_weekbox_day">Tu</div>
-          <div className="events_weekbox_day">Wed</div>
-          <div className="events_weekbox_day">Thu</div>
-          <div className="events_weekbox_day">Fr</div>
-          <div className="events_weekbox_day">Sa</div>
-          <div className="events_weekbox_day">Sun</div>
+          <div className="events_weekbox_day">
+            Mo
+            <span>{DateFormatter.extractDayMonth(dateOfISOWeek)}</span>
+          </div>
+          <div className="events_weekbox_day">
+            Tu{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 1))}
+            </span>
+          </div>
+          <div className="events_weekbox_day">
+            Wed{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 2))}
+            </span>
+          </div>
+          <div className="events_weekbox_day">
+            Thu{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 3))}
+            </span>
+          </div>
+          <div className="events_weekbox_day">
+            Fr{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 4))}
+            </span>
+          </div>
+          <div className="events_weekbox_day">
+            Sa{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 5))}
+            </span>
+          </div>
+          <div className="events_weekbox_day">
+            Sun{" "}
+            <span>
+              {DateFormatter.extractDayMonth(addDays(dateOfISOWeek, 6))}
+            </span>
+          </div>
         </div>
 
         <div className="events_weekbox_right_button">
-          <button onClick={() => setWeekNumber((prev) => prev + 1)}>
-            Right
-          </button>
+          <img
+            onClick={() => setWeekNumber((prev) => prev + 1)}
+            src="/arrow_right.svg"
+            alt="events next week button"
+          />
         </div>
       </div>
       <div className="events_display_wrapper">

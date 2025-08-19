@@ -121,12 +121,12 @@ export default function CreateEvent() {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const fetchCountries = async () => {
+  const fetchCountries = async (): Promise<void> => {
     try {
       const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
       setCountries(await response.json());
     } catch (error) {
-      console.error("Error fetching countries:", error);
+      console.error("Failed to fetch countries:", error);
     }
   };
   const getCitiesByCountry = async (country: string) => {
@@ -255,7 +255,9 @@ export default function CreateEvent() {
                 className="popup_form__date_input"
                 type="date"
                 name="date"
-                value={formValues.date}
+                value={
+                  formValues.date || new Date().toISOString().split("T")[0]
+                }
                 onChange={handleChange}
               />
               {errorMessages.date !== "" ? (

@@ -4,9 +4,10 @@ import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
 import type { Settings } from "../dto/Settings";
 import { defaultSettings } from "../dto/Settings";
+import { useProfileContext } from "./ProfileContext";
 
-const USER_PREFERENCES_PATH = import.meta.env.USER_PREFERENCES_PATH;
-const BASE_URL = import.meta.env.BASE_URL;
+const USER_PREFERENCES_PATH = import.meta.env.VITE_USER_PREFERENCES_PATH;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 interface UserPreferencesType {
   updateUserPreferences: (
@@ -37,6 +38,7 @@ export const UserPreferencesContextProvider = ({
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuthContext();
+  const { profile } = useProfileContext();
   const [settings, setSettings] = useState<Settings | null>(null);
 
   useEffect(() => {
@@ -56,54 +58,56 @@ export const UserPreferencesContextProvider = ({
     };
 
     const initializeUserPreferencesContext = async () => {
-      const storedData = localStorage.getItem("settings");
+      if (!auth) {
+        setSettings(defaultSettings);
+        return;
+      }
 
-      if (storedData) {
-        const localSettings: Settings = JSON.parse(storedData);
-        if (auth) {
-          if (localSettings.profileId === auth.profileId) {
-            setSettings(localSettings);
-            return;
-          } else {
-            // clearUserPreferences();
-            // const userSettings = await fetchUserSettings();
-            // if (userSettings)
-            //   Object.keys(userSettings).forEach((key) => {
-            //     updateUserPreferences(key, userSettings[key as keyof Settings]);
-            //   });
-            updateUserPreferences("profileId", auth.profileId);
-          }
-        } else {
-          Object.keys(localSettings).forEach((key) => {
-            updateUserPreferences(key, localSettings[key as keyof Settings]);
-          });
-        }
-      } else if (auth) {
-        const userSettings = await fetchUserSettings();
-        if (userSettings) {
-          Object.keys(userSettings).forEach((key) => {
-            updateUserPreferences(key, userSettings[key as keyof Settings]);
-          });
+      let storedSettings: Settings | null = null;
+      const storedData = localStorage.getItem("settings");
+      if (storedData) storedSettings = JSON.parse(storedData);
+
+      let finalSettings: Settings = defaultSettings;
+
+      if (
+        storedSettings &&
+        profile &&
+        storedSettings.profileId === profile.id
+      ) {
+        finalSettings = { ...storedSettings };
+        if (
+          !finalSettings.eventPreferredCity ||
+          finalSettings.eventPreferredCity === ""
+        ) {
+          finalSettings.eventPreferredCountry = profile.country;
         }
       } else {
-        setSettings(defaultSettings);
+        const userSettings = await fetchUserSettings();
+        if (userSettings) {
+          finalSettings = { ...defaultSettings, ...userSettings };
+          if (profile) finalSettings.profileId = profile.id;
+        } else {
+          finalSettings = {
+            ...defaultSettings,
+            eventPreferredCountry: profile!.country,
+          };
+        }
       }
+
+      setSettings(finalSettings);
     };
+
     initializeUserPreferencesContext();
-  }, [auth]);
+  }, [auth, profile]);
 
   const updateUserPreferences = (
-    key: string,
+    key: keyof Settings,
     value: string | boolean | number
   ) => {
     setSettings((prevSettings) => {
-      if (!prevSettings) return defaultSettings;
-
-      if (prevSettings[key as keyof Settings] === value) {
-        return prevSettings;
-      } else {
-        return { ...prevSettings, [key]: value };
-      }
+      if (!prevSettings) return prevSettings;
+      if (prevSettings[key] === value) return prevSettings;
+      return { ...prevSettings, [key]: value };
     });
   };
 

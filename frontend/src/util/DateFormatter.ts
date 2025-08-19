@@ -1,18 +1,20 @@
 export class DateFormatter {
-  public static extractYear(rawDate: Date) {
-    return rawDate.toString().substring(0, 4);
+  public static extractYear(rawDate: Date): string {
+    return String(rawDate.getFullYear()); // e.g. "2025"
   }
 
-  public static extractMonth(rawDate: Date) {
-    return rawDate.toString().substring(5, 7);
+  public static extractMonth(rawDate: Date): string {
+    // getMonth() returns 0-11, so +1
+    return String(rawDate.getMonth() + 1).padStart(2, "0"); // e.g. "08"
   }
 
-  public static extractDay(rawDate: Date) {
-    return rawDate.toString().substring(8, 10);
+  public static extractDay(rawDate: Date): string {
+    return String(rawDate.getDate()).padStart(2, "0"); // e.g. "19"
   }
 
-  public static extractTime(rawDate: Date) {
-    return rawDate.toString().substring(11, 16);
+  public static extractTime(rawDate: Date): string {
+    // formats to HH:mm, always two digits
+    return rawDate.toTimeString().slice(0, 5); // e.g. "14:30"
   }
 
   public static extractFullDate(rawDate: Date) {
