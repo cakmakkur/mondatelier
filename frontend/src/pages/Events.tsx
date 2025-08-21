@@ -2,20 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
-import type { EventDto } from "../dto/EventDto";
 import SingleEvent from "../components/Event";
 import { useUserPreferencesContext } from "../context/UserPreferencesContext";
 import { DateFormatter } from "../util/DateFormatter";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+import { addProfile, addEvents } from "../store/eventSlice";
+import type { EventDto } from "../dto/EventDto";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
 const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
+const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 
 export default function Events() {
+  const dispatch = useDispatch();
+  const profiles = useSelector((state: RootState) => state.event.profiles);
+  const events = useSelector((state: RootState) => state.event.events);
+
   const { settings } = useUserPreferencesContext();
   const [weekMode, setWeekMode] = useState(true);
-  const [events, setEvents] = useState<EventDto[]>([]);
 
   const date = new Date();
   const [weekNumber, setWeekNumber] = useState(getWeekNumber());
@@ -31,22 +38,36 @@ export default function Events() {
   const [selectedCity, setSelectedCity] = useState("");
 
   // initiate events page
-  const init = async () => {
-    await fetchCountries();
-    if (settings) {
-      setSelectedCountry(settings.eventPreferredCountry);
-      const data = await getCitiesByCountry(settings.eventPreferredCountry);
-      setSelectedCity(
-        settings.eventPreferredCity === ""
-          ? data[0]
-          : settings.eventPreferredCity
-      );
-    }
-  };
   useEffect(() => {
+    const init = async () => {
+      await fetchCountries();
+      if (settings) {
+        setSelectedCountry(settings.eventPreferredCountry);
+        const data = await getCitiesByCountry(settings.eventPreferredCountry);
+        setSelectedCity(
+          settings.eventPreferredCity === ""
+            ? data[0]
+            : settings.eventPreferredCity
+        );
+      }
+    };
     init();
   }, []);
 
+  // fetches profile if it hasn't been fetched yet
+  const fetchProfiles = async (eventsData: EventDto[]) => {
+    for (const event of eventsData) {
+      const profileId = event.profileId;
+      if (!profiles[profileId]) {
+        const profile = await fetch(
+          `${BASE_URL}/${PROFILE_PATH}/${profileId}`
+        ).then((res) => res.json());
+        dispatch(addProfile({ profileId, profile }));
+      }
+    }
+  };
+
+  // determine preferred location
   useEffect(() => {
     if (settings) {
       const updateLocation = async () => {
@@ -64,11 +85,22 @@ export default function Events() {
     }
   }, [settings]);
 
+  // fetch events and associated profiles
   useEffect(() => {
     if (!selectedCity) return;
+    dispatch(addEvents([]));
+
     fetchEvents(weekNumber, month, year, selectedCity);
   }, [weekMode, weekNumber, month, year, selectedCity]);
 
+  // clear events when leaving the page
+  useEffect(() => {
+    return () => {
+      dispatch(addEvents([]));
+    };
+  }, [dispatch]);
+
+  // determine date of ISO week
   useEffect(() => {
     setDateOfISOWeek(getDateOfISOWeek(weekNumber, year));
   }, [weekNumber, year]);
@@ -86,13 +118,15 @@ export default function Events() {
       const response = await fetch(`${BASE_URL}/${EVENTS_PATH}?${urlParams}`);
       if (response.status === 200) {
         const data = await response.json();
-        setEvents(data);
+        dispatch(addEvents(data));
+        await fetchProfiles(data);
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  // get cities for selected country
   useEffect(() => {
     const updateCities = async () => {
       if (!selectedCountry) return;
@@ -102,6 +136,7 @@ export default function Events() {
     updateCities();
   }, [selectedCountry]);
 
+  // fetch available countries
   const fetchCountries = async () => {
     try {
       const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
@@ -124,6 +159,7 @@ export default function Events() {
     }
   };
 
+  // toggle between week mode and month mode
   const toggleView = () => {
     setWeekMode(!weekMode);
   };
@@ -234,8 +270,8 @@ export default function Events() {
         </div>
       </div>
       <div className="events_display_wrapper">
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -245,8 +281,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -256,8 +292,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -267,8 +303,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -278,8 +314,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -289,8 +325,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
@@ -300,8 +336,8 @@ export default function Events() {
               <SingleEvent key={i} event={e} />
             ))}
         </div>
-        <div className="events_display_day">
-          {events
+        <div className="events_display_event">
+          {Object.values(events)
             .filter(
               (e) =>
                 DateFormatter.extractDayMonth(new Date(e.date)) ===
