@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import eventReducer from "./eventSlice";
+import locationReducer from "./locationSlice";
 
 export const store = configureStore({
   reducer: {
     event: eventReducer,
+    location: locationReducer,
   },
 });
 

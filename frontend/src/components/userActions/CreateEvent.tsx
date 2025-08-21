@@ -6,15 +6,18 @@ import { useModalContext } from "../../context/ModalContext";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import ToolTip from "../fx/Tooltip";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
-const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function CreateEvent() {
   const { profile } = useProfileContext();
   const axiosPrivate = useAxiosPrivate();
+  const countries = useSelector((state: RootState) => state.location.countries);
+
   const { setComponentState } = useModalContext();
   const overlayRef = useRef<HTMLDivElement>(null);
   const emptyErrorMessages = {
@@ -25,7 +28,6 @@ export default function CreateEvent() {
   const [errorMessages, setErrorMessages] = useState<{ [key: string]: string }>(
     emptyErrorMessages
   );
-  const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -121,14 +123,6 @@ export default function CreateEvent() {
     setFormValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const fetchCountries = async (): Promise<void> => {
-    try {
-      const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
-      setCountries(await response.json());
-    } catch (error) {
-      console.error("Failed to fetch countries:", error);
-    }
-  };
   const getCitiesByCountry = async (country: string) => {
     try {
       const response = await fetch(
@@ -144,7 +138,6 @@ export default function CreateEvent() {
 
   useEffect(() => {
     const initiateEventForm = async () => {
-      await fetchCountries();
       if (!profile) return;
       setSelectedCountry(profile.country);
       setFormValues((prev) => {

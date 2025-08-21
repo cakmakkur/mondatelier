@@ -6,10 +6,11 @@ import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import { useModalContext } from "../../context/ModalContext";
 import ToolTip from "../fx/Tooltip";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
-const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
@@ -18,8 +19,8 @@ export default function CreateMasterclass() {
   const axiosPrivate = useAxiosPrivate();
   const { setComponentState } = useModalContext();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const countries = useSelector((state: RootState) => state.location.countries);
 
-  const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
   const [artCategories, setArtCategories] = useState<string[]>([]);
@@ -148,14 +149,6 @@ export default function CreateMasterclass() {
     }
   };
 
-  const fetchCountries = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
-      setCountries(await response.json());
-    } catch (error) {
-      console.error("Error fetching countries:", error);
-    }
-  };
   const getCitiesByCountry = async (country: string) => {
     try {
       const response = await fetch(
@@ -171,7 +164,6 @@ export default function CreateMasterclass() {
 
   useEffect(() => {
     const initiateEventForm = async () => {
-      await fetchCountries();
       if (!profile) return;
       setSelectedCountry(profile.country);
       await fetchArtCategories();

@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
 import type { SignupDto } from "../../dto/Signup";
 import emailValidator from "email-validator";
 import Login from "./Login";
 import BgFx1 from "../fx/BgFx1";
+import type { RootState } from "../../store/store";
 
 const defaultSignupBody: SignupDto = {
   email: "",
@@ -18,9 +20,6 @@ const defaultSignupBody: SignupDto = {
   showRealName: false,
 };
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
-
 /**
  * Signup component for user registration.
  * It is made of two forms in each subpage
@@ -33,8 +32,7 @@ const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
 export default function Signup() {
   const { setComponentState } = useModalContext();
   const { signup } = useAuthContext();
-
-  const [countries, setCountries] = useState<string[]>([]);
+  const countries = useSelector((state: RootState) => state.location.countries);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [repeatPassword, setRepeatPassword] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
@@ -48,21 +46,6 @@ export default function Signup() {
   //   if (!sliderDivRef.current) return;
   //   sliderDivRef.current.style.transform = "translateX(-400px)";
   // }, []);
-
-  /**
-  * Fetches the list of countries from the API.
-  /*/
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
-        setCountries(await response.json());
-      } catch (error) {
-        console.error("Error fetching countries:", error);
-      }
-    };
-    fetchCountries();
-  }, []);
 
   //**
   // ANIMATION & FX

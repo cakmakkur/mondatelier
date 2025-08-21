@@ -12,7 +12,6 @@ import type { EventDto } from "../dto/EventDto";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
-const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 
@@ -20,6 +19,7 @@ export default function Events() {
   const dispatch = useDispatch();
   const profiles = useSelector((state: RootState) => state.event.profiles);
   const events = useSelector((state: RootState) => state.event.events);
+  const countries = useSelector((state: RootState) => state.location.countries);
 
   const { settings } = useUserPreferencesContext();
   const [weekMode, setWeekMode] = useState(true);
@@ -32,7 +32,6 @@ export default function Events() {
   const [month, setMonth] = useState(date.getUTCMonth());
   const [year, setYear] = useState(date.getFullYear());
 
-  const [countries, setCountries] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -40,7 +39,6 @@ export default function Events() {
   // initiate events page
   useEffect(() => {
     const init = async () => {
-      await fetchCountries();
       if (settings) {
         setSelectedCountry(settings.eventPreferredCountry);
         const data = await getCitiesByCountry(settings.eventPreferredCountry);
@@ -135,16 +133,6 @@ export default function Events() {
     };
     updateCities();
   }, [selectedCountry]);
-
-  // fetch available countries
-  const fetchCountries = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/${COUNTRIES_PATH}`);
-      setCountries(await response.json());
-    } catch (error) {
-      console.error("Error fetching countries:", error);
-    }
-  };
 
   const getCitiesByCountry = async (country: string) => {
     try {
