@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store";
 import { addProfile, addEvents } from "../store/eventSlice";
 import type { EventDto } from "../dto/EventDto";
+import BgFx3 from "../components/fx/BgFx3";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
@@ -154,6 +155,7 @@ export default function Events() {
 
   return (
     <div className="events_main">
+      <BgFx3 />
       <div className="events_header">
         <div className="events_header_title">Events</div>
         <div className="events_header_buttons">

@@ -5,7 +5,7 @@ import { useModalContext } from "../../context/ModalContext";
 // @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
-import ToolTip from "../fx/Tooltip";
+import ToolTip from "../../util/Tooltip";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 

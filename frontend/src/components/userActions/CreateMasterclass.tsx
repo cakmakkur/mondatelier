@@ -5,7 +5,7 @@ import { useProfileContext } from "../../context/ProfileContext";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import { useModalContext } from "../../context/ModalContext";
-import ToolTip from "../fx/Tooltip";
+import ToolTip from "../../util/Tooltip";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 

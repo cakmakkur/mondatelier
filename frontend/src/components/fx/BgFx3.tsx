@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 // @ts-expect-error importing canvas class
-import Effect from "./effect1.js";
+import FlowFieldEffect from "./effect3.js";
 
-export default function BgFx1() {
+export default function BgFx3() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const divRef = useRef<HTMLDivElement>(null);
-  const effectRef = useRef<Effect>(null);
+  const effectRef = useRef<FlowFieldEffect>(null);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -13,17 +13,17 @@ export default function BgFx1() {
       const ctx = canvas.getContext("2d");
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      effectRef.current = new Effect(ctx, canvas.width, canvas.height);
-      effectRef.current.animate();
+      effectRef.current = new FlowFieldEffect(ctx, canvas.width, canvas.height);
+      requestAnimationFrame((ts) => effectRef.current?.animate(ts));
     }
 
-    return () => {
-      effectRef.current?.stop();
-    };
+    // return () => {
+    //   effectRef.current?.stop();
+    // };
   }, []);
 
   return (
-    <div ref={divRef} className="canvas_1_wrapper">
+    <div ref={divRef} className="canvas_3_wrapper">
       <canvas ref={canvasRef} className="canvas_1"></canvas>
     </div>
   );

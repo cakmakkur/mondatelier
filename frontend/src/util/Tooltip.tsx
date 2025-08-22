@@ -13,7 +13,6 @@ export default function ToolTip({ text, tooltipPosition }: TooltipProp) {
 
   useEffect(() => {
     wrapperRef.current!.style.opacity = "1";
-    console.log(tooltipPosition);
     if (tooltipPosition === "top") {
       bottomRef.current!.style.opacity = "1";
       wrapperRef.current!.style.top = "0";

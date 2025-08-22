@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 // @ts-expect-error importing canvas class
 import FlowFieldEffect from "./effect2.js";
 
-export default function BgFx1() {
+export default function BgFx2() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const effectRef = useRef<FlowFieldEffect>(null);
 
