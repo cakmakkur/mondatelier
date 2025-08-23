@@ -1,3 +1,9 @@
+interface Media {
+  id: string;
+  path: string;
+  isThumbnail: boolean;
+}
+
 export interface Artwork {
   id: string;
   title: string;
@@ -10,4 +16,5 @@ export interface Artwork {
   duration: number;
   artTypes: string[];
   mediaType: string;
+  medias: Media[];
 }

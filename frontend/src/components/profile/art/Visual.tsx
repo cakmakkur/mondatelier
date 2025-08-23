@@ -3,7 +3,7 @@ import type { Artwork } from "../../../dto/Artwork";
 import formatPrice from "../../../util/formatPrice";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-const MEDIA_URL = import.meta.env.VITE_ARTWORK_MEDIA_PATH;
+const UPLOADS_URL = import.meta.env.VITE_UPLOADS_URL;
 
 export default function Visual({ artworks }: { artworks: Artwork[] }) {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
@@ -21,12 +21,11 @@ export default function Visual({ artworks }: { artworks: Artwork[] }) {
               <div className="artwork_loading1"></div>
             </div>
           )} */}
-
           <img
             className={`column_artwork_image ${
               loadedImages[a.id] ? "profil__img--active" : "hidden"
             }`}
-            src={`${BASE_URL}/${MEDIA_URL}/${a.id}`}
+            src={`${UPLOADS_URL}${a.medias.find((m) => m.isThumbnail)?.path}`}
             alt="artwork image"
             onLoad={() => handleImageLoad(a.id)}
           />

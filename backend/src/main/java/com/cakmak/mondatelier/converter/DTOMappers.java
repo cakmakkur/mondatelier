@@ -4,12 +4,21 @@ import com.cakmak.mondatelier.Model.Freelance;
 import com.cakmak.mondatelier.Model.Masterclass;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.art.Artwork;
+import com.cakmak.mondatelier.Model.art.ArtworkMedia;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.dto.*;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DTOMappers {
     public static ArtworkDTO toArtworkDTO(Artwork artwork, String[] artTypes, String mediaType) {
+        List<MediaDTO> mediaDTOList = new ArrayList<>();
+        for (ArtworkMedia a : artwork.getMediaList()) {
+            MediaDTO dto = new MediaDTO(a.getId(), a.getPath(), a.isThumbnail());
+            mediaDTOList.add(dto);
+        }
         return new ArtworkDTO(
                 artwork.getId(),
                 artwork.getTitle(),
@@ -21,7 +30,8 @@ public class DTOMappers {
                 artwork.getDimensions(),
                 artwork.getDuration(),
                 artTypes,
-                mediaType
+                mediaType,
+                mediaDTOList
         );
     }
 

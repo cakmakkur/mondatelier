@@ -57,6 +57,6 @@ public class Artwork {
     )
     private Set<ArtType> artTypes;
 
-    @OneToMany(mappedBy = "artwork", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "artwork", fetch = FetchType.EAGER)
     private List<ArtworkMedia> mediaList;
 }

@@ -15,8 +15,8 @@ import lombok.Setter;
 public class ArtworkMedia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     private String path;
 

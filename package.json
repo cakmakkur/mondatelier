@@ -1,0 +1,5 @@
+{
+  "devDependencies": {
+    "@types/webaudioapi": "^0.0.27"
+  }
+}

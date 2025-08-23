@@ -1,5 +1,9 @@
 package com.cakmak.mondatelier.dto;
 
+import com.cakmak.mondatelier.Model.art.ArtworkMedia;
+
+import java.util.List;
+
 public record ArtworkDTO (
     String id,
     String title,
@@ -11,5 +15,6 @@ public record ArtworkDTO (
     String dimensions,
     Integer duration,
     String[] artTypes,
-    String mediaType
+    String mediaType,
+    List<MediaDTO> medias
 ) {}
