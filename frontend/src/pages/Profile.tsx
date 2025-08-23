@@ -15,6 +15,10 @@ import CreateEvent from "../components/userActions/CreateEvent";
 import { useModalContext } from "../context/ModalContext";
 import CreateMasterclass from "../components/userActions/CreateMasterclass";
 import CreateFreelance from "../components/userActions/CreateFreelance";
+import Liked from "../components/profile/Liked";
+import Masterclasses from "../components/profile/Masterclasses";
+import Events from "../components/profile/Events";
+import Freelances from "../components/profile/Freelances";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -148,7 +152,7 @@ export default function Profile() {
             {currentProfile.country}
           </div>
           {freelances.length > 0 ? (
-            <div className="profile_detail">
+            <div className="profile_detail profile_detail--freelance">
               <img
                 src="/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
@@ -159,12 +163,16 @@ export default function Profile() {
             ""
           )}
           {currentProfile.personalWebsite ? (
-            <div className="profile_detail">
+            <div className="profile_detail ">
               <img
                 src="/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
-              <a target="_blank" href={currentProfile.personalWebsite}>
+              <a
+                className="profile_detail--website"
+                target="_blank"
+                href={currentProfile.personalWebsite}
+              >
                 {FormatUrl.toUser(currentProfile.personalWebsite)}
               </a>
             </div>
@@ -199,7 +207,7 @@ export default function Profile() {
             ) : (
               <button className="message">
                 <img src="/donate.svg" alt="" />
-                Donate the artist
+                Donate to artist
               </button>
             )}
 
@@ -270,10 +278,18 @@ export default function Profile() {
               <Art />
             ) : section === "collections" ? (
               <Collections />
+            ) : section === "masterclasses" ? (
+              <Masterclasses />
+            ) : section === "events" ? (
+              <Events />
+            ) : section === "freelance" ? (
+              <Freelances />
             ) : section === "followers" ? (
               <Follow followType="followers" />
             ) : section === "following" ? (
               <Follow followType="following" />
+            ) : section === "liked" ? (
+              <Liked />
             ) : null}
           </div>
         </div>

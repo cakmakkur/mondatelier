@@ -87,6 +87,11 @@
 .navBar__title:hover {
   transform: none;
 }
+@media (max-width: 880px) {
+  .navBar__title {
+    display: none;
+  }
+}
 
 .navBar__left {
   display: flex;
@@ -224,6 +229,11 @@
   overflow: hidden;
   position: relative;
 }
+@media (max-width: 750px) {
+  .banner_img_div {
+    height: 180px;
+  }
+}
 
 .banner_edit_button {
   top: 260px;
@@ -245,6 +255,11 @@
   object-fit: cover;
   border: 2px solid white;
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
+}
+@media (max-width: 750px) {
+  .profile_picture {
+    left: calc(50% - 65px);
+  }
 }
 
 .pp_edit_button {
@@ -271,6 +286,13 @@
   padding: 75px 4.5vw 0px;
   position: relative;
 }
+@media (max-width: 750px) {
+  .profile_display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+}
 
 .profile_display--left {
   height: 100vh;
@@ -278,6 +300,11 @@
   display: flex;
   flex-direction: column;
   row-gap: 5px;
+}
+@media (max-width: 750px) {
+  .profile_display--left {
+    align-items: center;
+  }
 }
 
 .profile_display--right {
@@ -304,6 +331,16 @@
 }
 .profile_detail img {
   display: inline-block;
+}
+
+.profile_detail--freelance {
+  color: green;
+  font-weight: 700;
+}
+
+.profile_detail--website:hover {
+  color: rgb(0, 0, 213);
+  cursor: pointer;
 }
 
 .profile_follow {
@@ -374,6 +411,11 @@
   position: relative;
   background: transparent;
 }
+@media (max-width: 1160px) {
+  .display_nav {
+    column-gap: 0px;
+  }
+}
 .display_nav button {
   border: none;
   background-color: transparent;
@@ -382,6 +424,11 @@
 .display_nav button:hover {
   cursor: pointer;
   filter: brightness(1.2);
+}
+@media (max-width: 1160px) {
+  .display_nav button {
+    font-size: 1rem;
+  }
 }
 
 .edit_profile_button {
@@ -644,10 +691,25 @@
 }
 
 .track_main_div {
-  border: 1px solid rgb(57, 24, 4);
+  border: 1px solid rgba(57, 24, 4, 0.442);
   width: 50vw;
   padding: 20px 20px 10px;
   border-radius: 5px;
+  background-color: rgb(247.0307692308, 249.8307692308, 254.5692307692);
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  column-gap: 15px;
+}
+
+.track_thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid black;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
 }
 
 .track_main_li {
@@ -1476,6 +1538,11 @@ input[type=number] {
 .events_header_title {
   color: white;
   font-size: 6rem;
+}
+@media (max-width: 1160px) {
+  .events_header_title {
+    font-size: 3rem;
+  }
 }
 
 .events_weekbox {

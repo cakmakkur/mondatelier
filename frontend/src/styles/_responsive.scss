@@ -1,0 +1,26 @@
+$large: 1160px;
+$medium: 1160px;
+$small: 750px;
+$medium_navbar: 880px;
+
+@mixin S {
+  @media (max-width: $small) {
+    @content;
+  }
+}
+@mixin M {
+  @media (max-width: $medium) {
+    @content;
+  }
+}
+@mixin L {
+  @media (max-width: $large) {
+    @content;
+  }
+}
+
+@mixin Mnb {
+  @media (max-width: $medium_navbar) {
+    @content;
+  }
+}

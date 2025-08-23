@@ -104,7 +104,7 @@ public class EventService {
                 Path filePath = uploadPath.resolve(fileName);
                 Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-                event.setThumbnailUrl("/uploads/events/" + fileName);
+                event.setThumbnailUrl("/events/" + fileName);
 
             } catch (IOException e) {
                 throw new RuntimeException("Failed to save image file", e);

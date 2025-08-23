@@ -26,6 +26,24 @@ export default function Track({
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [peaks, setPeaks] = useState<number[] | null>(null); // precomputed peaks (0..1)
+  const [trackUrl, setTrackUrl] = useState<string | null>(null);
+  const [tnUrl, setTnUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    data.medias.map((media) => {
+      console.log(media);
+      let hasTnUrl = false;
+      if (media.isThumbnail) {
+        setTnUrl(UPLOADS_URL + media.path);
+        hasTnUrl = true;
+      } else {
+        setTrackUrl(UPLOADS_URL + media.path);
+      }
+      if (!hasTnUrl) {
+        setTnUrl("/headphones.svg");
+      }
+    });
+  }, []);
 
   // helper to compute waveform peaks client-side (RMS or max per block)
   const computePeaksFromArrayBuffer = async (
@@ -65,26 +83,33 @@ export default function Track({
   // draw static waveform once (peaks present)
   const drawStaticWaveform = (
     ctx: CanvasRenderingContext2D,
-    peaksArr: number[]
+    peaksArr: number[],
+    progress = 0 // 0..1
   ) => {
     const width = ctx.canvas.width;
     const height = ctx.canvas.height;
     ctx.clearRect(0, 0, width, height);
 
     // background
-    ctx.fillStyle = "rgba(256,256,256,1)";
+    ctx.fillStyle = "rgba(248,250,255,1)";
     ctx.fillRect(0, 0, width, height);
 
     const num = peaksArr.length;
     const barWidth = width / num;
-    ctx.fillStyle = "rgba(110, 61, 2,0.5"; // base waveform color
 
     for (let i = 0; i < num; i++) {
       const v = peaksArr[i];
       const barH = Math.max(1, v * height * 0.9);
       const x = i * barWidth;
       const y = (height - barH) / 2;
-      // draw center-aligned bar (mirrored)
+
+      // choose color based on progress
+      if (i / num <= progress) {
+        ctx.fillStyle = "rgba(110,61,2,0.8)"; // darker for played
+      } else {
+        ctx.fillStyle = "rgba(110,61,2,0.5)"; // lighter for unplayed
+      }
+
       ctx.fillRect(x, y, Math.max(1, barWidth - 1), barH);
     }
   };
@@ -117,7 +142,6 @@ export default function Track({
 
       // if source already created -> don't recreate (avoids InvalidStateError)
       if (!sourceRef.current) {
-        // IMPORTANT: createMediaElementSource will be silent if crossOrigin is wrong.
         sourceRef.current = audioCtxRef.current.createMediaElementSource(
           audioRef.current
         );
@@ -149,8 +173,12 @@ export default function Track({
       const width = canvasRef.current.width;
       const height = canvasRef.current.height;
 
-      // redraw static waveform each frame (or we could draw it once to an offscreen canvas and blit — optimization)
-      if (peaks) drawStaticWaveform(ctx, peaks);
+      const progress = audioRef.current
+        ? audioRef.current.currentTime / duration
+        : 0;
+
+      // redraw static waveform with progress
+      if (peaks) drawStaticWaveform(ctx, peaks, progress);
       else {
         ctx.clearRect(0, 0, width, height);
         ctx.fillStyle = "#111";
@@ -163,7 +191,6 @@ export default function Track({
       const step = Math.floor(dataArrayRef.current.length / bars / 6);
       const barWidth = width / bars;
 
-      // draw overlay bars (semi-transparent)
       for (let i = 0; i < bars; i++) {
         const v = dataArrayRef.current[i * step] / 255;
         const barH = Math.max(2, v * height);
@@ -209,7 +236,7 @@ export default function Track({
     return () => {
       didCancel = true;
     };
-  }, [data.medias, UPLOADS_URL]);
+  }, []);
 
   // set up audio listeners (metadata / timeupdate)
   useEffect(() => {
@@ -271,8 +298,19 @@ export default function Track({
     };
   }, []);
 
+  const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!audioRef.current || !canvasRef.current) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const progress = x / rect.width;
+    audioRef.current.currentTime = progress * duration;
+  };
+
   return (
     <div className="track_main_div">
+      <div className="track_thumbnail">
+        <img src={tnUrl || "/headphones.svg"} alt="" />
+      </div>
       <li className="track_main_li">
         <div className="track_main_li__upper">
           <button
@@ -287,7 +325,12 @@ export default function Track({
           </button>
 
           <div className="track_canvasBox">
-            <canvas ref={canvasRef} width={300} height={40} />
+            <canvas
+              onClick={onCanvasClick}
+              ref={canvasRef}
+              width={300}
+              height={40}
+            />
           </div>
 
           <div className="right">
@@ -311,12 +354,16 @@ export default function Track({
           </span>
         </div>
 
-        <audio
-          ref={audioRef}
-          crossOrigin="anonymous"
-          src={UPLOADS_URL + data.medias[0].path}
-          preload="metadata"
-        />
+        {trackUrl ? (
+          <audio
+            ref={audioRef}
+            crossOrigin="anonymous"
+            src={trackUrl}
+            preload="metadata"
+          />
+        ) : (
+          ""
+        )}
       </li>
     </div>
   );

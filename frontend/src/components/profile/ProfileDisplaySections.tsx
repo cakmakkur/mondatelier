@@ -44,6 +44,7 @@ export default function ProfileDisplaySections({
         "Art",
         "Collections",
         "Masterclasses",
+        "Events",
         "Freelance",
         "Followers",
         "Following",

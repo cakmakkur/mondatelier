@@ -1,3 +1,5 @@
+@import "responsive";
+
 .events_main {
   padding-top: 130px;
 }
@@ -13,6 +15,9 @@
 .events_header_title {
   color: white;
   font-size: 6rem;
+  @include M {
+    font-size: 3rem;
+  }
 }
 
 .events_weekbox {

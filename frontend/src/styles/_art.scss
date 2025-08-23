@@ -239,10 +239,25 @@
 }
 
 .track_main_div {
-  border: 1px solid rgb(57, 24, 4);
+  border: 1px solid rgba(57, 24, 4, 0.442);
   width: 50vw;
   padding: 20px 20px 10px;
   border-radius: 5px;
+  background-color: lighten($space-blue, 6%);
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  column-gap: 15px;
+}
+
+.track_thumbnail {
+  width: 100%;
+  aspect-ratio: 1;
+  border: 1px solid black;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
 }
 
 .track_main_li {
