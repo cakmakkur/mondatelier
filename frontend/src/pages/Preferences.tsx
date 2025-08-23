@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useUserPreferencesContext } from "../context/UserPreferencesContext";
-import type { Settings } from "../dto/Settings";
+import type { Preferences } from "../dto/Settings";
 import { useAuthContext } from "../auth/AuthContext";
 
 export default function Preferences() {
   const { auth } = useAuthContext();
-  const { settings, updateUserPreferences } = useUserPreferencesContext();
-  const [initialSettings, setInitialSettings] = useState<Settings | null>(null);
+  const { settings, setSetting: updateUserPreferences } =
+    useUserPreferencesContext();
+  const [initialSettings, setInitialSettings] = useState<Preferences | null>(
+    null
+  );
 
   useEffect(() => {
     setInitialSettings(settings);
@@ -16,14 +19,14 @@ export default function Preferences() {
     e.preventDefault();
     if (!initialSettings) return;
 
-    (Object.keys(initialSettings) as (keyof Settings)[]).forEach((key) => {
+    (Object.keys(initialSettings) as (keyof Preferences)[]).forEach((key) => {
       const value = initialSettings[key];
       updateUserPreferences(key, value);
     });
   };
 
   const handleChange = (
-    key: keyof Settings,
+    key: keyof Preferences,
     value: string | boolean | number
   ) => {
     updateUserPreferences(key, value);

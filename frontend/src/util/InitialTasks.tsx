@@ -1,6 +1,5 @@
 import { useDispatch } from "react-redux";
 import CookiesConsent from "../components/CookiesConsent";
-import { useUserPreferencesContext } from "../context/UserPreferencesContext";
 import { addCountries } from "../store/locationSlice";
 
 const COUNTRIES_PATH = import.meta.env.VITE_COUNTRIES_PATH;
@@ -17,7 +16,11 @@ export default function InitialTasks() {
     }
   };
 
-  const { settings } = useUserPreferencesContext();
+  const checkCookieConsent = () => {
+    const cookieConsent = localStorage.getItem("cookieConsent");
+    return cookieConsent;
+  };
+
   fetchCountries();
-  return settings?.cookieConsent ? null : <CookiesConsent />;
+  return checkCookieConsent() ? null : <CookiesConsent />;
 }

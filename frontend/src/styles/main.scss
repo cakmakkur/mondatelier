@@ -11,6 +11,7 @@
 @import "popup_auth";
 @import "tooltip";
 @import "events";
+@import "popup_event";
 
 *,
 *::before,
@@ -155,7 +156,7 @@ input:focus {
 }
 
 .modal_backdrop {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 2500;

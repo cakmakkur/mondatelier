@@ -2,26 +2,26 @@ import { createContext, useContext, useEffect, useState } from "react";
 // @ts-expect-error axios context usage
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
-import type { Settings } from "../dto/Settings";
+import type { Preferences } from "../dto/Settings";
 import { defaultSettings } from "../dto/Settings";
 import { useProfileContext } from "./ProfileContext";
 
 const USER_PREFERENCES_PATH = import.meta.env.VITE_USER_PREFERENCES_PATH;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-interface UserPreferencesType {
-  updateUserPreferences: (
-    key: keyof Settings,
+interface SettingsType {
+  setSetting: (
+    key: keyof Preferences,
     value: string | boolean | number
   ) => void;
-  clearUserPreferences: () => void;
-  settings: Settings | null;
+  clearSettings: () => void;
+  settings: Preferences | null;
 }
 
-const UserPreferencesContext = createContext<UserPreferencesType | null>(null);
+const UserPreferencesContext = createContext<SettingsType | null>(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useUserPreferencesContext = (): UserPreferencesType => {
+export const useUserPreferencesContext = (): SettingsType => {
   const context = useContext(UserPreferencesContext);
   if (!context) {
     throw new Error(
@@ -39,7 +39,7 @@ export const UserPreferencesContextProvider = ({
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuthContext();
   const { profile } = useProfileContext();
-  const [settings, setSettings] = useState<Settings | null>(null);
+  const [settings, setSettings] = useState<Preferences | null>(null);
 
   useEffect(() => {
     const fetchUserSettings = async () => {
@@ -63,11 +63,11 @@ export const UserPreferencesContextProvider = ({
         return;
       }
 
-      let storedSettings: Settings | null = null;
+      let storedSettings: Preferences | null = null;
       const storedData = localStorage.getItem("settings");
       if (storedData) storedSettings = JSON.parse(storedData);
 
-      let finalSettings: Settings = defaultSettings;
+      let finalSettings: Preferences = defaultSettings;
 
       if (
         storedSettings &&
@@ -101,7 +101,7 @@ export const UserPreferencesContextProvider = ({
   }, [auth, profile]);
 
   const updateUserPreferences = (
-    key: keyof Settings,
+    key: keyof Preferences,
     value: string | boolean | number
   ) => {
     setSettings((prevSettings) => {
@@ -123,8 +123,8 @@ export const UserPreferencesContextProvider = ({
 
   const value: UserPreferencesType = {
     settings,
-    updateUserPreferences,
-    clearUserPreferences,
+    setPreference: updateUserPreferences,
+    clearPreferences: clearUserPreferences,
   };
 
   return (

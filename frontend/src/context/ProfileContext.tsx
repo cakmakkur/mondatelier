@@ -17,7 +17,7 @@ export const useProfileContext = (): ProfileContextType => {
   const context = useContext(ProfileContext);
   if (!context) {
     throw new Error(
-      "useCookieContext must be used within a CookieContextProvider"
+      "useProfileContext must be used within a ProfileContextProvider"
     );
   }
   return context;

@@ -1,5 +1,3 @@
-// here needed: the last country/city checked is the preferred ones
-
 import { useEffect, useState } from "react";
 import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
 import SingleEvent from "../components/Event";
@@ -10,6 +8,10 @@ import type { RootState } from "../store/store";
 import { addProfile, addEvents } from "../store/eventSlice";
 import type { EventDto } from "../dto/EventDto";
 import BgFx3 from "../components/fx/BgFx3";
+import { useAuthContext } from "../auth/AuthContext";
+import CreateEvent from "../components/userActions/CreateEvent";
+import { useModalContext } from "../context/ModalContext";
+import Login from "../components/auth/Login";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
@@ -18,21 +20,20 @@ const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 
 export default function Events() {
   const dispatch = useDispatch();
+  const { auth } = useAuthContext();
+  const { setComponentState } = useModalContext();
   const profiles = useSelector((state: RootState) => state.event.profiles);
   const events = useSelector((state: RootState) => state.event.events);
   const countries = useSelector((state: RootState) => state.location.countries);
 
   const { settings } = useUserPreferencesContext();
-  const [weekMode, setWeekMode] = useState(true);
 
   const date = new Date();
   const [weekNumber, setWeekNumber] = useState(getWeekNumber());
   const [dateOfISOWeek, setDateOfISOWeek] = useState(
     getDateOfISOWeek(weekNumber, date.getFullYear())
   );
-  const [month, setMonth] = useState(date.getUTCMonth());
-  const [year, setYear] = useState(date.getFullYear());
-
+  const year = date.getFullYear();
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -89,8 +90,8 @@ export default function Events() {
     if (!selectedCity) return;
     dispatch(addEvents([]));
 
-    fetchEvents(weekNumber, month, year, selectedCity);
-  }, [weekMode, weekNumber, month, year, selectedCity]);
+    fetchEvents(weekNumber, selectedCity);
+  }, [weekNumber, selectedCity]);
 
   // clear events when leaving the page
   useEffect(() => {
@@ -104,15 +105,8 @@ export default function Events() {
     setDateOfISOWeek(getDateOfISOWeek(weekNumber, year));
   }, [weekNumber, year]);
 
-  const fetchEvents = async (
-    weekNumber: number,
-    month: number,
-    year: number,
-    selectedCity: string
-  ) => {
-    const urlParams =
-      `city=${selectedCity}&` +
-      (weekMode ? `calenderWeek=${weekNumber}` : `month=${month}&year=${year}`);
+  const fetchEvents = async (weekNumber: number, selectedCity: string) => {
+    const urlParams = `city=${selectedCity}&` + `calenderWeek=${weekNumber}`;
     try {
       const response = await fetch(`${BASE_URL}/${EVENTS_PATH}?${urlParams}`);
       if (response.status === 200) {
@@ -148,9 +142,12 @@ export default function Events() {
     }
   };
 
-  // toggle between week mode and month mode
-  const toggleView = () => {
-    setWeekMode(!weekMode);
+  const handleCreateEventClick = () => {
+    if (auth) {
+      setComponentState(CreateEvent);
+    } else {
+      setComponentState(Login);
+    }
   };
 
   return (
@@ -159,6 +156,12 @@ export default function Events() {
       <div className="events_header">
         <div className="events_header_title">Events</div>
         <div className="events_header_buttons">
+          <img
+            className="events_header_location_img"
+            src="/location.svg"
+            alt=""
+          />
+
           <label className="popup_form__country">
             <select
               value={selectedCountry}
@@ -192,11 +195,13 @@ export default function Events() {
                 ))}
             </select>
           </label>
+
           <button
-            className="events_header_week_month_button"
-            onClick={toggleView}
+            onClick={handleCreateEventClick}
+            className="events_new_event_button"
           >
-            {weekMode ? "Monthly View" : "Weekly View"}
+            <img src="/add.svg" alt="" />
+            Publish a new Event
           </button>
         </div>
       </div>
