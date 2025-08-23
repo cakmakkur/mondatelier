@@ -304,7 +304,11 @@ export default function Track({
         </div>
 
         <div className="track_meta">
-          <div className="title">{data.title}</div>
+          <span className="title">{data.title}</span>
+          <span className="track_meta__separator">&#183;</span>
+          <span>
+            <span>{data.releaseYear}</span>
+          </span>
         </div>
 
         <audio

@@ -697,6 +697,11 @@
   height: 100%;
 }
 
+.track_meta__separator {
+  margin: 0px 10px;
+  font-weight: 700;
+}
+
 .sidebar {
   background-color: rgba(0, 0, 0, 0.748);
   position: fixed;

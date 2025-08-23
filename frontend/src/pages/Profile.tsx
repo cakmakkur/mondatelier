@@ -194,6 +194,14 @@ export default function Profile() {
                 Follow
               </button>
             )}
+            {isOwnProfile ? (
+              ""
+            ) : (
+              <button className="message">
+                <img src="/donate.svg" alt="" />
+                Donate the artist
+              </button>
+            )}
 
             {isOwnProfile ? (
               ""
