@@ -35,7 +35,7 @@ export default function NavBar() {
     if (profile?.profilePicturePath) {
       setPpPath(UPLOADS_PATH + profile.profilePicturePath);
     }
-  }, []);
+  }, [profile]);
 
   return (
     <div

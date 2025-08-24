@@ -19,6 +19,7 @@ import Liked from "../components/profile/Liked";
 import Masterclasses from "../components/profile/Masterclasses";
 import Events from "../components/profile/Events";
 import Freelances from "../components/profile/Freelances";
+import ImageLoader from "../components/userActions/ImageLoader";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -35,6 +36,8 @@ export default function Profile() {
   const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
   const [freelances, setFreelances] = useState<Freelance[]>([]);
   const [masterclasses, setMasterclasses] = useState<Masterclass[]>([]);
+  const [ppPath, setPpPath] = useState("/person.svg");
+  const [bannerPath, setBannerPath] = useState("");
   const { setComponentState } = useModalContext();
 
   const fetchMasterclasses = async () => {
@@ -67,8 +70,44 @@ export default function Profile() {
     }
   };
 
+  const handlePPEditClick = () => {
+    setComponentState(ImageLoader, {
+      targetUrl: `${BASE_URL}/${PROFILE_PATH}/profilePicture/${profileId}`,
+    });
+  };
+
+  const handleBannerEditClick = () => {
+    setComponentState(ImageLoader, {
+      targetUrl: `${BASE_URL}/${PROFILE_PATH}/bannerImage/${profileId}`,
+    });
+  };
+
   useEffect(() => {
-    if (auth?.profileId === profileId) {
+    if (
+      currentProfile &&
+      currentProfile.profilePicturePath !== null &&
+      currentProfile.profilePicturePath !== ""
+    ) {
+      setPpPath(`${UPLOADS_PATH}${profile?.profilePicturePath}`);
+    } else {
+      setPpPath("/person.svg");
+    }
+  }, [profile, currentProfile]);
+
+  useEffect(() => {
+    if (
+      currentProfile &&
+      currentProfile.bannerPath !== null &&
+      currentProfile.bannerPath !== ""
+    ) {
+      setBannerPath(`${UPLOADS_PATH}${profile?.bannerPath}`);
+    } else {
+      setBannerPath("/add_banner.png");
+    }
+  }, [profile, currentProfile]);
+
+  useEffect(() => {
+    if (profile?.id === profileId) {
       setIsOwnProfile(true);
       if (profile) {
         setCurrentProfile(profile);
@@ -81,7 +120,7 @@ export default function Profile() {
     fetchMasterclasses();
     fetchFreelances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth?.profileId, profileId]);
+  }, [auth, profileId]);
 
   const fetchProfile = async () => {
     try {
@@ -101,23 +140,25 @@ export default function Profile() {
     <div className="profile_main_div">
       <div className="banner">
         <div className="banner_img_div">
-          <img src={`${UPLOADS_PATH}${currentProfile?.bannerPath}`} alt="" />
+          <img src={bannerPath} alt="" />
         </div>
         {isOwnProfile ? (
-          <button className="banner_edit_button profile_edit_button">
+          <button
+            onClick={handleBannerEditClick}
+            className="banner_edit_button profile_edit_button"
+          >
             <img src="/edit.svg" alt="" />
           </button>
         ) : (
           ""
         )}
         <div className="profile_picture_div">
-          <img
-            className="profile_picture"
-            src={`${UPLOADS_PATH}${currentProfile?.profilePicturePath}`}
-            alt=""
-          />
+          <img className="profile_picture" src={ppPath} alt="" />
           {isOwnProfile ? (
-            <button className="pp_edit_button profile_edit_button">
+            <button
+              onClick={handlePPEditClick}
+              className="pp_edit_button profile_edit_button"
+            >
               <img src="/edit.svg" alt="" />
             </button>
           ) : (

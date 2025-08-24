@@ -31,7 +31,13 @@
   right: 80px;
   z-index: 10;
   background-color: white;
-  border: 1px dotted red;
+  border: 1px dotted rgb(0, 0, 0);
+  transition: 0.1s;
+  &:hover {
+    cursor: pointer;
+    background-color: $space-blue;
+    transform: scale(1.05);
+  }
 }
 
 .profile_picture {
@@ -54,6 +60,12 @@
 .pp_edit_button {
   bottom: -65px;
   left: 140px;
+  transition: 0.1s;
+  &:hover {
+    cursor: pointer;
+    background-color: $space-blue;
+    transform: scale(1.05);
+  }
 }
 
 .profile_edit_button {
