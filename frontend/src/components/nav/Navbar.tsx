@@ -10,15 +10,16 @@ import { useProfileContext } from "../../context/ProfileContext";
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 
 export default function NavBar() {
-  const location = useLocation();
+  // const location = useLocation();
   const { auth } = useAuthContext();
   const { Component, setComponentState } = useModalContext();
   const [isTransparent, setIsTransparent] = useState(false);
   const { profile } = useProfileContext();
+  const [ppPath, setPpPath] = useState("/person.svg");
 
-  useEffect(() => {
-    setIsTransparent(location.pathname !== "/");
-  }, [location.pathname]);
+  // useEffect(() => {
+  //   setIsTransparent(location.pathname !== "/");
+  // }, [location.pathname]);
 
   const toggleMenu = () => {
     if (Component === Sidebar) {
@@ -29,6 +30,12 @@ export default function NavBar() {
       setComponentState(Sidebar, {});
     }
   };
+
+  useEffect(() => {
+    if (profile?.profilePicturePath) {
+      setPpPath(UPLOADS_PATH + profile.profilePicturePath);
+    }
+  }, []);
 
   return (
     <div
@@ -101,7 +108,7 @@ export default function NavBar() {
           <Link className="navBar_nav" to={`/profile/${profile.id}`}>
             <img
               className="account_circle"
-              src={`${UPLOADS_PATH}${profile.profilePicturePath}`}
+              src={ppPath}
               alt="profile picture of the user"
             />
           </Link>

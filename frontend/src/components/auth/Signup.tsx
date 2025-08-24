@@ -18,6 +18,7 @@ const defaultSignupBody: SignupDto = {
   dob: new Date(),
   country: "",
   showRealName: false,
+  profileType: 1, // 1 = freemium, 2 = premium, 3 = platinum
 };
 
 /**
@@ -66,6 +67,7 @@ export default function Signup() {
   const formRef = useRef<HTMLFormElement>(null);
 
   const [focus, setFocus] = useState("");
+  const requestRef = useRef<boolean>(false);
 
   useEffect(() => {
     emailPhRef.current?.classList.remove("form__ph__text--active");
@@ -117,6 +119,7 @@ export default function Signup() {
 
   const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupBody((prev) => {
+      console.log(e.target.value);
       return { ...prev, email: e.target.value.trim() };
     });
   };
@@ -177,7 +180,9 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    // disable further submit while submitting
+    if (requestRef.current) return;
+    requestRef.current = true;
     try {
       const response = await signup(signupBody);
       if (response && response.status === 200) {
@@ -195,6 +200,8 @@ export default function Signup() {
     } catch (error) {
       console.error("Login failed:", error);
       setComponentState(undefined);
+    } finally {
+      requestRef.current = false;
     }
   };
 

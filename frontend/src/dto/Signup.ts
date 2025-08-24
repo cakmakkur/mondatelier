@@ -8,4 +8,5 @@ export interface SignupDto {
   dob: Date;
   country: string;
   showRealName: boolean;
+  profileType: number;
 }

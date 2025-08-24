@@ -693,12 +693,13 @@
 .track_main_div {
   border: 1px solid rgba(57, 24, 4, 0.442);
   width: 50vw;
-  padding: 20px 20px 10px;
+  padding: 18px 20px 7px;
   border-radius: 5px;
   background-color: rgb(247.0307692308, 249.8307692308, 254.5692307692);
   display: grid;
   grid-template-columns: 60px 1fr;
   column-gap: 15px;
+  box-shadow: inset 0px 0px 6px 1px rgba(0, 0, 0, 0.452);
 }
 
 .track_thumbnail {
@@ -716,6 +717,12 @@
   display: flex;
   flex-direction: column;
   row-gap: 10px;
+}
+
+.track_meta {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .track_main_li__upper {
@@ -762,6 +769,37 @@
 .track_meta__separator {
   margin: 0px 10px;
   font-weight: 700;
+}
+
+.track_meta_ry {
+  color: rgb(58, 58, 58);
+  font-size: 0.9rem;
+}
+
+.art_meta_like {
+  display: inline;
+  width: 20px;
+  aspect-ratio: 1;
+}
+.art_meta_like:hover {
+  cursor: pointer;
+}
+
+.track_meta_delete {
+  border: none;
+  background: none;
+  color: red;
+}
+.track_meta_delete img {
+  width: 19px;
+  aspect-ratio: 1;
+  display: inline;
+  transform: translateY(3px);
+}
+.track_meta_delete:hover {
+  cursor: pointer;
+  color: red;
+  transform: scale(1.02);
 }
 
 .sidebar {

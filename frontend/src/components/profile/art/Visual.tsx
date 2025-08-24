@@ -1,12 +1,32 @@
 import { useState } from "react";
 import type { Artwork } from "../../../dto/Artwork";
 import formatPrice from "../../../util/formatPrice";
+import useAxiosPrivate from "../../../auth/useAxiosPrivate";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 const UPLOADS_URL = import.meta.env.VITE_UPLOADS_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+const ARTWORK_PATH = import.meta.env.VITE_ARTWORK_PATH;
 
 export default function Visual({ artworks }: { artworks: Artwork[] }) {
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
+  const axiosPrivate = useAxiosPrivate();
+
+  const handleLikeClick = async (id: string) => {
+    try {
+      const response = await axiosPrivate.post(
+        `${BASE_URL}/${ARTWORK_PATH}/like/${id}`
+      );
+      if (response.status === 200) {
+        console.log("liked");
+        return response.data;
+      } else {
+        // handle error
+      }
+    } catch (error) {
+      console.error(error);
+      // handle error
+    }
+  };
 
   const handleImageLoad = (id: string) => {
     setLoadedImages((prev) => ({ ...prev, [id]: true }));
@@ -39,6 +59,14 @@ export default function Visual({ artworks }: { artworks: Artwork[] }) {
               <div className="art_label">Absdfsd</div>
               <div className="art_label">Abstract Impression</div>
               <div className="art_label">SDNjn sdlfk</div>
+            </div>
+            <div>
+              <img
+                onClick={() => handleLikeClick(a.id)}
+                className="art_meta_like"
+                src="/thumb_up.svg"
+                alt=""
+              />
             </div>
           </div>
         </div>

@@ -112,12 +112,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       });
       if (response.status === 200) {
         clearTimeout(timeout);
-        setAuth({
-          userId: response.data.userId,
-          roles: [1000],
-          accessToken: response.data.token,
-          profileId: response.data.profileId,
-        });
+        login({ email: credentials.email, password: credentials.password });
       }
       return response;
     } catch (error) {
