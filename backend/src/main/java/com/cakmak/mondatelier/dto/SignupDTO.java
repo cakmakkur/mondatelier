@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.dto;
 
+import com.cakmak.mondatelier.enums.ProfileTypes;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -26,5 +27,6 @@ public record SignupDTO(
         Date dob,
         @Size(max = 25)
         String country,
-        Boolean showRealName
+        Boolean showRealName,
+        ProfileTypes profileType
 ) {}

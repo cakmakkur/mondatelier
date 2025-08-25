@@ -19,7 +19,7 @@ import Liked from "../components/profile/Liked";
 import Masterclasses from "../components/profile/Masterclasses";
 import Events from "../components/profile/Events";
 import Freelances from "../components/profile/Freelances";
-import ImageLoader from "../components/userActions/ImageLoader";
+import ImageUploader from "../components/userActions/ImageUploader";
 
 const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
 const BASE_URL = import.meta.env.VITE_BASE_URL;
@@ -71,13 +71,13 @@ export default function Profile() {
   };
 
   const handlePPEditClick = () => {
-    setComponentState(ImageLoader, {
+    setComponentState(ImageUploader, {
       targetUrl: `${BASE_URL}/${PROFILE_PATH}/profilePicture/${profileId}`,
     });
   };
 
   const handleBannerEditClick = () => {
-    setComponentState(ImageLoader, {
+    setComponentState(ImageUploader, {
       targetUrl: `${BASE_URL}/${PROFILE_PATH}/bannerImage/${profileId}`,
     });
   };

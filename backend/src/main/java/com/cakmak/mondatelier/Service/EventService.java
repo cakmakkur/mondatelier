@@ -12,6 +12,7 @@ import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.util.SanitizeInput;
+import com.cakmak.mondatelier.util.UploadImage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -93,22 +94,8 @@ public class EventService {
 
         // Save image if exists
         if (imageFile != null && !imageFile.isEmpty()) {
-            try {
-                String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
-                Path uploadPath = Paths.get(uploadDir, "events");
-
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(imageFile.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-                event.setThumbnailUrl("/events/" + fileName);
-
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to save image file", e);
-            }
+            String fileName = UploadImage.upload(imageFile, uploadDir, "events");
+            event.setThumbnailUrl("/events/" + fileName);
         }
 
         eventRepository.save(event); // save event regardless of image

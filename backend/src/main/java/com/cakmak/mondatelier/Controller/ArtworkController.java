@@ -1,12 +1,12 @@
 package com.cakmak.mondatelier.Controller;
 
+import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.ArtworkService;
 import com.cakmak.mondatelier.dto.ArtworkDTO;
+import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/art")
@@ -33,6 +33,20 @@ public class ArtworkController {
     ) {
         Page<ArtworkDTO> artworkPage = artworkService.getArtworksByArtist(profileId, page, size, sortBy);
         return ResponseEntity.ok(artworkPage);
+    }
+
+    @PostMapping("/like/{id}")
+    public ResponseEntity<Void> likeArtwork(@PathVariable String id) {
+        User currentUser = AuthUtil.getCurrentUser();
+        artworkService.likeArtwork(id,currentUser);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/unlike/{id}")
+    public ResponseEntity<Void> unlikeArtwork(@PathVariable String id) {
+        User currentUser = AuthUtil.getCurrentUser();
+        artworkService.unlikeArtwork(id,currentUser);
+        return ResponseEntity.ok().build();
     }
 }
 

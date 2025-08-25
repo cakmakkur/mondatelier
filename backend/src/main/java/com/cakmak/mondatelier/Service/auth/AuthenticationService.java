@@ -11,6 +11,7 @@ import com.cakmak.mondatelier.converter.UserTypesConverter;
 import com.cakmak.mondatelier.dto.SignupDTO;
 import com.cakmak.mondatelier.dto.auth.LoginDTO;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
+import com.cakmak.mondatelier.enums.ProfileTypes;
 import com.cakmak.mondatelier.util.SanitizeInput;
 import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,10 +59,10 @@ public class AuthenticationService {
                 // see why inactive...
             }
         }
-        user.setEmail(SanitizeInput.sanitize(signupDTO.email()));
+        user.setEmail(signupDTO.email());
         user.setPassword(passwordEncoder.encode(signupDTO.password()));
         user.setUserType(new UserTypesConverter().convertToEntityAttribute(signupDTO.userType()));
-        user.setIsActive(false);
+        user.setIsActive(true);
         userRepository.save(user);
 
         // create profile
@@ -75,8 +76,10 @@ public class AuthenticationService {
         profile.setDob(signupDTO.dob());
         profile.setShowRealName(signupDTO.showRealName());
         profile.setCountry(countryRepository.findByName(SanitizeInput.sanitize(signupDTO.country())));
-        user.setIsActive(false);
+        profile.setUser(user);
+        profile.setType(ProfileTypes.fromValue(signupDTO.userType()));
         profileRepository.save(profile);
+        user.setProfile(profile);
 
         // send verification email.
     }

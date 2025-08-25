@@ -37,7 +37,7 @@ public class User implements UserDetails {
     private String password;
 
     @CreationTimestamp
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false, nullable = false)
     private Date createdAt;
 
     @UpdateTimestamp
