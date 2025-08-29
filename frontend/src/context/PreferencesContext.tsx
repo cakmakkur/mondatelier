@@ -53,7 +53,8 @@ export const PreferencesContextProvider = ({
         if (response.status === 200) {
           return response.data;
         }
-      } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
         if (error.status === 404) return null;
         console.error("Error fetching preferences:", error);
         return null;

@@ -91,9 +91,10 @@ export default function Login() {
         className="auth_form_div"
         onSubmit={(e) => handleClick(e)}
       >
-        <h1 style={{ color: "black", marginBottom: "30px" }}>
-          Log in to your account
-        </h1>
+        <div className="auth_popup_header">
+          <img className="auth_popup_favicon" src="favicon.png" alt="" />
+          <h1>Login to your account</h1>
+        </div>
 
         <label htmlFor="email" className="login__label">
           <input

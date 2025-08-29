@@ -11,6 +11,7 @@ interface AuthState {
 }
 
 type AuthContextType = {
+  setAuth: React.Dispatch<React.SetStateAction<AuthState | undefined>>;
   auth: AuthState | undefined;
   login: (
     credentials: LoginDto
@@ -138,6 +139,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     signup,
     persist,
     setPersist,
+    setAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
