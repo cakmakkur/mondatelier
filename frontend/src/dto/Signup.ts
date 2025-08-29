@@ -1,12 +1,15 @@
+import type { ProfileTypes } from "./ProfileTypes";
+import type { UserTypes } from "./UserTypes";
+
 export interface SignupDto {
   email: string;
   password: string;
-  userType: number;
+  userType: UserTypes;
   firstname: string;
   lastname: string;
   profileName: string;
   dob: Date;
   country: string;
   showRealName: boolean;
-  profileType: number;
+  profileType: ProfileTypes;
 }

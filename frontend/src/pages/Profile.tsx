@@ -113,7 +113,7 @@ export default function Profile() {
     fetchMasterclasses();
     fetchFreelances();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auth, profileId]);
+  }, [auth, profileId, profile]);
 
   const fetchProfile = async () => {
     try {
@@ -122,8 +122,6 @@ export default function Profile() {
       setCurrentProfile(data);
       setBannerPath(`${UPLOADS_PATH}${data.bannerPath}`);
       setPpPath(`${UPLOADS_PATH}${data.profilePicturePath}`);
-      console.log(UPLOADS_PATH + data.bannerPath);
-      console.log(UPLOADS_PATH + data.profilePicturePath);
     } catch (error) {
       console.error("Error fetching profile:", error);
     }

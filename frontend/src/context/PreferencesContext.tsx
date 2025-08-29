@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 // @ts-expect-error axios context usage
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
@@ -41,6 +41,8 @@ export const PreferencesContextProvider = ({
   const { profile } = useProfileContext();
   const [settings, setSettings] = useState<Preferences | null>(null);
 
+  const alreadyFetchedFor = useRef("");
+
   useEffect(() => {
     const fetchPreferences = async () => {
       if (!auth) return;
@@ -52,10 +54,23 @@ export const PreferencesContextProvider = ({
           return response.data;
         }
       } catch (error) {
+        if (error.status === 404) return null;
         console.error("Error fetching preferences:", error);
         return null;
       }
     };
+    /**
+     * Initialize the preferences context state.
+     *
+     * If the user is not logged in, the state is set to the default preferences.
+     * If the user is logged in, the state is set to the stored preferences in local storage,
+     * if they exist. If the stored preferences do not exist, or if the stored
+     * preferences are outdated, the state is set to the fetched preferences from the server.
+     * If the fetched preferences do not exist, the state is set to the default preferences.
+     *
+     * If the user has a profile, and the stored preferences do not have a preferred city,
+     * the preferred city is set to the user's country.
+     */
 
     const initializePreferencesContext = async () => {
       if (!auth) {
@@ -81,15 +96,20 @@ export const PreferencesContextProvider = ({
           finalSettings.preferredCountry = profile.country;
         }
       } else {
+        if (alreadyFetchedFor.current === auth.profileId) return;
         const fetchedPreferences = await fetchPreferences();
+        alreadyFetchedFor.current = auth.profileId;
+
         if (fetchedPreferences) {
           finalSettings = { ...defaultPreferences, ...fetchedPreferences };
           if (profile) finalSettings.profileId = profile.id;
         } else {
-          finalSettings = {
-            ...defaultPreferences,
-            preferredCountry: profile!.country,
-          };
+          if (profile) {
+            finalSettings = {
+              ...defaultPreferences,
+              preferredCountry: profile!.country,
+            };
+          }
         }
       }
       setSettings(finalSettings);

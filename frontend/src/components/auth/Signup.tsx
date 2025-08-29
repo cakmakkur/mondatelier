@@ -7,18 +7,20 @@ import emailValidator from "email-validator";
 import Login from "./Login";
 import BgFx1 from "../fx/BgFx1";
 import type { RootState } from "../../store/store";
+import type { UserTypes } from "../../dto/UserTypes";
 
+// TODO handle the user type and profile type correctly here
 const defaultSignupBody: SignupDto = {
   email: "",
   password: "",
-  userType: 1,
+  userType: "PERSONAL",
   firstname: "",
   lastname: "",
   profileName: "",
   dob: new Date(),
   country: "",
   showRealName: false,
-  profileType: 1, // 1 = freemium, 2 = premium, 3 = platinum
+  profileType: "FREEMIUM",
 };
 
 /**
@@ -119,7 +121,6 @@ export default function Signup() {
 
   const handleSetEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupBody((prev) => {
-      console.log(e.target.value);
       return { ...prev, email: e.target.value.trim() };
     });
   };
@@ -132,6 +133,12 @@ export default function Signup() {
 
   const handleSetRepeatPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setRepeatPassword(e.target.value);
+  };
+
+  const handleUserTypeSelection = (type: UserTypes) => {
+    setSignupBody((prev) => {
+      return { ...prev, userType: type };
+    });
   };
 
   //**
@@ -223,9 +230,102 @@ export default function Signup() {
       <div ref={sliderDivRef} className="auth_slider_div">
         {/* First Form */}
         <form className="auth_form_div">
-          <h1>Create an account</h1>
-          <label htmlFor="userType"></label>
-          <label htmlFor="email" className="login__label">
+          <div className="auth_popup_header">
+            <img className="auth_popup_favicon" src="favicon.png" alt="" />
+            <h1>Create an account</h1>
+          </div>
+          <div className="auth_popup_separator"></div>
+          <div className="type_of_user_title">
+            <span className="type_of_user_title_span">
+              What type of user are you?
+            </span>
+            <span className="type_of_user_title_info">
+              <img src="/info.svg" alt="" />
+            </span>
+          </div>
+          <div className="user_type_div">
+            <div
+              onClick={() => handleUserTypeSelection("PERSONAL")}
+              className="user_type_div_wrapper"
+              style={
+                signupBody.userType === "PERSONAL"
+                  ? {
+                      border: "2px solid darkorange",
+                      backgroundColor: "#FFFFCF",
+                    }
+                  : {}
+              }
+            >
+              <img src="/single.svg" alt="" />
+            </div>
+            <div
+              onClick={() => handleUserTypeSelection("COLLECTIVE")}
+              className="user_type_div_wrapper"
+              style={
+                signupBody.userType === "COLLECTIVE"
+                  ? {
+                      border: "2px solid darkorange",
+                      backgroundColor: "#FFFFCF",
+                    }
+                  : {}
+              }
+            >
+              <img src="/collective.svg" alt="" />
+            </div>
+            <div
+              onClick={() => handleUserTypeSelection("BUSINESS")}
+              className="user_type_div_wrapper"
+              style={
+                signupBody.userType === "BUSINESS"
+                  ? {
+                      border: "2px solid darkorange",
+                      backgroundColor: "#FFFFCF",
+                    }
+                  : {}
+              }
+            >
+              <img src="/business.svg" alt="" />
+            </div>
+          </div>
+          <div className="user_type_label_div">
+            <div>
+              <span
+                style={
+                  signupBody.userType === "PERSONAL"
+                    ? { color: "darkorange", fontWeight: "bold" }
+                    : {}
+                }
+                onClick={() => handleUserTypeSelection("PERSONAL")}
+              >
+                Personal
+              </span>
+            </div>
+            <div>
+              <span
+                style={
+                  signupBody.userType === "COLLECTIVE"
+                    ? { color: "darkorange", fontWeight: "bold" }
+                    : {}
+                }
+              >
+                Collective
+              </span>
+            </div>
+            <div>
+              <span
+                style={
+                  signupBody.userType === "BUSINESS"
+                    ? { color: "darkorange", fontWeight: "bold" }
+                    : {}
+                }
+              >
+                Business
+              </span>
+            </div>
+          </div>
+          <div className="auth_popup_separator"></div>
+
+          <label htmlFor="email" className="login__label login__label__email">
             <input
               className="login__input"
               type="text"
@@ -265,7 +365,6 @@ export default function Signup() {
           {passwordError && (
             <span className="error__message__span">{passwordError}</span>
           )}
-
           <label htmlFor="repeatPassword" className="login__label">
             <input
               className="login__input"
@@ -297,7 +396,7 @@ export default function Signup() {
           </div>
           <div
             onClick={(e) => handleAccountPresent(e)}
-            style={{ width: "300px", marginTop: "50px" }}
+            style={{ width: "300px", marginTop: "25px" }}
           >
             Already have an account?
             <button className="already_have_account_btn">Login</button>

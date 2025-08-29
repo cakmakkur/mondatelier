@@ -53,12 +53,16 @@ public class DTOMappers {
             String token,
             long expiresIn,
             String userId,
-            String profileId) {
+            String profileId,
+            String profileType,
+            String userType) {
         LoginResponse lr = new LoginResponse();
         lr.setExpiresIn(expiresIn);
         lr.setUserId(userId);
         lr.setProfileId(profileId);
         lr.setToken(token);
+        lr.setProfileType(profileType);
+        lr.setUserType(userType);
         return lr;
     }
 

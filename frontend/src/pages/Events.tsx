@@ -42,12 +42,10 @@ export default function Events() {
   useEffect(() => {
     const init = async () => {
       if (settings) {
-        setSelectedCountry(settings.eventPreferredCountry);
-        const data = await getCitiesByCountry(settings.eventPreferredCountry);
+        setSelectedCountry(settings.preferredCountry);
+        const data = await getCitiesByCountry(settings.preferredCountry);
         setSelectedCity(
-          settings.eventPreferredCity === ""
-            ? data[0]
-            : settings.eventPreferredCity
+          settings.preferredCity === "" ? data[0] : settings.preferredCity
         );
       }
     };
@@ -72,15 +70,13 @@ export default function Events() {
   useEffect(() => {
     if (settings) {
       const updateLocation = async () => {
-        setSelectedCountry(settings.eventPreferredCountry);
-        const data = await getCitiesByCountry(settings.eventPreferredCountry);
+        setSelectedCountry(settings.preferredCountry);
+        const data = await getCitiesByCountry(settings.preferredCountry);
         setSelectedCity(
-          settings.eventPreferredCity === ""
-            ? data[0]
-            : settings.eventPreferredCity
+          settings.preferredCity === "" ? data[0] : settings.preferredCity
         );
       };
-      if (settings.eventPreferredCountry !== "") {
+      if (settings.preferredCountry !== "") {
         updateLocation();
       }
     }

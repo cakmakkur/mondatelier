@@ -7,13 +7,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 
 public class UploadImage {
     // returns the name of the saved file
     public static String upload(MultipartFile imageFile, String uploadDir, String uploadSubDir) {
         System.out.println("Uploading image");
         try {
-            String fileName = System.currentTimeMillis() + "_" + imageFile.getOriginalFilename();
+            String fileName = System.currentTimeMillis() + "_" + Objects.requireNonNull(imageFile.getOriginalFilename()).replaceAll("[^A-Za-z]", "");;
             Path uploadPath = Paths.get(uploadDir, uploadSubDir);
 
             System.out.println(uploadPath);

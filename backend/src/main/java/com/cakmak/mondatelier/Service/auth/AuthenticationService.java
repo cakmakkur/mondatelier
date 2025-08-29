@@ -8,7 +8,7 @@ import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.Repository.UserRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.converter.UserTypesConverter;
-import com.cakmak.mondatelier.dto.SignupDTO;
+import com.cakmak.mondatelier.dto.auth.SignupDTO;
 import com.cakmak.mondatelier.dto.auth.LoginDTO;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 import com.cakmak.mondatelier.enums.ProfileTypes;
@@ -100,23 +100,10 @@ public class AuthenticationService {
                 jwtToken,
                 jwtService.getExpirationTime(),
                 authenticatedUser.getId(),
-                authenticatedUser.getProfile().getId()
+                authenticatedUser.getProfile().getId(),
+                authenticatedUser.getProfile().getType().toString(),
+                authenticatedUser.getUserType().toString()
         );
     }
 
-    @Transactional
-    public LoginResponse verify (LoginDTO input) {
-        // check token for validity
-        User user;
-        if (userRepository.findByEmail(SanitizeInput.sanitize(input.email())).isPresent()) {
-            user = userRepository.findByEmail(SanitizeInput.sanitize(input.email())).get();
-            user.setIsActive(true);
-            user.getProfile().setActive(true);
-            userRepository.save(user);
-            return authenticate(input);
-        } else {
-            // log error here
-            throw new RuntimeException("Error verifying the account");
-        }
-    }
 }

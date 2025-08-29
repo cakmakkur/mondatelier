@@ -6,7 +6,6 @@ import { useProfileContext } from "../../context/ProfileContext";
 
 interface Response {
   status: string;
-
   message: string;
 }
 export default function ImageUploader({ targetUrl }: { targetUrl: string }) {
@@ -98,7 +97,6 @@ export default function ImageUploader({ targetUrl }: { targetUrl: string }) {
             </span>
             <button
               onClick={(e) => {
-                console.log("hi");
                 e.stopPropagation();
                 overlayRef.current!.style.opacity = "0";
                 overlayRef.current?.classList.remove(

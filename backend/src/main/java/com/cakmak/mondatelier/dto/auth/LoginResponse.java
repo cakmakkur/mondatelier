@@ -10,4 +10,6 @@ public class LoginResponse {
     private long expiresIn;
     private String userId;
     private String profileId;
+    private String profileType;
+    private String userType;
 }

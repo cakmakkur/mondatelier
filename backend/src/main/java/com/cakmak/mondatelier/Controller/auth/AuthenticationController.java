@@ -1,7 +1,7 @@
 package com.cakmak.mondatelier.Controller.auth;
 
 import com.cakmak.mondatelier.Service.auth.AuthenticationService;
-import com.cakmak.mondatelier.dto.SignupDTO;
+import com.cakmak.mondatelier.dto.auth.SignupDTO;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 import com.cakmak.mondatelier.dto.auth.LoginDTO;
 import jakarta.validation.Valid;
@@ -33,9 +33,4 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<LoginResponse> verify(@Valid @RequestBody LoginDTO loginDto) {
-        LoginResponse loginResponse = authenticationService.verify(loginDto);
-        return ResponseEntity.ok(loginResponse);
-    }
 }

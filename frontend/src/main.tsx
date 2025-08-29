@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 import "./main.css";
 import { AuthContextProvider } from "./auth/AuthContext.tsx";
-import { UserPreferencesContextProvider } from "./context/PreferencesContext.tsx";
+import { PreferencesContextProvider } from "./context/PreferencesContext.tsx";
 import { ProfileContextProvider } from "./context/ProfileContext.tsx";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -14,11 +14,11 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <AuthContextProvider>
         <ProfileContextProvider>
-          <UserPreferencesContextProvider>
+          <PreferencesContextProvider>
             <BrowserRouter>
               <App />
             </BrowserRouter>
-          </UserPreferencesContextProvider>
+          </PreferencesContextProvider>
         </ProfileContextProvider>
       </AuthContextProvider>
     </Provider>

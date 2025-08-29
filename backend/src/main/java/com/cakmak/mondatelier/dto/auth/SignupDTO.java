@@ -1,4 +1,4 @@
-package com.cakmak.mondatelier.dto;
+package com.cakmak.mondatelier.dto.auth;
 
 import com.cakmak.mondatelier.enums.ProfileTypes;
 import jakarta.validation.constraints.Email;
