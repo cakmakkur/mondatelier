@@ -12,7 +12,6 @@ import type { RootState } from "../../store/store";
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function CreateMasterclass() {
   const { profile } = useProfileContext();
@@ -113,7 +112,7 @@ export default function CreateMasterclass() {
 
     try {
       const response = await axiosPrivate.post(
-        `${BASE_URL}/${MASTERCLASS_PATH}`,
+        `${MASTERCLASS_PATH}`,
         formData,
         { headers }
       );
@@ -142,7 +141,7 @@ export default function CreateMasterclass() {
 
   const fetchArtCategories = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/${CATEGORIES_PATH}/all`);
+      const response = await fetch(`${CATEGORIES_PATH}/all`);
       setArtCategories(await response.json());
     } catch (error) {
       console.error("Error fetching art categories:", error);
@@ -151,9 +150,7 @@ export default function CreateMasterclass() {
 
   const getCitiesByCountry = async (country: string) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/${CITIES_PATH}/by_country/${country}`
-      );
+      const response = await fetch(`${CITIES_PATH}/by_country/${country}`);
       const data = await response.json();
       setCities(data);
       return data;

@@ -11,7 +11,6 @@ import type { RootState } from "../../store/store";
 
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function CreateEvent() {
   const { profile } = useProfileContext();
@@ -95,11 +94,9 @@ export default function CreateEvent() {
     };
 
     try {
-      const response = await axiosPrivate.post(
-        `${BASE_URL}/${EVENTS_PATH}`,
-        formData,
-        { headers }
-      );
+      const response = await axiosPrivate.post(`${EVENTS_PATH}`, formData, {
+        headers,
+      });
       if (response.status === 200) {
         // return success
         overlayRef.current!.style.opacity = "1";
@@ -125,9 +122,7 @@ export default function CreateEvent() {
 
   const getCitiesByCountry = async (country: string) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/${CITIES_PATH}/by_country/${country}`
-      );
+      const response = await fetch(`${CITIES_PATH}/by_country/${country}`);
       const data = await response.json();
       setCities(data);
       return data;

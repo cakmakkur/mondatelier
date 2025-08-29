@@ -65,6 +65,7 @@ export default function ImageUploader({ targetUrl }: { targetUrl: string }) {
         });
       }
     } catch (error) {
+      console.warn(error);
       overlayRef.current?.classList.add(
         "image_popup_wrapper__response_overlay--open"
       );

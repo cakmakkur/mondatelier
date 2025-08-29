@@ -58,15 +58,7 @@ public class EventService {
         City city = cityRepository.findByName(cityName)
                 .orElseThrow(() -> new RuntimeException("City not found"));
 
-        List<Event> events;
-
-        if (calendarWeek != null && year != null) {
-            events = eventRepository.findByCityAndWeekNumber(city, calendarWeek, year);
-        } else if (month != null && year != null) {
-            events = eventRepository.findByCityAndMonthYear(city, month, year);
-        } else {
-            events = eventRepository.findByCity(city);
-        }
+        List<Event> events = eventRepository.findByCityAndWeekNumber(city.getId(), calendarWeek);
 
         return events.stream()
                 .map(DTOMappers::toEventDTO)

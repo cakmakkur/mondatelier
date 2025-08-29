@@ -1,22 +1,15 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Model.User;
+import com.cakmak.mondatelier.Repository.EventRepository;
 import com.cakmak.mondatelier.Service.EventService;
-import com.cakmak.mondatelier.dto.ArtworkDTO;
+import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
-import com.cakmak.mondatelier.util.AuthUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.List;
 
 @RestController
@@ -24,9 +17,11 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final EventRepository eventRepository;
 
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, EventRepository eventRepository) {
         this.eventService = eventService;
+        this.eventRepository = eventRepository;
     }
 
     @GetMapping("/{id}")
@@ -35,6 +30,7 @@ public class EventController {
         return ResponseEntity.ok(eventDTO);
     };
 
+    //doesnt work correctly
     @GetMapping
     public ResponseEntity<List<EventDTO>> getEvents(
         @RequestParam String city,
@@ -54,6 +50,20 @@ public class EventController {
     ) {
         eventService.createEvent(eventDTO, imageFile);
         return ResponseEntity.ok().build();
+    }
+
+    // returns currently random events
+    @GetMapping("/highlights")
+    public ResponseEntity<List<EventDTO>> getHighlights() {
+        List<EventDTO> dtoList = eventRepository.findAll()
+                .stream()
+                .map(DTOMappers::toEventDTO)
+                .toList();
+
+        return ResponseEntity.ok()
+                .header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+                .header("Pragma", "no-cache")
+                .body(dtoList);
     }
 }
 

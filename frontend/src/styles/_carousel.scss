@@ -1,0 +1,59 @@
+@import "variables";
+
+.carousel_slider_container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  background-color: blue;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: hidden;
+  & div {
+    opacity: 1;
+    transition: all 0.5s ease;
+    width: 100%;
+    height: 100%;
+    transition: opacity 1s ease;
+    position: absolute;
+    display: flex;
+    & img {
+      width: 100%;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
+  }
+  button {
+    position: absolute;
+    z-index: 10;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0);
+    border: none;
+    width: 80px;
+    height: 100px;
+    opacity: 0.3;
+    border-radius: 10px;
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.052);
+      opacity: 1;
+    }
+    &:disabled {
+      opacity: 0;
+    }
+    svg {
+      width: 80px;
+      height: 80px;
+    }
+  }
+}
+
+.carousel_prev_btn {
+  left: 10px;
+}
+
+.carousel_next_btn {
+  right: 10px;
+}

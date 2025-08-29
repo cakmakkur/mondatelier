@@ -3,8 +3,7 @@ import type { Artwork } from "../../../dto/Artwork";
 import useAxiosPrivate from "../../../auth/useAxiosPrivate";
 import { useProfileContext } from "../../../context/ProfileContext";
 
-const UPLOADS_URL = import.meta.env.VITE_UPLOADS_URL;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const UPLOADS_URL = import.meta.env.VITE_MEDIA_URL;
 const ARTWORK_PATH = import.meta.env.VITE_ARTWORK_PATH;
 
 interface TrackProps {
@@ -39,7 +38,7 @@ export default function Track({
   const handleLikeClick = async () => {
     try {
       const response = await axiosPrivate.post(
-        `${BASE_URL}/${ARTWORK_PATH}/like/${data.id}`
+        `${ARTWORK_PATH}/like/${data.id}`
       );
       if (response.status === 200) {
         console.log("liked");
@@ -86,6 +85,7 @@ export default function Track({
     numPeaks = 256
   ) => {
     const tempCtx = new (window.OfflineAudioContext ||
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any).AudioContext)(1, 1, 44100);
     const decoded = await tempCtx.decodeAudioData(arrayBuffer.slice(0));
     const channelData = decoded.getChannelData(0);
@@ -270,6 +270,7 @@ export default function Track({
 
     if (!audioCtxRef.current) {
       audioCtxRef.current = new (window.AudioContext ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).webkitAudioContext)();
     }
     if (audioCtxRef.current.state === "suspended") {
@@ -365,6 +366,7 @@ export default function Track({
       (async () => {
         if (!audioCtxRef.current) {
           audioCtxRef.current = new (window.AudioContext ||
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             (window as any).webkitAudioContext)();
         }
         try {

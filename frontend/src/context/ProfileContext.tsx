@@ -7,7 +7,6 @@ interface ProfileContextType {
   setProfile: (profile: Profile) => void;
 }
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 
 const ProfileContext = createContext<ProfileContextType | undefined>(undefined);
@@ -33,7 +32,7 @@ export const ProfileContextProvider = ({
 
   useEffect(() => {
     if (auth?.profileId) {
-      fetch(`${BASE_URL}/${PROFILE_PATH}/${auth?.profileId}`)
+      fetch(`${PROFILE_PATH}/${auth?.profileId}`)
         .then((response) => response.json())
         .then((data) => {
           setProfile(data);

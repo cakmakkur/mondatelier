@@ -8,7 +8,7 @@ interface EventPropTypes {
   event: EventDto;
 }
 
-const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
+const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
 export default function EventModalView({ event }: EventPropTypes) {
   const profiles = useSelector((state: RootState) => state.event.profiles);

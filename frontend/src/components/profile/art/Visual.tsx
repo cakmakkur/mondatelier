@@ -3,8 +3,7 @@ import type { Artwork } from "../../../dto/Artwork";
 import formatPrice from "../../../util/formatPrice";
 import useAxiosPrivate from "../../../auth/useAxiosPrivate";
 
-const UPLOADS_URL = import.meta.env.VITE_UPLOADS_URL;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const UPLOADS_URL = import.meta.env.VITE_MEDIA_URL;
 const ARTWORK_PATH = import.meta.env.VITE_ARTWORK_PATH;
 
 export default function Visual({ artworks }: { artworks: Artwork[] }) {
@@ -13,9 +12,7 @@ export default function Visual({ artworks }: { artworks: Artwork[] }) {
 
   const handleLikeClick = async (id: string) => {
     try {
-      const response = await axiosPrivate.post(
-        `${BASE_URL}/${ARTWORK_PATH}/like/${id}`
-      );
+      const response = await axiosPrivate.post(`${ARTWORK_PATH}/like/${id}`);
       if (response.status === 200) {
         console.log("liked");
         return response.data;

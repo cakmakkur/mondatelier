@@ -15,12 +15,15 @@ public interface EventRepository extends JpaRepository<Event, String> {
 
     List<Event> findByCity(City city);
 
-    // Events by city and week number (ISO week)
-    @Query("SELECT e FROM Event e WHERE e.city = :city AND FUNCTION('WEEK', e.date) = :weekNumber AND FUNCTION('YEAR', e.date) = :year")
+    @Query(value = """
+        SELECT * 
+        FROM events e
+        WHERE e.city_id = :cityId
+          AND EXTRACT(WEEK FROM e.date) = :weekNumber
+        """, nativeQuery = true)
     List<Event> findByCityAndWeekNumber(
-            @Param("city") City city,
-            @Param("weekNumber") Integer weekNumber,
-            @Param("year") Integer year
+            @Param("cityId") Long cityId,
+            @Param("weekNumber") int weekNumber
     );
 
     // Events by city and month/year

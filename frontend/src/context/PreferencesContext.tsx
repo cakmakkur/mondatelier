@@ -2,36 +2,36 @@ import { createContext, useContext, useEffect, useState } from "react";
 // @ts-expect-error axios context usage
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
-import type { Preferences } from "../dto/Settings";
-import { defaultSettings } from "../dto/Settings";
+import { defaultPreferences, type Preferences } from "../dto/Preferences";
 import { useProfileContext } from "./ProfileContext";
 
-const USER_PREFERENCES_PATH = import.meta.env.VITE_USER_PREFERENCES_PATH;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+// create preferences dto
 
-interface SettingsType {
-  setSetting: (
+const PREFERENCES_PATH = import.meta.env.VITE_USER_PREFERENCES_PATH;
+
+interface PreferencesType {
+  setPreference: (
     key: keyof Preferences,
     value: string | boolean | number
   ) => void;
-  clearSettings: () => void;
-  settings: Preferences | null;
+  clearPreferences: () => void;
+  preferences: Preferences | null;
 }
 
-const UserPreferencesContext = createContext<SettingsType | null>(null);
+const PreferencesContext = createContext<PreferencesType | null>(null);
 
 // eslint-disable-next-line react-refresh/only-export-components
-export const useUserPreferencesContext = (): SettingsType => {
-  const context = useContext(UserPreferencesContext);
+export const useUserPreferencesContext = (): PreferencesType => {
+  const context = useContext(PreferencesContext);
   if (!context) {
     throw new Error(
-      "useUserPreferencesContext must be used within a UserPreferencesContextProvider"
+      "usePreferencesContext must be used within a PreferencesContextProvider"
     );
   }
   return context;
 };
 
-export const UserPreferencesContextProvider = ({
+export const PreferencesContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -42,32 +42,31 @@ export const UserPreferencesContextProvider = ({
   const [settings, setSettings] = useState<Preferences | null>(null);
 
   useEffect(() => {
-    const fetchUserSettings = async () => {
+    const fetchPreferences = async () => {
       if (!auth) return;
       try {
         const response = await axiosPrivate.get(
-          `${BASE_URL}/${USER_PREFERENCES_PATH}/${auth.userId}`
+          `${PREFERENCES_PATH}/${auth.profileId}`
         );
         if (response.status === 200) {
           return response.data;
         }
       } catch (error) {
-        console.error("Error fetching user settings:", error);
+        console.error("Error fetching preferences:", error);
         return null;
       }
     };
 
-    const initializeUserPreferencesContext = async () => {
+    const initializePreferencesContext = async () => {
       if (!auth) {
-        setSettings(defaultSettings);
+        setSettings(defaultPreferences);
         return;
       }
-
       let storedSettings: Preferences | null = null;
       const storedData = localStorage.getItem("settings");
       if (storedData) storedSettings = JSON.parse(storedData);
 
-      let finalSettings: Preferences = defaultSettings;
+      let finalSettings: Preferences = defaultPreferences;
 
       if (
         storedSettings &&
@@ -76,31 +75,30 @@ export const UserPreferencesContextProvider = ({
       ) {
         finalSettings = { ...storedSettings };
         if (
-          !finalSettings.eventPreferredCity ||
-          finalSettings.eventPreferredCity === ""
+          !finalSettings.preferredCity ||
+          finalSettings.preferredCity === ""
         ) {
-          finalSettings.eventPreferredCountry = profile.country;
+          finalSettings.preferredCountry = profile.country;
         }
       } else {
-        const userSettings = await fetchUserSettings();
-        if (userSettings) {
-          finalSettings = { ...defaultSettings, ...userSettings };
+        const fetchedPreferences = await fetchPreferences();
+        if (fetchedPreferences) {
+          finalSettings = { ...defaultPreferences, ...fetchedPreferences };
           if (profile) finalSettings.profileId = profile.id;
         } else {
           finalSettings = {
-            ...defaultSettings,
-            eventPreferredCountry: profile!.country,
+            ...defaultPreferences,
+            preferredCountry: profile!.country,
           };
         }
       }
-
       setSettings(finalSettings);
     };
 
-    initializeUserPreferencesContext();
+    initializePreferencesContext();
   }, [auth, profile]);
 
-  const updateUserPreferences = (
+  const updatePreferences = (
     key: keyof Preferences,
     value: string | boolean | number
   ) => {
@@ -116,20 +114,20 @@ export const UserPreferencesContextProvider = ({
     localStorage.setItem("settings", JSON.stringify(settings));
   }, [settings]);
 
-  const clearUserPreferences = () => {
+  const clearPreferences = () => {
     localStorage.removeItem("settings");
     setSettings(null);
   };
 
-  const value: UserPreferencesType = {
-    settings,
-    setPreference: updateUserPreferences,
-    clearPreferences: clearUserPreferences,
+  const value: PreferencesType = {
+    preferences: settings,
+    setPreference: updatePreferences,
+    clearPreferences: clearPreferences,
   };
 
   return (
-    <UserPreferencesContext.Provider value={value}>
+    <PreferencesContext.Provider value={value}>
       {children}
-    </UserPreferencesContext.Provider>
+    </PreferencesContext.Provider>
   );
 };

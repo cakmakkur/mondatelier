@@ -21,8 +21,7 @@ import Events from "../components/profile/Events";
 import Freelances from "../components/profile/Freelances";
 import ImageUploader from "../components/userActions/ImageUploader";
 
-const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 const FREELANCE_PATH = import.meta.env.VITE_FREELANCE_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
@@ -43,7 +42,7 @@ export default function Profile() {
   const fetchMasterclasses = async () => {
     try {
       const response = await fetch(
-        `${BASE_URL}/${MASTERCLASS_PATH}?profileId=${profileId}`
+        `${MASTERCLASS_PATH}?profileId=${profileId}`
       );
       const data = await response.json();
       if (!response.ok) {
@@ -57,9 +56,7 @@ export default function Profile() {
 
   const fetchFreelances = async () => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/${FREELANCE_PATH}?profileId=${profileId}`
-      );
+      const response = await fetch(`${FREELANCE_PATH}?profileId=${profileId}`);
       const data = await response.json();
       if (!response.ok) {
         throw new Error("Failed to fetch masterclasses");
@@ -72,13 +69,13 @@ export default function Profile() {
 
   const handlePPEditClick = () => {
     setComponentState(ImageUploader, {
-      targetUrl: `${BASE_URL}/${PROFILE_PATH}/profilePicture/${profileId}`,
+      targetUrl: `${PROFILE_PATH}/profilePicture/${profileId}`,
     });
   };
 
   const handleBannerEditClick = () => {
     setComponentState(ImageUploader, {
-      targetUrl: `${BASE_URL}/${PROFILE_PATH}/bannerImage/${profileId}`,
+      targetUrl: `${PROFILE_PATH}/bannerImage/${profileId}`,
     });
   };
 
@@ -88,11 +85,11 @@ export default function Profile() {
       currentProfile.profilePicturePath !== null &&
       currentProfile.profilePicturePath !== ""
     ) {
-      setPpPath(`${UPLOADS_PATH}${profile?.profilePicturePath}`);
+      setPpPath(`${UPLOADS_PATH}${currentProfile.profilePicturePath}`);
     } else {
       setPpPath("/person.svg");
     }
-  }, [profile, currentProfile]);
+  }, [currentProfile]);
 
   useEffect(() => {
     if (
@@ -100,20 +97,16 @@ export default function Profile() {
       currentProfile.bannerPath !== null &&
       currentProfile.bannerPath !== ""
     ) {
-      setBannerPath(`${UPLOADS_PATH}${profile?.bannerPath}`);
+      setBannerPath(`${UPLOADS_PATH}${currentProfile.bannerPath}`);
     } else {
       setBannerPath("/add_banner.png");
     }
-  }, [profile, currentProfile]);
+  }, [currentProfile]);
 
   useEffect(() => {
     if (profile?.id === profileId) {
       setIsOwnProfile(true);
-      if (profile) {
-        setCurrentProfile(profile);
-      } else {
-        fetchProfile();
-      }
+      setCurrentProfile(profile);
     } else {
       fetchProfile();
     }
@@ -124,9 +117,13 @@ export default function Profile() {
 
   const fetchProfile = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/${PROFILE_PATH}/${profileId}`);
+      const response = await fetch(`${PROFILE_PATH}/${profileId}`);
       const data = await response.json();
       setCurrentProfile(data);
+      setBannerPath(`${UPLOADS_PATH}${data.bannerPath}`);
+      setPpPath(`${UPLOADS_PATH}${data.profilePicturePath}`);
+      console.log(UPLOADS_PATH + data.bannerPath);
+      console.log(UPLOADS_PATH + data.profilePicturePath);
     } catch (error) {
       console.error("Error fetching profile:", error);
     }

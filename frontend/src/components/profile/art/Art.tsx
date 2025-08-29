@@ -6,7 +6,6 @@ import Readable from "./Readable";
 import type { Artwork } from "../../../dto/Artwork";
 import type { CategoryMedia } from "../../../dto/CategoryMedia";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 const ART_URL = import.meta.env.VITE_ARTWORK_PATH;
 
 // springboot page returns:
@@ -57,7 +56,7 @@ export default function Art() {
     async function fetchArtworks() {
       try {
         const response = await fetch(
-          `${BASE_URL}/${ART_URL}?profileId=${profileId}&page=${page}&size=${size}&sortBy=${sortBy}`
+          `${ART_URL}?profileId=${profileId}&page=${page}&size=${size}&sortBy=${sortBy}`
         );
         if (!response.ok) throw new Error("Failed to fetch artworks");
         const data = await response.json();

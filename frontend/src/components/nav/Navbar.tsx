@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Login from "../auth/Login";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
@@ -7,19 +7,14 @@ import Signup from "../auth/Signup";
 import Sidebar from "./Sidebar";
 import { useProfileContext } from "../../context/ProfileContext";
 
-const UPLOADS_PATH = import.meta.env.VITE_UPLOADS_URL;
+const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
 export default function NavBar() {
   // const location = useLocation();
   const { auth } = useAuthContext();
   const { Component, setComponentState } = useModalContext();
-  const [isTransparent, setIsTransparent] = useState(false);
   const { profile } = useProfileContext();
   const [ppPath, setPpPath] = useState("/person.svg");
-
-  // useEffect(() => {
-  //   setIsTransparent(location.pathname !== "/");
-  // }, [location.pathname]);
 
   const toggleMenu = () => {
     if (Component === Sidebar) {
@@ -38,10 +33,7 @@ export default function NavBar() {
   }, [profile]);
 
   return (
-    <div
-      style={isTransparent ? { backgroundColor: "rgba(0,0,0,0)" } : {}}
-      className="navBar"
-    >
+    <div className="navBar">
       <div className="navBar__left">
         <Link className="navBar__left" to="/">
           <img className="navBar__favicon" src="/favicon.png" alt="" />

@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useUserPreferencesContext } from "../context/UserPreferencesContext";
+import { useUserPreferencesContext } from "../context/PreferencesContext";
 import type { Preferences } from "../dto/Settings";
 import { useAuthContext } from "../auth/AuthContext";
 
 export default function Preferences() {
   const { auth } = useAuthContext();
-  const { settings, setSetting: updateUserPreferences } =
+  const { preferences: settings, setPreference: updateUserPreferences } =
     useUserPreferencesContext();
   const [initialSettings, setInitialSettings] = useState<Preferences | null>(
     null

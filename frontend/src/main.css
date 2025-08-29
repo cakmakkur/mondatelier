@@ -294,7 +294,7 @@
 
 .profile_display {
   display: grid;
-  grid-template-columns: 1fr 2.5fr;
+  grid-template-columns: 1fr 3.5fr;
   padding: 75px 4.5vw 0px;
   position: relative;
 }
@@ -534,6 +534,7 @@
   margin-top: 10px;
   margin-bottom: 25px;
   transition: 0.2s;
+  transform: translateX(5px);
 }
 
 .art_type {
@@ -1582,7 +1583,65 @@ input[type=number] {
   flex-direction: row;
   justify-content: space-between;
   align-items: end;
-  margin: 0px 120px 10px 90px;
+  margin: 0px 120px 40px 90px;
+  height: 500px;
+}
+
+.events_header--left {
+  height: 100%;
+  background-color: red;
+  aspect-ratio: 1;
+}
+
+.events_header--right {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: space-between;
+}
+
+.events_publish_event_button {
+  width: 270px;
+  padding: 15px 10px;
+  border-radius: 5px;
+  border: 1px solid rgba(245, 245, 245, 0.627);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 5px;
+  font-size: 1.2rem;
+  transition: 0.1s;
+  background: none;
+  color: rgb(255, 255, 207);
+  font-size: 1.4rem;
+}
+.events_publish_event_button img {
+  display: inline;
+  width: 35px;
+  aspect-ratio: 1;
+  margin-right: 10px;
+}
+.events_publish_event_button:hover {
+  cursor: pointer;
+  filter: brightness(1.1);
+  color: white;
+  border-color: white;
+}
+
+.events_header_buttons_container {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: space-between;
+  width: 560px;
+}
+
+.events_header_buttons {
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
 }
 
 .events_header_title {
@@ -1634,25 +1693,6 @@ input[type=number] {
   aspect-ratio: 1;
 }
 .events_weekbox_right_button:hover {
-  cursor: pointer;
-}
-
-.events_header_buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  column-gap: 10px;
-}
-
-.events_header_week_month_button {
-  font-size: 1.3rem;
-  background: none;
-  border: 1px solid rgb(219, 201, 201);
-  color: white;
-  padding: 10px 20px;
-  min-width: 200px;
-}
-.events_header_week_month_button:hover {
   cursor: pointer;
 }
 
@@ -1740,27 +1780,29 @@ input[type=number] {
   background-color: rgb(255, 255, 207);
 }
 
-.events_header_week_month_img {
-  width: 25px;
-  aspect-ratio: 1;
-  display: inline;
-  margin-right: 8px;
-}
-
 .events_header_location_img {
   width: 30px;
   aspect-ratio: 1;
   display: inline;
 }
 
-.events_header_week_month_button {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.events_location_dropdown {
+  background-color: black;
+  color: white;
+  border: 1px solid gray;
+  border-radius: 3px;
+  height: 40px;
+  font-size: 1.3rem;
 }
 
-.popup_form__city {
-  margin-right: 40px;
+.events_location_select {
+  width: 150px;
+  background-color: black;
+  color: white;
+  border: 1px solid gray;
+  border-radius: 3px;
+  height: 40px;
+  font-size: 1.3rem;
 }
 
 .event_description {
@@ -2091,6 +2133,64 @@ input[type=number]::-webkit-outer-spin-button {
 .image_popup_wrapper__response_overlay__try_again:hover {
   cursor: pointer;
   filter: brightness(1.08);
+}
+
+.carousel_slider_container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  background-color: blue;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  overflow: hidden;
+}
+.carousel_slider_container div {
+  opacity: 1;
+  transition: all 0.5s ease;
+  width: 100%;
+  height: 100%;
+  transition: opacity 1s ease;
+  position: absolute;
+  display: flex;
+}
+.carousel_slider_container div img {
+  width: 100%;
+  flex-shrink: 0;
+  object-fit: cover;
+}
+.carousel_slider_container button {
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0);
+  border: none;
+  width: 80px;
+  height: 100px;
+  opacity: 0.3;
+  border-radius: 10px;
+}
+.carousel_slider_container button:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.052);
+  opacity: 1;
+}
+.carousel_slider_container button:disabled {
+  opacity: 0;
+}
+.carousel_slider_container button svg {
+  width: 80px;
+  height: 80px;
+}
+
+.carousel_prev_btn {
+  left: 10px;
+}
+
+.carousel_next_btn {
+  right: 10px;
 }
 
 *,

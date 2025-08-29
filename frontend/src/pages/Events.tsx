@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
 import SingleEvent from "../components/Event";
-import { useUserPreferencesContext } from "../context/UserPreferencesContext";
+import { useUserPreferencesContext } from "../context/PreferencesContext";
 import { DateFormatter } from "../util/DateFormatter";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store";
@@ -12,8 +12,8 @@ import { useAuthContext } from "../auth/AuthContext";
 import CreateEvent from "../components/userActions/CreateEvent";
 import { useModalContext } from "../context/ModalContext";
 import Login from "../components/auth/Login";
+import Carousel from "../components/fx/Carousel";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
@@ -26,7 +26,7 @@ export default function Events() {
   const events = useSelector((state: RootState) => state.event.events);
   const countries = useSelector((state: RootState) => state.location.countries);
 
-  const { settings } = useUserPreferencesContext();
+  const { preferences: settings } = useUserPreferencesContext();
 
   const date = new Date();
   const [weekNumber, setWeekNumber] = useState(getWeekNumber());
@@ -54,14 +54,15 @@ export default function Events() {
     init();
   }, []);
 
+  // doesnt work correct. check it later
   // fetches profile if it hasn't been fetched yet
   const fetchProfiles = async (eventsData: EventDto[]) => {
     for (const event of eventsData) {
       const profileId = event.profileId;
       if (!profiles[profileId]) {
-        const profile = await fetch(
-          `${BASE_URL}/${PROFILE_PATH}/${profileId}`
-        ).then((res) => res.json());
+        const profile = await fetch(`${PROFILE_PATH}/${profileId}`).then(
+          (res) => res.json()
+        );
         dispatch(addProfile({ profileId, profile }));
       }
     }
@@ -89,7 +90,6 @@ export default function Events() {
   useEffect(() => {
     if (!selectedCity) return;
     dispatch(addEvents([]));
-
     fetchEvents(weekNumber, selectedCity);
   }, [weekNumber, selectedCity]);
 
@@ -108,7 +108,7 @@ export default function Events() {
   const fetchEvents = async (weekNumber: number, selectedCity: string) => {
     const urlParams = `city=${selectedCity}&` + `calenderWeek=${weekNumber}`;
     try {
-      const response = await fetch(`${BASE_URL}/${EVENTS_PATH}?${urlParams}`);
+      const response = await fetch(`${EVENTS_PATH}?${urlParams}`);
       if (response.status === 200) {
         const data = await response.json();
         dispatch(addEvents(data));
@@ -131,9 +131,7 @@ export default function Events() {
 
   const getCitiesByCountry = async (country: string) => {
     try {
-      const response = await fetch(
-        `${BASE_URL}/${CITIES_PATH}/by_country/${country}`
-      );
+      const response = await fetch(`${CITIES_PATH}/by_country/${country}`);
       const data = await response.json();
       setCities(data ?? []);
       return data ?? [];
@@ -150,59 +148,92 @@ export default function Events() {
     }
   };
 
+  // useEffect(() => {
+  //   async function fetchHighlightEvents() {
+  //     try {
+  //       const response = await fetch(`${EVENTS_PATH}/highlights`);
+  //       console.log(response);
+
+  //       const events = await response.json();
+  //       console.log("success");
+
+  //       events.map((event: EventDto, i: number) => {
+  //         if (i < 5) {
+  //           setImgUrls((prev) => [
+  //             ...prev,
+  //             `${UPLOADS_URL}/${event.thumbnail_url}`,
+  //           ]);
+  //         }
+  //         console.log("set");
+  //       });
+  //     } catch {
+  //       console.log("Error fetching homepage highlights images");
+  //     }
+  //   }
+  //   fetchHighlightEvents();
+  // }, []);
+
   return (
     <div className="events_main">
       <BgFx3 />
       <div className="events_header">
-        <div className="events_header_title">Events</div>
-        <div className="events_header_buttons">
-          <img
-            className="events_header_location_img"
-            src="/location.svg"
-            alt=""
-          />
-
-          <label className="popup_form__country">
-            <select
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="popup_form__dropdown"
-              required
+        <div className="events_header--left">
+          <Carousel imgUrls={["/events_poster_2.png"]} />
+        </div>
+        <div className="events_header--right">
+          <div className="events_header_title">
+            <span className="events_header_title_text">Events</span>{" "}
+            <button
+              onClick={handleCreateEventClick}
+              className="events_publish_event_button"
             >
-              <option value="">Country</option>
-              {countries.map((country, i) => (
-                <option key={country + i} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
-          </label>
+              <img src="/add_circle_moon.svg" alt="" />
+              Publish a new event
+            </button>
+          </div>
+          <div className="events_header_buttons_container">
+            <div className="events_header_buttons">
+              <img
+                className="events_header_location_img"
+                src="/location.svg"
+                alt=""
+              />
 
-          <label className="popup_form__city">
-            <select
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-              disabled={!selectedCountry}
-              required
-              className="popup_form__dropdown"
-            >
-              <option value="">City</option>
-              {Array.isArray(cities) &&
-                cities.map((city, i) => (
-                  <option key={city + i} value={city}>
-                    {city}
-                  </option>
-                ))}
-            </select>
-          </label>
+              <label className="events_location_dropdown">
+                <select
+                  value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  required
+                  className="events_location_select"
+                >
+                  <option value="">Country</option>
+                  {countries.map((country, i) => (
+                    <option key={country + i} value={country}>
+                      {country}
+                    </option>
+                  ))}
+                </select>
+              </label>
 
-          <button
-            onClick={handleCreateEventClick}
-            className="events_new_event_button"
-          >
-            <img src="/add.svg" alt="" />
-            Publish a new Event
-          </button>
+              <label className="events_location_dropdown">
+                <select
+                  value={selectedCity}
+                  onChange={(e) => setSelectedCity(e.target.value)}
+                  disabled={!selectedCountry}
+                  required
+                  className="events_location_select"
+                >
+                  <option value="">City</option>
+                  {Array.isArray(cities) &&
+                    cities.map((city, i) => (
+                      <option key={city + i} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                </select>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
       <div className="events_weekbox">

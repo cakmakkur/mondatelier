@@ -7,7 +7,6 @@ import { useModalContext } from "../../context/ModalContext";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const FREELANCE_PATH = import.meta.env.VITE_VITE_FREELANCE_PATH;
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export default function CreateFreelance() {
   const { profile } = useProfileContext();
@@ -65,10 +64,7 @@ export default function CreateFreelance() {
     const formData = new FormData();
 
     try {
-      const response = await axiosPrivate.post(
-        `${BASE_URL}/${FREELANCE_PATH}`,
-        formData
-      );
+      const response = await axiosPrivate.post(`${FREELANCE_PATH}`, formData);
       if (response.status === 200) {
         // return success
         overlayRef.current!.style.opacity = "1";
@@ -94,7 +90,7 @@ export default function CreateFreelance() {
 
   const fetchArtCategories = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/${CATEGORIES_PATH}/all`);
+      const response = await fetch(`${CATEGORIES_PATH}/all`);
       setArtCategories(await response.json());
     } catch (error) {
       console.error("Error fetching art categories:", error);
