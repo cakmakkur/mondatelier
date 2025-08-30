@@ -45,15 +45,12 @@ public class PreferencesController {
                                                   @RequestBody PreferencesDto preferencesDto) {
         User currentUser = AuthUtil.getCurrentUser();
 
-        // Verify profile ownership
         if (!currentUser.getProfile().getId().equals(profileId)) {
             throw new RuntimeException("User's profile and target profile don't match");
         }
 
-        // Fetch the profile from DB to ensure it is managed
         Profile profile = currentUser.getProfile(); // or profileRepository.findById(profileId).orElseThrow(...)
 
-        // Fetch existing preferences if they exist
         Preferences preferences = preferencesRepository.findByProfile_Id(profile.getId())
                 .orElseGet(() -> {
                     Preferences newPrefs = new Preferences();
@@ -61,7 +58,6 @@ public class PreferencesController {
                     return newPrefs;
                 });
 
-        // Resolve optional related entities
         City city = preferencesDto.preferredCity() == null || preferencesDto.preferredCity().isEmpty()
                 ? null
                 : cityRepository.findByName(preferencesDto.preferredCity())
@@ -76,14 +72,12 @@ public class PreferencesController {
                 : languageRepository.findByName(LanguageTypes.valueOf(preferencesDto.language()))
                 .orElseThrow(() -> new RuntimeException("Language not found"));
 
-        // Update preferences fields
         preferences.setPreferredCity(city);
         preferences.setPreferredCountry(country);
         preferences.setLanguage(language);
         preferences.setAnimations(preferencesDto.animations());
         preferences.setNotifications(preferencesDto.notifications());
 
-        // Save or update
         preferencesRepository.save(preferences);
 
         return ResponseEntity.ok().build();

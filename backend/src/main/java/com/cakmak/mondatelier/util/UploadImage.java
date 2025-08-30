@@ -10,14 +10,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 public class UploadImage {
+
     // returns the name of the saved file
     public static String upload(MultipartFile imageFile, String uploadDir, String uploadSubDir) {
-        System.out.println("Uploading image");
         try {
             String fileName = System.currentTimeMillis() + "_" + Objects.requireNonNull(imageFile.getOriginalFilename()).replaceAll("[^A-Za-z]", "");;
             Path uploadPath = Paths.get(uploadDir, uploadSubDir);
-
-            System.out.println(uploadPath);
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -28,6 +26,5 @@ public class UploadImage {
         } catch (IOException e) {
             throw new RuntimeException("Failed to save image file", e);
         }
-
     }
 }

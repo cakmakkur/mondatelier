@@ -1,7 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
 import com.cakmak.mondatelier.Service.MasterclassService;
-import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.dto.MasterclassDTO;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

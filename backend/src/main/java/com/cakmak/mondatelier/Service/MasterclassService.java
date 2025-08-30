@@ -37,6 +37,6 @@ public class MasterclassService {
     }
 
     public void createMasterclass(MasterclassDTO masterClassDTO, MultipartFile imageFile) {
-
+        // TODO: complete
     }
 }

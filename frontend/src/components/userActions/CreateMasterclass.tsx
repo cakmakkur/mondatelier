@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useProfileContext } from "../../context/ProfileContext";
 
-// doesnt work
-
 // @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
