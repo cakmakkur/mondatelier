@@ -117,17 +117,33 @@ export const PreferencesContextProvider = ({
     };
 
     initializePreferencesContext();
-  }, [auth, profile]);
+  }, [profile]);
 
-  const updatePreferences = (
+  const updatePreferences = async (
     key: keyof Preferences,
     value: string | boolean | number
   ) => {
-    setSettings((prevSettings) => {
-      if (!prevSettings) return prevSettings;
-      if (prevSettings[key] === value) return prevSettings;
-      return { ...prevSettings, [key]: value };
-    });
+    if (!settings) return; // ignore if settings not loaded yet
+    if (!Object.keys(defaultPreferences).includes(key)) return;
+
+    const newSettings = {
+      ...settings,
+      [key]: value,
+      profileId: auth?.profileId || "",
+    };
+
+    setSettings(newSettings);
+
+    if (auth) {
+      try {
+        await axiosPrivate.post(
+          `${PREFERENCES_PATH}/${auth?.profileId}`,
+          newSettings
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
   };
 
   useEffect(() => {

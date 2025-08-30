@@ -67,4 +67,7 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Masterclass> masterclasses;
+
+    @OneToOne(mappedBy = "profile")
+    private Preferences preferences;
 }

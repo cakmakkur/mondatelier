@@ -2,6 +2,7 @@ package com.cakmak.mondatelier.converter;
 
 import com.cakmak.mondatelier.Model.Freelance;
 import com.cakmak.mondatelier.Model.Masterclass;
+import com.cakmak.mondatelier.Model.Preferences;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkMedia;
@@ -106,4 +107,30 @@ public class DTOMappers {
                 masterclass.getThumbnailUrl()
         );
     }
- }
+
+    public static PreferencesDto toPreferencesDTO(Preferences preferences) {
+        String preferredCountry = preferences.getPreferredCountry() != null
+                ? preferences.getPreferredCountry().getName()
+                : null;
+
+        String preferredCity = preferences.getPreferredCity() != null
+                ? preferences.getPreferredCity().getName()
+                : null;
+
+        String language = preferences.getLanguage() != null
+                ? preferences.getLanguage().getName().name()
+                : null;
+
+        return new PreferencesDto(
+                preferences.getId(),
+                preferences.getProfile().getId(),
+                preferredCountry,
+                preferredCity,
+                preferences.getAnimations(),
+                language,
+                preferences.getNotifications()
+        );
+    }
+
+
+}

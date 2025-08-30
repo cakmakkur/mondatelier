@@ -18,7 +18,9 @@ const useAxiosPrivate = () => {
     const requestInterceptor = axiosPrivate.interceptors.request.use(
       (config) => {
         if (!config.headers["Authorization"]) {
-          config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+          if (auth?.accessToken) {
+            config.headers["Authorization"] = `Bearer ${auth.accessToken}`;
+          }
         }
         if (config.data instanceof FormData) {
           delete config.headers["Content-Type"];
@@ -32,11 +34,13 @@ const useAxiosPrivate = () => {
       (response) => response,
       async (err) => {
         const prevRequest = err?.config;
-        if (err?.response?.status === 403 && !prevRequest.sent) {
-          prevRequest.sent = true;
+        if (err?.response?.status === 401 && !prevRequest._retry) {
+          prevRequest._retry = true;
           const newAccessToken = await refresh();
-          prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
-          return axiosPrivate(prevRequest);
+          if (newAccessToken) {
+            prevRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
+            return axiosPrivate(prevRequest);
+          }
         }
         return Promise.reject(err);
       }

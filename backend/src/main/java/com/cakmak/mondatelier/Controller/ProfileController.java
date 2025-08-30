@@ -2,7 +2,6 @@ package com.cakmak.mondatelier.Controller;
 
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.ProfileService;
-import com.cakmak.mondatelier.dto.EventDTO;
 import com.cakmak.mondatelier.dto.PublicProfileDTO;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.http.MediaType;

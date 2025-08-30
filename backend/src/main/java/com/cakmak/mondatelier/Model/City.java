@@ -28,4 +28,7 @@ public class City {
 
     @OneToMany(mappedBy = "city", fetch = FetchType.LAZY)
     private List<Masterclass> masterclasses;
+
+    @OneToMany(mappedBy = "preferredCity", fetch = FetchType.LAZY)
+    private List<Preferences> preferences;
 }

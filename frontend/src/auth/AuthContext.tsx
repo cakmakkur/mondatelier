@@ -5,7 +5,6 @@ import type { LoginDto } from "../dto/Login";
 
 interface AuthState {
   userId: string;
-  roles: number[];
   accessToken: string;
   profileId: string;
 }
@@ -33,6 +32,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 // eslint-disable-next-line react-refresh/only-export-components
 export const useAuthContext = (): AuthContextType => {
   const context = useContext(AuthContext);
+
   if (!context) {
     throw new Error(
       "useAuthContext must be used within an AuthContextProvider"
@@ -50,6 +50,8 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
 
   const LOGIN_URL = import.meta.env.VITE_LOGIN_URL;
   const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL;
+  const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
+  const LOGOUT_URL = import.meta.env.VITE_LOGOUT_URL;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userId, setUserId] = useState<string>("");
@@ -82,7 +84,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         clearTimeout(timeout);
         setAuth({
           userId: response.data.userId,
-          roles: [1000],
           accessToken: response.data.token,
           profileId: response.data.profileId,
         });
@@ -123,9 +124,35 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     }
   };
 
+  useEffect(() => {
+    const refreshAccessToken = async () => {
+      try {
+        const response = await axios.post(
+          REFRESH_URL,
+          {},
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          setAuth({
+            accessToken: response.data.accessToken,
+            userId: response.data.userId,
+            profileId: response.data.profileId,
+          });
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (err: any) {
+        if (err.status === 401) return;
+        console.error("Could not refresh token on mount:", err);
+        setAuth(undefined);
+      }
+    };
+
+    refreshAccessToken();
+  }, []);
+
   const logout = () => {
     try {
-      axios.post("/api/logout", {}, { withCredentials: true });
+      axios.post(LOGOUT_URL, {}, { withCredentials: true });
       setAuth(undefined);
     } catch (error) {
       console.error("Logout failed:", error);

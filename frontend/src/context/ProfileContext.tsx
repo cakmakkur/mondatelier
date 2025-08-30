@@ -3,7 +3,7 @@ import { useAuthContext } from "../auth/AuthContext";
 import type { Profile } from "../dto/Profile";
 
 interface ProfileContextType {
-  profile: Profile | null;
+  profile: Profile | undefined;
   setProfile: (profile: Profile) => void;
 }
 
@@ -27,11 +27,13 @@ export const ProfileContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profile, setProfile] = useState<Profile | undefined>(undefined);
   const { auth } = useAuthContext();
 
   useEffect(() => {
-    if (auth?.profileId) {
+    if (!auth) {
+      setProfile(undefined);
+    } else if (auth.profileId) {
       fetch(`${PROFILE_PATH}/${auth?.profileId}`)
         .then((response) => response.json())
         .then((data) => {

@@ -1,7 +1,7 @@
 export interface Settings {
   profileId: string | null;
   theme: "themeA" | "themeB" | "themeC";
-  language: "en" | "de";
+  language: "EN" | "DE";
   notifications: boolean;
   eventPreferredCity: string;
   eventPreferredCountry: string;
@@ -11,7 +11,7 @@ export interface Settings {
 export const defaultSettings: Settings = {
   profileId: "",
   theme: "themeA",
-  language: "en",
+  language: "EN",
   notifications: true,
   eventPreferredCity: "",
   eventPreferredCountry: "",

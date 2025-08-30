@@ -1,9 +1,9 @@
 export interface Preferences {
   id: number | undefined;
   profileId: string;
-  language: string;
-  preferredCity: string;
-  preferredCountry: string;
+  language: "EN" | "DE";
+  preferredCity: string | null;
+  preferredCountry: string | null;
   animations: boolean;
   notifications: boolean;
 }
@@ -11,9 +11,9 @@ export interface Preferences {
 export const defaultPreferences: Preferences = {
   id: undefined,
   profileId: "",
-  language: "en",
+  language: "EN",
   notifications: true,
-  preferredCity: "",
-  preferredCountry: "",
+  preferredCity: null,
+  preferredCountry: null,
   animations: true,
 };

@@ -13,7 +13,10 @@ import com.cakmak.mondatelier.dto.auth.LoginDTO;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 import com.cakmak.mondatelier.enums.ProfileTypes;
 import com.cakmak.mondatelier.util.SanitizeInput;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -81,7 +84,7 @@ public class AuthenticationService {
         profileRepository.save(profile);
         user.setProfile(profile);
 
-        // send verification email.
+        // implement logic + send verification email to verify the account in x days
     }
 
     public LoginResponse authenticate(LoginDTO input) throws AuthenticationException {
@@ -104,6 +107,44 @@ public class AuthenticationService {
                 authenticatedUser.getProfile().getType().toString(),
                 authenticatedUser.getUserType().toString()
         );
+    }
+
+    public ResponseEntity<LoginResponse> refresh(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if ("refreshToken".equals(cookie.getName())) {
+                refreshToken = cookie.getValue();
+            }
+        }
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(401).build();
+        }
+
+        String email = jwtService.extractUsername(refreshToken);
+        User user = userRepository.findByEmail(email).orElseThrow();
+
+        if (!jwtService.isRefreshTokenValid(refreshToken, user)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        String newAccessToken = jwtService.generateToken(user);
+
+        LoginResponse loginResponse = DTOMappers.toLoginResponseDTO(
+                newAccessToken,
+                jwtService.getExpirationTime(),
+                user.getId(),
+                user.getProfile().getId(),
+                user.getProfile().getType().toString(),
+                user.getUserType().toString()
+        );
+
+        return ResponseEntity.ok(loginResponse);
     }
 
 }
