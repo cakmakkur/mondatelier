@@ -11,11 +11,9 @@ import java.util.List;
 @Service
 public class CityService {
 
-    private final CityRepository cityRepository;
     private final CountryRepository countryRepository;
 
-    public CityService(CityRepository cityRepository, CountryRepository countryRepository) {
-        this.cityRepository = cityRepository;
+    public CityService(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
     }
 
