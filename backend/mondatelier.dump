@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict bFD5JHjNAbnrqyzMLSiF6kyb214zC11mw1YWQBXFcLqSArZ0AQZ7ChQTXZl8DQz
+\restrict KNbb4xypzg5ZFclGyztfAEpdlvrxPHXwkoMYiWiEmdLXl6RnGDPptIgbily4Kd0
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Postgres.app)
@@ -2370,6 +2370,7 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 1031	2025-08-30 15:28:17.843562+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1032	2025-08-30 15:28:17.857254+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1033	2025-09-06 09:26:44.975557+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
+1037	2025-09-06 09:53:22.425172+03	ERROR	Runtime Error: Bad credentials
 1034	2025-09-06 09:26:45.023735+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1035	2025-09-06 09:26:45.024162+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1036	2025-09-06 09:26:45.02452+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
@@ -2572,7 +2573,7 @@ SELECT pg_catalog.setval('public.languages_id_seq', 2, true);
 -- Name: logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: mondatelier
 --
 
-SELECT pg_catalog.setval('public.logs_id_seq', 1036, true);
+SELECT pg_catalog.setval('public.logs_id_seq', 1037, true);
 
 
 --
@@ -3322,5 +3323,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE kursat IN SCHEMA public GRANT ALL ON TABLES TO
 -- PostgreSQL database dump complete
 --
 
-\unrestrict bFD5JHjNAbnrqyzMLSiF6kyb214zC11mw1YWQBXFcLqSArZ0AQZ7ChQTXZl8DQz
+\unrestrict KNbb4xypzg5ZFclGyztfAEpdlvrxPHXwkoMYiWiEmdLXl6RnGDPptIgbily4Kd0
 
