@@ -35,11 +35,6 @@ public class ProfileService {
         return DTOMappers.toPublicProfileDTO(profile);
     }
 
-    // inactive service
-/*    public void createProfile(PublicProfileDTO publicProfileDTO) {
-
-    }*/
-
     public void updatePublicProfile(PublicProfileDTO publicProfileDTO, MultipartFile imageFile) {
         Profile currentProfile = profileRepository.findById(publicProfileDTO.id())
                 .orElseThrow(ProfileNotFoundException::new);
