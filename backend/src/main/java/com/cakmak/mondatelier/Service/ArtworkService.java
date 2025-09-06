@@ -6,7 +6,6 @@ import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkLike;
 import com.cakmak.mondatelier.Repository.ArtworkLikeRepository;
 import com.cakmak.mondatelier.Repository.ArtworkRepository;
-import com.cakmak.mondatelier.Repository.ArtworkTypesRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.ArtworkDTO;
 import org.springframework.data.domain.Page;
@@ -15,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class ArtworkService {

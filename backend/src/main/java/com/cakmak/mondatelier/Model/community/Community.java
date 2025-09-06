@@ -39,6 +39,6 @@ public class Community {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @OneToMany(mappedBy = "community", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Thread> threads;
+    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 }

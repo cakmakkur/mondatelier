@@ -2,7 +2,6 @@ package com.cakmak.mondatelier.Model;
 
 import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
-import com.cakmak.mondatelier.Model.community.Thread;
 import com.cakmak.mondatelier.Model.community.Vote;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.converter.ProfileTypesConverter;
@@ -12,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -77,9 +75,6 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Community> communities;
-
-    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Thread> threads;
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Vote> votes;

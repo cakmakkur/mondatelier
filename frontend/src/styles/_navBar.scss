@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 500;
-  padding: 1.8vh 2vw 0px;
+  padding: 1.8vh 30px 0px;
   // font-family: Papyrus, fantasy;
   background-color: $transparent-black;
   backdrop-filter: blur(2px);
@@ -149,8 +149,7 @@
 
 .menu_button {
   position: relative;
-  right: -29px;
-  top: 2px;
+  transform: translateX(28px);
   z-index: 2900;
   background: none;
   border: 1px solid $moon-yellow;

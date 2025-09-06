@@ -6,6 +6,7 @@ import com.cakmak.mondatelier.Model.Preferences;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkMedia;
+import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.dto.*;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
@@ -132,5 +133,15 @@ public class DTOMappers {
         );
     }
 
+    public static CommunityDto toCommunityDTO (Community community) {
+        return new CommunityDto(
+                community.getId(),
+                community.getName(),
+                community.getDescription(),
+                community.getCreatedAt(),
+                community.getLogoImgPath(),
+                community.getProfile().getId()
+        );
+    }
 
 }
