@@ -57,21 +57,21 @@ export default function NavBar() {
             </button>
           </>
         ) : null}
-        <Link className="navBar_nav" to="/community">
+        <Link className="navBar_nav navbar-hide-buttons" to="/community">
           <img
             src="/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
           Community
         </Link>
-        <Link className="navBar_nav" to="/discover">
+        <Link className="navBar_nav navbar-hide-buttons" to="/discover">
           <img
             src="/wall_art_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
           Discover
         </Link>
-        <Link className="navBar_nav" to="/events">
+        <Link className="navBar_nav navbar-hide-buttons" to="/events">
           <img
             src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
@@ -79,7 +79,7 @@ export default function NavBar() {
           Events
         </Link>
         {auth ? (
-          <Link className="navBar_nav" to="#">
+          <Link className="navBar_nav navbar-hide-buttons" to="#">
             <img
               src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""

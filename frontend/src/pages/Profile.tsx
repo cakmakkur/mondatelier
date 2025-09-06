@@ -32,7 +32,9 @@ export default function Profile() {
   const { profile } = useProfileContext();
   const [isOwnProfile, setIsOwnProfile] = useState<boolean>(false);
   const { profileId } = useParams();
-  const [currentProfile, setCurrentProfile] = useState<Profile | null>(null);
+  const [currentProfile, setCurrentProfile] = useState<
+    Profile | null | undefined
+  >(null);
   const [freelances, setFreelances] = useState<Freelance[]>([]);
   const [masterclasses, setMasterclasses] = useState<Masterclass[]>([]);
   const [ppPath, setPpPath] = useState("/person.svg");
@@ -320,10 +322,6 @@ export default function Profile() {
               <Events />
             ) : section === "freelance" ? (
               <Freelances />
-            ) : section === "followers" ? (
-              <Follow followType="followers" />
-            ) : section === "following" ? (
-              <Follow followType="following" />
             ) : section === "liked" ? (
               <Liked />
             ) : null}

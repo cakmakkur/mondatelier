@@ -78,7 +78,7 @@ export default function Sidebar() {
           <li>
             <Link
               onClick={() => setComponentState(undefined)}
-              className="sidebar_option"
+              className="sidebar_option sidebar-hide-buttons"
               to="/comunity"
             >
               <img
@@ -91,7 +91,7 @@ export default function Sidebar() {
           <li>
             <Link
               onClick={() => setComponentState(undefined)}
-              className="sidebar_option"
+              className="sidebar_option sidebar-hide-buttons"
               to="/events"
             >
               <img
@@ -117,7 +117,7 @@ export default function Sidebar() {
           <li>
             <Link
               onClick={() => setComponentState(undefined)}
-              className="sidebar_option"
+              className="sidebar_option sidebar-hide-buttons"
               to="/discover"
             >
               <img

@@ -87,7 +87,7 @@
 .navBar__title:hover {
   transform: none;
 }
-@media (max-width: 880px) {
+@media (max-width: 750px) {
   .navBar__title {
     display: none;
   }
@@ -153,6 +153,12 @@
 }
 .menu_button:hover {
   cursor: pointer;
+}
+
+@media (max-width: 880px) {
+  .navbar-hide-buttons {
+    display: none;
+  }
 }
 
 .homepage_container {
@@ -903,6 +909,12 @@
 
 .sidebar_lastnav {
   font-size: 0.9rem;
+}
+
+@media (min-width: 880px) {
+  .sidebar-hide-buttons {
+    display: none;
+  }
 }
 
 .art_type_1 {

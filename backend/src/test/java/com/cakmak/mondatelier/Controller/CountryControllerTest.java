@@ -1,8 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Model.Country;
 import com.cakmak.mondatelier.Repository.CountryRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

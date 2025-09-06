@@ -1,5 +1,9 @@
 package com.cakmak.mondatelier.Model;
 
+import com.cakmak.mondatelier.Model.community.Community;
+import com.cakmak.mondatelier.Model.community.Post;
+import com.cakmak.mondatelier.Model.community.Thread;
+import com.cakmak.mondatelier.Model.community.Vote;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.converter.ProfileTypesConverter;
 import com.cakmak.mondatelier.enums.ProfileTypes;
@@ -70,4 +74,17 @@ public class Profile {
 
     @OneToOne(mappedBy = "profile")
     private Preferences preferences;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Community> communities;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Thread> threads;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Vote> votes;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Post> posts;
+
 }

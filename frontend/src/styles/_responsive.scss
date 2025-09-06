@@ -24,3 +24,9 @@ $medium_navbar: 880px;
     @content;
   }
 }
+
+@mixin MnbR {
+  @media (min-width: $medium_navbar) {
+    @content;
+  }
+}

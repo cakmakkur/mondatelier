@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict KNbb4xypzg5ZFclGyztfAEpdlvrxPHXwkoMYiWiEmdLXl6RnGDPptIgbily4Kd0
+\restrict Ft3oKi2fvdFSfhDhKA0tYnz403czwIXbA8YyM9Uwl1N0tGFKa8FBvfqNC2OLpDC
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Postgres.app)
@@ -3323,5 +3323,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE kursat IN SCHEMA public GRANT ALL ON TABLES TO
 -- PostgreSQL database dump complete
 --
 
-\unrestrict KNbb4xypzg5ZFclGyztfAEpdlvrxPHXwkoMYiWiEmdLXl6RnGDPptIgbily4Kd0
+\unrestrict Ft3oKi2fvdFSfhDhKA0tYnz403czwIXbA8YyM9Uwl1N0tGFKa8FBvfqNC2OLpDC
 

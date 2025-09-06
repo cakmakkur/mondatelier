@@ -16,6 +16,9 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${app.frontend.url}")
     private String frontendUrl;
 
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -29,7 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // The trailing slash is important
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:../uploads/");
+                .addResourceLocations("file:" + uploadDir + "/");
     }
 
 

@@ -89,3 +89,9 @@
 .sidebar_lastnav {
   font-size: 0.9rem;
 }
+
+.sidebar-hide-buttons {
+  @include MnbR {
+    display: none;
+  }
+}
