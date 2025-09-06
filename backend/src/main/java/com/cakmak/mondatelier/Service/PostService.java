@@ -2,6 +2,7 @@ package com.cakmak.mondatelier.Service;
 
 import com.cakmak.mondatelier.Model.community.Post;
 import com.cakmak.mondatelier.Repository.PostRepository;
+import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.CommunityDto;
 import com.cakmak.mondatelier.dto.PostDto;
 import org.springframework.data.domain.*;
@@ -30,7 +31,6 @@ public class PostService {
     }
 
 
-/*
     public Page<PostDto> getPostFeed(String profileId, int page, int size) {
         List<Post> sortedFeed = new ArrayList<>(feed);
 
@@ -43,12 +43,11 @@ public class PostService {
         }
 
         List<PostDto> pageContent = sortedFeed.subList(start, end).stream()
-                .map(post -> new PostDto(post)) // map Post -> PostDto
+                .map(DTOMappers::toPostDTO)
                 .toList();
 
         Pageable pageable = PageRequest.of(page, size);
         return new PageImpl<>(pageContent, pageable, sortedFeed.size());
     }
-*/
 
 }

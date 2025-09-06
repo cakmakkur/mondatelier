@@ -41,7 +41,7 @@ export default function Events() {
   // initiate events page
   useEffect(() => {
     const init = async () => {
-      if (settings) {
+      if (settings?.preferredCountry) {
         setSelectedCountry(settings.preferredCountry);
         const data = await getCitiesByCountry(settings.preferredCountry);
         setSelectedCity(
@@ -68,10 +68,10 @@ export default function Events() {
 
   // determine preferred location
   useEffect(() => {
-    if (settings) {
+    if (settings?.preferredCountry) {
       const updateLocation = async () => {
-        setSelectedCountry(settings.preferredCountry);
-        const data = await getCitiesByCountry(settings.preferredCountry);
+        setSelectedCountry(settings.preferredCountry ?? "");
+        const data = await getCitiesByCountry(settings.preferredCountry ?? "");
         setSelectedCity(
           settings.preferredCity === "" ? data[0] : settings.preferredCity
         );

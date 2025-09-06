@@ -47,4 +47,8 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "community_id")
     private Community community;
+
+    private String title;
+
+    private String content;
 }

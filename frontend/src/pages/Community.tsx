@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import type { CommunityDto } from "../dto/CommunityDto.ts";
-import type { postDto } from "../dto/PostDto.ts";
+import type { PostDto } from "../dto/PostDto.ts";
 import { useModalContext } from "../context/ModalContext.tsx";
 import axios from "axios";
 import { useAxiosPrivate } from "../auth/useAxiosPrivate";
@@ -19,14 +19,17 @@ export default function Community() {
   const [recentCommunities, setRecentCommunities] = useState<
     [CommunityDto] | null
   >(null);
-  const [topCommunities, setTopCommunities] = useState<[CommunityDto] | null>(
-    null
+  const [topCommunities, setTopCommunities] = useState<CommunityDto[]>(
+    []
   );
-  const [feed, setFeed] = useState<[postDto] | null>(null);
-  const [myCommunities, setMyCommunities] = useState<[CommunityDto] | null>();
+  const [feed, setFeed] = useState<PostDto[]>([]);
+  const [myCommunities, setMyCommunities] = useState<CommunityDto[]>();
   const [searchedCommunities, setSearchedCommunities] = useState<
-    [CommunityDto] | null
-  >(null);
+    [CommunityDto][]
+  >([]);
+  const [feedPage, setFeedPage] = useState(1);
+  const [myCommunitiesPage, setMyCommunitiesPage] = useState(1);
+  const [searchedCommunitiesPage, setSearchedCommunitiesPage] = useState(1);
 
   const fetchMyCommunities = async () => {
     if (auth) {
@@ -69,7 +72,7 @@ export default function Community() {
 
   const fetchTopCommunities = async () => {
     try {
-      const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/top`);
+      const response = await fetch(`${COMMUNITIES_PATH}/top`);
       if (response.ok) {
         const data = await response.json();
         setTopCommunities(data);
@@ -79,11 +82,11 @@ export default function Community() {
     }
   };
 
-  const fetchInitialFeed = async () => {
+  const fetchFeed = async () => {
     if (auth) {
       try {
         const response = await axiosPrivate.get(
-          `${COMMUNITIES_PATH}/feed/me/${auth.profileId}`
+          `${COMMUNITIES_PATH}/feed/me?page=${feedPage}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -94,10 +97,10 @@ export default function Community() {
       }
     } else {
       try {
-        const response = await fetch(`${COMMUNITIES_PATH}/feed/recent`);
+        const response = await fetch(`${COMMUNITIES_PATH}/feed/recent?page=${feedPage}`);
         if (response.ok) {
           const data = await response.json();
-          setFeed(data);
+          setFeed(prev => [...(prev || ), ...data]);
         }
       } catch (error) {
         console.error("Error fetching feed:", error);
@@ -109,8 +112,9 @@ export default function Community() {
     fetchTopCommunities();
     fetchMyCommunities();
     getRecentCommunities();
-    fetchInitialFeed();
+        fetchFeed();
   }, []);
+
 
   return (
     <div className="community-main-div">

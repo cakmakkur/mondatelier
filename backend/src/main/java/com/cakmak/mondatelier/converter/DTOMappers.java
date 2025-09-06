@@ -7,6 +7,7 @@ import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkMedia;
 import com.cakmak.mondatelier.Model.community.Community;
+import com.cakmak.mondatelier.Model.community.Post;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.dto.*;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
@@ -141,6 +142,19 @@ public class DTOMappers {
                 community.getCreatedAt(),
                 community.getLogoImgPath(),
                 community.getProfile().getId()
+        );
+    }
+
+    public static PostDto toPostDTO (Post post) {
+        return new PostDto(
+                post.getId(),
+                post.getCommunity().getId(),
+                post.getProfile().getId(),
+                post.getParent().getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getEditedAt()
         );
     }
 

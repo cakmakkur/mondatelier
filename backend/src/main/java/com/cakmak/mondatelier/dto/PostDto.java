@@ -5,7 +5,7 @@ import java.util.Date;
 public record PostDto(
         Long id,
         Long communityId,
-        Long profileId,
+        String profileId,
         Long parentPostId,
         String title,
         String content,
