@@ -8,10 +8,12 @@ import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkMedia;
 import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
+import com.cakmak.mondatelier.Model.community.PostMedia;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.dto.*;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
 
+import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -146,15 +148,23 @@ public class DTOMappers {
     }
 
     public static PostDto toPostDTO (Post post) {
+
+        List<String> mediaPaths = new ArrayList<>();
+
+        for(PostMedia media : post.getPostMediaList()) {
+            mediaPaths.add(media.getPath());
+        }
+
         return new PostDto(
                 post.getId(),
                 post.getCommunity().getId(),
                 post.getProfile().getId(),
-                post.getParent().getId(),
+                post.getParent() != null ? post.getParent().getId() : null,
                 post.getTitle(),
                 post.getContent(),
                 post.getCreatedAt(),
-                post.getEditedAt()
+                post.getEditedAt(),
+                mediaPaths
         );
     }
 

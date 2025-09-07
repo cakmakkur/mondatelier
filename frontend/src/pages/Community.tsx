@@ -1,12 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import type { CommunityDto } from "../dto/CommunityDto.ts";
 import type { PostDto } from "../dto/PostDto.ts";
 import { useModalContext } from "../context/ModalContext.tsx";
 import axios from "axios";
-import { useAxiosPrivate } from "../auth/useAxiosPrivate";
+import useAxiosPrivate from "../auth/useAxiosPrivate";
+import Post from "../components/community/Post.tsx";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../store/store.ts";
+import { addCommunity } from "../store/recentCommunitiesSlice.ts";
 
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
+const POST_PATH = import.meta.env.VITE_POST_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 
@@ -19,27 +24,36 @@ export default function Community() {
   const [recentCommunities, setRecentCommunities] = useState<
     [CommunityDto] | null
   >(null);
-  const [topCommunities, setTopCommunities] = useState<CommunityDto[]>(
+  const [topCommunities, setTopCommunities] = useState<CommunityDto[]>([]);
+  const [feed, setFeed] = useState<PostDto[]>([]);
+  const [myCommunities, setMyCommunities] = useState<CommunityDto[]>([]);
+  const [searchResult, setSearchResult] = useState<(CommunityDto | PostDto)[]>(
     []
   );
-  const [feed, setFeed] = useState<PostDto[]>([]);
-  const [myCommunities, setMyCommunities] = useState<CommunityDto[]>();
-  const [searchedCommunities, setSearchedCommunities] = useState<
-    [CommunityDto][]
-  >([]);
   const [feedPage, setFeedPage] = useState(1);
   const [myCommunitiesPage, setMyCommunitiesPage] = useState(1);
-  const [searchedCommunitiesPage, setSearchedCommunitiesPage] = useState(1);
+  const [searchPage, setSearchPage] = useState(1);
+
+  const topCommunitiesRef = useRef<HTMLDivElement>(null);
+  const myCommunitiesRef = useRef<HTMLDivElement>(null);
+  const recentCommunitiesRef = useRef<HTMLDivElement>(null);
+
+  const [topCommunitiesExtended, setTopCommunitiesExtended] = useState(false);
+  const [myCommunitiesExtended, setMyCommunitiesExtended] = useState(false);
+  const [recentCommunitiesExtended, setRecentCommunitiesExtended] =
+    useState(false);
+
+  const dispatch = useDispatch();
+  const recent = useSelector(
+    (state: RootState) => state.recentCommunities.items
+  );
 
   const fetchMyCommunities = async () => {
     if (auth) {
       try {
-        const response = await axiosPrivate.get(
-          `${COMMUNITIES_PATH}/my/${auth.profileId}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setMyCommunities(data);
+        const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
+        if (response.status === 200) {
+          setMyCommunities(response.data);
         }
       } catch (error) {
         console.error("Error fetching communities:", error);
@@ -54,12 +68,14 @@ export default function Community() {
     }
   };
 
-  const searchCommunities = async (query: string) => {
+  const search = async (query: string) => {
     try {
-      const response = await fetch(`${COMMUNITIES_PATH}/search/${query}`);
+      const response = await fetch(
+        `${COMMUNITIES_PATH}/search?query=${query}&page=${searchPage}`
+      );
       if (response.ok) {
         const data = await response.json();
-        setSearchedCommunities(data);
+        setSearchResult(data);
       }
     } catch (error) {
       console.error("Error fetching communities:", error);
@@ -85,22 +101,22 @@ export default function Community() {
   const fetchFeed = async () => {
     if (auth) {
       try {
-        const response = await axiosPrivate.get(
-          `${COMMUNITIES_PATH}/feed/me?page=${feedPage}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setFeed(data);
+        const response = await axiosPrivate.get(`${POST_PATH}/me`);
+        if (response.status === 200) {
+          const data = await response.data;
+          setFeed((prev) => [...prev, ...data]);
+          setFeedPage((prev) => prev + 1);
         }
       } catch (error) {
         console.error("Error fetching feed:", error);
       }
     } else {
       try {
-        const response = await fetch(`${COMMUNITIES_PATH}/feed/recent?page=${feedPage}`);
+        const response = await fetch(`${POST_PATH}/recent)`);
         if (response.ok) {
           const data = await response.json();
-          setFeed(prev => [...(prev || ), ...data]);
+          setFeed((prev) => [...prev, ...data]);
+          setFeedPage((prev) => prev + 1);
         }
       } catch (error) {
         console.error("Error fetching feed:", error);
@@ -112,55 +128,128 @@ export default function Community() {
     fetchTopCommunities();
     fetchMyCommunities();
     getRecentCommunities();
-        fetchFeed();
-  }, []);
+    fetchFeed();
+  }, [auth]);
 
+  const handleClickCommunity = (community: CommunityDto) => {
+    // fetch posts from that community
+    dispatch(addCommunity(community));
+  };
+
+  const handleClickHome = () => {
+    fetchFeed();
+  };
 
   return (
     <div className="community-main-div">
       <div className="community-main-subdiv community-main-subdiv--left">
-        <div className="community-home">
+        <div onClick={handleClickHome} className="community-home">
           <img src="/home.svg" alt="" />
           <span>Home</span>
         </div>
-        <div className="sidebar-communities">
-          <div className="recent-communities">
-            {topCommunities?.map((community) => (
-              <div className="recent-community" key={community.id}>
-                <img
-                  src={`${UPLOADS_PATH}${community.logoImgPath}`}
-                  alt="community thumbnail"
-                />
-                <div className="community-name">{community.name}</div>
-              </div>
-            ))}
-          </div>
-          <div className="create-new-community"></div>
-          <div className="recent-communities">
-            {recentCommunities?.map((community) => (
-              <div className="my-community" key={community.id}>
-                <img
-                  src={`${UPLOADS_PATH}${community.logoImgPath}`}
-                  alt="community thumbnail"
-                />
-                <div className="community-name">{community.name}</div>
-              </div>
-            ))}
-          </div>
-          <div className="top-communities">
-            {topCommunities?.map((community) => (
-              <div className="top-community" key={community.id}>
-                <img
-                  src={`${UPLOADS_PATH}${community.logoImgPath}`}
-                  alt="community thumbnail"
-                />
-                <div className="community-name">{community.name}</div>
-              </div>
-            ))}
-          </div>
+        <div
+          className={`sidebar-communities ${
+            topCommunitiesExtended ? "sidebar-communities--extended" : ""
+          }`}
+        >
+          <span>Top Communities</span>
+          {topCommunities?.map((community) => (
+            <div
+              onClick={() => handleClickCommunity(community)}
+              className="sidebar-community"
+              key={community.id}
+            >
+              <img
+                src={`${UPLOADS_PATH}${community.logoImgPath}`}
+                alt="community thumbnail"
+              />
+              <div className="community-name">{community.name}</div>
+            </div>
+          ))}
+          {topCommunities.length > 3 && (
+            <div
+              onClick={() => {
+                setTopCommunitiesExtended(!topCommunitiesExtended);
+              }}
+              className={`sidebar-community-accordeon-button ${
+                topCommunitiesExtended
+                  ? "sidebar-community-accordeon-button--up"
+                  : ""
+              }`}
+            >
+              <img src="/down.svg" alt="" />
+            </div>
+          )}
         </div>
+
+        <div className="create-new-community"></div>
+
+        <div
+          className={`sidebar-communities ${
+            recentCommunitiesExtended ? "sidebar-communities--extended" : ""
+          }`}
+        >
+          <span>Recent Communities</span>
+          {recent.map((community) => (
+            <div className="sidebar-community" key={community.id}>
+              <img
+                src={`${UPLOADS_PATH}${community.logoImgPath}`}
+                alt="community thumbnail"
+              />
+              <div className="community-name">{community.name}</div>
+            </div>
+          ))}
+          {recent.length > 3 && (
+            <div
+              onClick={() => {
+                setRecentCommunitiesExtended(!recentCommunitiesExtended);
+              }}
+              className={`sidebar-community-accordeon-button ${
+                recentCommunitiesExtended
+                  ? "sidebar-community-accordeon-button--up"
+                  : ""
+              }`}
+            >
+              <img src="/down.svg" alt="" />
+            </div>
+          )}
+        </div>
+
+        {auth && (
+          <div
+            className={`sidebar-communities ${
+              myCommunitiesExtended ? "sidebar-communities--extended" : ""
+            }`}
+          >
+            <span> My Communities</span>
+            {myCommunities?.map((community) => (
+              <div className="sidebar-community" key={community.id}>
+                <img
+                  src={`${UPLOADS_PATH}${community.logoImgPath}`}
+                  alt="community thumbnail"
+                />
+                <div className="community-name">{community.name}</div>
+              </div>
+            ))}
+            {myCommunities.length > 3 && (
+              <div
+                className={`sidebar-community-accordeon-button ${
+                  myCommunitiesExtended
+                    ? "sidebar-community-accordeon-button--up"
+                    : ""
+                }`}
+              >
+                <img src="/down.svg" alt="" />
+              </div>
+            )}
+          </div>
+        )}
       </div>
-      <div className="community-main-subdiv community-main-subdiv--center"></div>
+      <div className="community-main-subdiv community-main-subdiv--center">
+        {feed?.map((post, i) => (
+          <Post post={post} key={i} />
+        ))}
+      </div>
       <div className="community-main-subdiv community-main-subdiv--right"></div>
     </div>
   );

@@ -1,27 +1,123 @@
+@import "variables";
+
 .community-main-div {
   width: 100vw;
   background-color: black;
   min-height: 100vh;
-  color: white;
-  padding: 150px 80px 0px;
+  color: $lightTextColor;
+  padding: 150px 80px 0px 40px;
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
+  position: relative;
 }
 
 .community-main-subdiv {
+  padding: 0px 15px 0px 0px;
+  row-gap: 15px;
 }
 
 .community-main-subdiv--left {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 .community-main-subdiv--center {
   width: 100%;
   height: 100%;
-  background-color: green;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
 }
 .community-main-subdiv--right {
   width: 100%;
   height: 100%;
   background-color: blue;
+}
+
+.community-home {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  column-gap: 10px;
+  font-size: 1.2rem;
+  & img {
+    width: 30px;
+    aspect-ratio: 1;
+  }
+  & span {
+    align-content: end;
+  }
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.225);
+}
+
+.sidebar-communities {
+  width: 100%;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.394);
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  background-color: $darkMode-contentBackground;
+  border-radius: 10px;
+  position: relative;
+  max-height: 190px;
+  overflow: hidden;
+  transition: 0.3s;
+  & span {
+    padding-bottom: 10px;
+    font-size: 1.1rem;
+    color: $lightTextColor--highlight;
+    border-bottom: 1px solid $lightSeperatorColor;
+  }
+}
+
+.sidebar-communities--extended {
+  max-height: 250px;
+}
+
+.recent-communities {
+  padding: 20px 0px;
+}
+
+.sidebar-community {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 10px;
+  padding: 5px 0px;
+  &:hover {
+    cursor: pointer;
+    background-color: lighten($darkMode-contentBackground, 5%);
+    color: $lightTextColor--highlight;
+  }
+  & img {
+    width: 30px;
+    aspect-ratio: 1;
+    display: inline;
+  }
+}
+
+.sidebar-community-accordeon-button {
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+  z-index: 1000;
+  border: none;
+  background: none;
+  padding: 2px;
+  border-radius: 50%;
+  transition: 0.1s;
+  &:hover {
+    cursor: pointer;
+    background-color: lighten($darkMode-contentBackground, 5%);
+  }
+}
+
+.sidebar-community-accordeon-button--up {
+  transform: rotate(180deg);
+  filter: brightness(1.5);
 }

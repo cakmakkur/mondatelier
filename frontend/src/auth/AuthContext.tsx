@@ -66,7 +66,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     credentials: LoginDto
   ): Promise<AxiosResponse<unknown, unknown> | undefined> => {
     const controller = new AbortController();
-    setAuth(undefined);
     const timeout = setTimeout(() => {
       controller.abort();
     }, 10000);
@@ -91,6 +90,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       return response;
     } catch (error) {
       console.error("Login failed: ", error);
+      setAuth(undefined);
       clearTimeout(timeout);
       return;
     }
@@ -134,7 +134,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         );
         if (response.status === 200) {
           setAuth({
-            accessToken: response.data.accessToken,
+            accessToken: response.data.token,
             userId: response.data.userId,
             profileId: response.data.profileId,
           });

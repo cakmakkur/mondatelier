@@ -7,4 +7,5 @@ export interface PostDto {
   createdAt: Date;
   profileId: string;
   editedAt: Date | null;
+  postMediaPathList: string[];
 }

@@ -1,0 +1,64 @@
+@import "variables";
+
+.post-main-container {
+  background-color: $darkMode-contentBackground;
+  padding: 15px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.post-title {
+  color: $lightTextColor--highlight;
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.post-content {
+  color: rgba(255, 255, 255, 0.778);
+}
+
+.post-details {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.639);
+  border-top: 1px solid $lightSeperatorColor;
+  padding-top: 10px;
+}
+
+.post-profile {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 10px;
+
+  & img {
+    width: 25px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    display: inline;
+  }
+}
+
+.post-details-middledot {
+  font-size: 1.2rem;
+  padding: 0px 2px;
+}
+
+.post-profile-name {
+  font-weight: 600;
+  &:hover {
+    cursor: pointer;
+    color: $lightTextColor--highlight;
+  }
+}
+
+.post-carousel {
+  display: flex;
+  justify-content: center;
+}
+
+.post-carousel-div {
+  width: 300px;
+  height: 300px;
+}

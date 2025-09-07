@@ -1,6 +1,7 @@
 package com.cakmak.mondatelier.dto;
 
 import java.util.Date;
+import java.util.List;
 
 public record PostDto(
         Long id,
@@ -10,6 +11,7 @@ public record PostDto(
         String title,
         String content,
         Date createdAt,
-        Date editedAt
+        Date editedAt,
+        List<String> postMediaPathList
 ) {
 }

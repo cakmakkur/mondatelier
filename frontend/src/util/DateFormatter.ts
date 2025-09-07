@@ -29,4 +29,35 @@ export class DateFormatter {
     const month = this.extractMonth(rawDate);
     return day + "." + month + ".";
   }
+
+  public static createdXAgo(rawDate: Date) {
+    const timestamp = new Date(rawDate).getTime();
+    const timeDiff = Date.now() - timestamp;
+    const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
+    if (hoursDiff < 24) {
+      return hoursDiff + " hours ago";
+    } else {
+      const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      if (daysDiff < 7) {
+        return daysDiff + " days ago";
+      } else {
+        const weeksDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 7));
+        if (weeksDiff < 4) {
+          return weeksDiff + " weeks ago";
+        } else {
+          const monthsDiff = Math.floor(
+            timeDiff / (1000 * 60 * 60 * 24 * 7 * 4)
+          );
+          if (monthsDiff < 12) {
+            return monthsDiff + " months ago";
+          } else {
+            const yearsDiff = Math.floor(
+              timeDiff / (1000 * 60 * 60 * 24 * 7 * 4 * 12)
+            );
+            return yearsDiff + " years ago";
+          }
+        }
+      }
+    }
+  }
 }

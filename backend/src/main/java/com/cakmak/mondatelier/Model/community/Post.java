@@ -36,6 +36,9 @@ public class Post {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> replies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostMedia> postMediaList = new ArrayList<>();
+
     @UpdateTimestamp
     @Column(name = "edited_at")
     private Date editedAt;

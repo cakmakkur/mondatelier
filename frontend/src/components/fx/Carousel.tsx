@@ -54,11 +54,11 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
   }, [activeIndex]);
 
   const prevSlide = () => {
-    const prevIndex = (activeIndex - 1) % 5;
+    const prevIndex = (activeIndex - 1) % imgUrls.length;
     setActiveIndex(prevIndex);
   };
   const nextSlide = () => {
-    const nextIndex = (activeIndex + 1) % 5;
+    const nextIndex = (activeIndex + 1) % imgUrls.length;
     setActiveIndex(nextIndex);
   };
 
@@ -70,7 +70,7 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
     >
       <div ref={sliderRef} style={{ transition: "transform 1s ease-out" }}>
         {extendedImgUrls.map((url, index) => (
-          <img key={index} src={imgUrls[0]} alt={`Slide ${index + 1}`} />
+          <img key={index} src={imgUrls[index]} alt={`Slide ${index + 1}`} />
         ))}
       </div>
       <button

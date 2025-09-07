@@ -1,35 +1,19 @@
-import { useAuthContext } from "./AuthContext";
-
-const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
+import axios from "axios";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const useRefreshToken = () => {
-  const { setAuth } = useAuthContext();
-
-  const refresh = async (): Promise<string | null> => {
+  const refresh = async () => {
     try {
-      const response = await fetch(REFRESH_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
+      const response = await axios.get(`${BASE_URL}/auth/refresh`, {
+        withCredentials: true,
       });
-
-      if (!response.ok) throw new Error("Refresh failed");
-
-      const data = await response.json();
-      const newAccessToken = data.accessToken;
-
-      setAuth((prev) =>
-        prev ? { ...prev, accessToken: newAccessToken } : prev
-      );
-
-      return newAccessToken;
+      const newToken = response.data.accessToken;
+      return newToken;
     } catch (err) {
-      console.error("Refresh token error:", err);
-      setAuth(undefined);
+      console.error("Refresh token failed:", err);
       return null;
     }
   };
-
   return refresh;
 };
 
