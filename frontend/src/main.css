@@ -2341,6 +2341,9 @@ input[type=number]::-webkit-outer-spin-button {
 .community-home span {
   align-content: end;
 }
+.community-home:hover {
+  cursor: pointer;
+}
 
 .sidebar-communities {
   width: 100%;
@@ -2408,6 +2411,37 @@ input[type=number]::-webkit-outer-spin-button {
 .sidebar-community-accordeon-button--up {
   transform: rotate(180deg);
   filter: brightness(1.5);
+}
+
+.community-search-bar-main {
+  flex: 1;
+}
+.community-search-bar-main input {
+  color: rgba(255, 255, 255, 0.639);
+  padding: 0px 15px;
+  font-size: 1.2rem;
+  width: 100%;
+  background-color: rgb(39.75, 39.75, 39.75);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.064);
+  height: 40px;
+}
+
+.community-new {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+}
+.community-new:hover {
+  cursor: pointer;
+}
+
+.community-new-icon {
+  font-size: 3rem;
+}
+
+.community-new-text {
+  font-size: 1.2rem;
 }
 
 .post-main-container {

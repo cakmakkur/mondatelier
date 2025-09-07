@@ -50,6 +50,9 @@
   & span {
     align-content: end;
   }
+  &:hover {
+    cursor: pointer;
+  }
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.225);
 }
@@ -120,4 +123,35 @@
 .sidebar-community-accordeon-button--up {
   transform: rotate(180deg);
   filter: brightness(1.5);
+}
+
+.community-search-bar-main {
+  flex: 1;
+  & input {
+    color: $lightTextColor;
+    padding: 0px 15px;
+    font-size: 1.2rem;
+    width: 100%;
+    background-color: lighten($darkMode-contentBackground, 5%);
+    border-radius: 20px;
+    border: 1px solid $lightSeperatorColor;
+    height: 40px;
+  }
+}
+
+.community-new {
+  display: flex;
+  align-items: center;
+  column-gap: 10px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.community-new-icon {
+  font-size: 3rem;
+}
+
+.community-new-text {
+  font-size: 1.2rem;
 }

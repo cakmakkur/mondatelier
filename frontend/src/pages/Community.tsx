@@ -9,6 +9,7 @@ import Post from "../components/community/Post.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store.ts";
 import { addCommunity } from "../store/recentCommunitiesSlice.ts";
+import CommunitySearchBar from "../components/userActions/CommunitySearchBar.tsx";
 
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 const POST_PATH = import.meta.env.VITE_POST_PATH;
@@ -147,6 +148,10 @@ export default function Community() {
           <img src="/home.svg" alt="" />
           <span>Home</span>
         </div>
+        <div className="community-new">
+          <span className="community-new-icon">+</span>
+          <span className="community-new-text">New Community</span>
+        </div>
         <div
           className={`sidebar-communities ${
             topCommunitiesExtended ? "sidebar-communities--extended" : ""
@@ -181,8 +186,6 @@ export default function Community() {
             </div>
           )}
         </div>
-
-        <div className="create-new-community"></div>
 
         <div
           className={`sidebar-communities ${
@@ -246,6 +249,7 @@ export default function Community() {
         )}
       </div>
       <div className="community-main-subdiv community-main-subdiv--center">
+        <CommunitySearchBar />
         {feed?.map((post, i) => (
           <Post post={post} key={i} />
         ))}
