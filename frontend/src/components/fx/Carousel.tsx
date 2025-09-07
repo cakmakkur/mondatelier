@@ -5,12 +5,10 @@ interface CarouselPropTypes {
 }
 
 export default function Carousel({ imgUrls }: CarouselPropTypes) {
-  // const [imgUrls, setImgUrls] = useState(["/events_poster_2.png"]);
-  const extendedImgUrls = [...imgUrls, imgUrls[0]];
-
   const [activeIndex, setActiveIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | undefined>(undefined);
+  const [reversed, setReversed] = useState(false);
 
   useEffect(() => {
     startSlide();
@@ -21,25 +19,25 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
     clearInterval(intervalRef.current);
     intervalRef.current = window.setInterval(() => {
       setActiveIndex((current) => {
-        if (activeIndex === extendedImgUrls.length - 1 && sliderRef.current) {
-          sliderRef.current.style.transition = "none";
-          requestAnimationFrame(() => {
-            const newTranslate = 0;
-            if (sliderRef.current) {
-              sliderRef.current.style.transform = `translateX(${newTranslate}vw)`;
-              requestAnimationFrame(() => {
-                if (sliderRef.current) {
-                  sliderRef.current.style.transition = "transform 1s ease-out";
-                }
-              });
-            }
-          });
+        if (activeIndex === imgUrls.length - 1 && sliderRef.current) {
+          setReversed(true);
+          return current - 1;
+          return 0;
+        } else if (activeIndex === 0 && sliderRef.current) {
+          setReversed(false);
           return 0;
         } else {
-          return current + 1;
+          return current + 1 * (reversed ? -1 : 1);
         }
       });
-    }, 10000);
+
+      requestAnimationFrame(() => {
+        const newTranslate = 0;
+        if (sliderRef.current) {
+          sliderRef.current.style.transform = `translateX(${newTranslate}vw)`;
+        }
+      });
+    }, 2000);
   };
 
   const stopSlide = () => {
@@ -48,7 +46,8 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
 
   useEffect(() => {
     if (sliderRef.current) {
-      const newTranslate = activeIndex * -100;
+      const factor = reversed ? -1 : 1;
+      const newTranslate = activeIndex * -100 * factor;
       sliderRef.current.style.transform = `translateX(${newTranslate}%)`;
     }
   }, [activeIndex]);
@@ -69,8 +68,8 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
       className="carousel_slider_container"
     >
       <div ref={sliderRef} style={{ transition: "transform 1s ease-out" }}>
-        {extendedImgUrls.map((url, index) => (
-          <img key={index} src={imgUrls[index]} alt={`Slide ${index + 1}`} />
+        {imgUrls.map((url, index) => (
+          <img key={index} src={url} alt={`Slide ${index + 1}`} />
         ))}
       </div>
       <button
@@ -91,7 +90,7 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
         </svg>
       </button>
       <button
-        disabled={activeIndex === 4}
+        disabled={activeIndex === imgUrls.length - 1}
         onClick={nextSlide}
         className="carousel_next_btn"
       >

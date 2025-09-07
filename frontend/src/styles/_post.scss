@@ -24,9 +24,12 @@
   color: rgba(255, 255, 255, 0.639);
   border-top: 1px solid $lightSeperatorColor;
   padding-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.post-profile {
+.post-profile--left {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -61,4 +64,22 @@
 .post-carousel-div {
   width: 300px;
   height: 300px;
+}
+
+.post-profile--right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.post-profile--right-comment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 1rem;
+  column-gap: 5px;
+  & img {
+    width: 20px;
+  }
 }

@@ -83,7 +83,7 @@ export default function Community() {
     }
   };
 
-  const deleteRecentCommunities = () => {
+  const clearRecentCommunities = () => {
     localStorage.removeItem("recentCommunities");
   };
 
@@ -147,6 +147,10 @@ export default function Community() {
         <div onClick={handleClickHome} className="community-home">
           <img src="/home.svg" alt="" />
           <span>Home</span>
+        </div>
+        <div onClick={handleClickHome} className="community-home">
+          <img src="/heart-white.svg" alt="" />
+          <span>Liked</span>
         </div>
         <div className="community-new">
           <span className="community-new-icon">+</span>

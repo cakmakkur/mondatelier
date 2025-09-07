@@ -41,7 +41,7 @@
       opacity: 1;
     }
     &:disabled {
-      opacity: 0;
+      display: none;
     }
     svg {
       width: 80px;

@@ -6,6 +6,7 @@ import com.cakmak.mondatelier.dto.CommunityDto;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,10 +16,16 @@ import java.util.List;
 @RequestMapping("/api/community")
 public class CommunityController {
 
-    private CommunityService communityService;
+    private final CommunityService communityService;
 
     public CommunityController(CommunityService communityService) {
         this.communityService = communityService;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CommunityDto> getCommunityById(@PathVariable Long id) {
+        CommunityDto dto = communityService.getCommunityById(id);
+        return ResponseEntity.ok().body(dto);
     }
 
     @GetMapping("/top")

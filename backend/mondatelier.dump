@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Ft3oKi2fvdFSfhDhKA0tYnz403czwIXbA8YyM9Uwl1N0tGFKa8FBvfqNC2OLpDC
+\restrict I2ubD8DU15HPN1rwDrE9f5Ec9LcAggPdyERxdshRX4loSm5UYeodAoYRXdpO7VJ
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Postgres.app)
@@ -19,6 +19,8 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.votes DROP CONSTRAINT votes_profile_id_fkey;
+ALTER TABLE ONLY public.votes DROP CONSTRAINT votes_post_id_fkey;
 ALTER TABLE ONLY public.users DROP CONSTRAINT users_user_type_id_fkey;
 ALTER TABLE ONLY public.user_preferences DROP CONSTRAINT user_preferences_profile_id_fkey;
 ALTER TABLE ONLY public.user_preferences DROP CONSTRAINT user_preferences_language_id_fkey;
@@ -29,6 +31,10 @@ ALTER TABLE ONLY public.user_follows DROP CONSTRAINT user_follows_follower_id_fk
 ALTER TABLE ONLY public.profiles DROP CONSTRAINT profiles_user_id_fkey;
 ALTER TABLE ONLY public.profiles DROP CONSTRAINT profiles_profile_type_id_fkey;
 ALTER TABLE ONLY public.profiles DROP CONSTRAINT profiles_country_id_fkey;
+ALTER TABLE ONLY public.posts DROP CONSTRAINT posts_profile_id_fkey;
+ALTER TABLE ONLY public.posts DROP CONSTRAINT posts_parent_post_id_fkey;
+ALTER TABLE ONLY public.posts DROP CONSTRAINT posts_community_id_fkey;
+ALTER TABLE ONLY public.post_media DROP CONSTRAINT post_media_post_id_fkey;
 ALTER TABLE ONLY public.masterclasses DROP CONSTRAINT masterclasses_profile_id_fkey;
 ALTER TABLE ONLY public.masterclasses DROP CONSTRAINT masterclasses_art_category_id_fkey;
 ALTER TABLE ONLY public.freelances DROP CONSTRAINT freelancers_profile_id_fkey;
@@ -41,6 +47,9 @@ ALTER TABLE ONLY public.events DROP CONSTRAINT events_city_id_fkey;
 ALTER TABLE ONLY public.event_goers DROP CONSTRAINT event_goers_profile_id_fkey;
 ALTER TABLE ONLY public.event_goers DROP CONSTRAINT event_goers_event_id_fkey;
 ALTER TABLE ONLY public.countries DROP CONSTRAINT countries_continent_id_fkey;
+ALTER TABLE ONLY public.community_profile DROP CONSTRAINT community_profile_profile_id_fkey;
+ALTER TABLE ONLY public.community_profile DROP CONSTRAINT community_profile_community_id_fkey;
+ALTER TABLE ONLY public.communities DROP CONSTRAINT communities_profile_id_fkey;
 ALTER TABLE ONLY public.cities DROP CONSTRAINT cities_country_id_fkey;
 ALTER TABLE ONLY public.artworks DROP CONSTRAINT artworks_profile_id_fkey;
 ALTER TABLE ONLY public.artworks DROP CONSTRAINT artworks_art_category_id_fkey;
@@ -51,12 +60,16 @@ ALTER TABLE ONLY public.artwork_likes DROP CONSTRAINT artwork_likes_profile_id_f
 ALTER TABLE ONLY public.artwork_likes DROP CONSTRAINT artwork_likes_artwork_id_fkey;
 ALTER TABLE ONLY public.art_types DROP CONSTRAINT art_types_category_id_fkey;
 ALTER TABLE ONLY public.art_categories DROP CONSTRAINT art_categories_media_type_id_fkey;
+ALTER TABLE ONLY public.votes DROP CONSTRAINT votes_profile_id_post_id_key;
+ALTER TABLE ONLY public.votes DROP CONSTRAINT votes_pkey;
 ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
 ALTER TABLE ONLY public.user_types DROP CONSTRAINT user_types_pkey;
 ALTER TABLE ONLY public.user_preferences DROP CONSTRAINT user_preferences_pkey;
 ALTER TABLE ONLY public.user_follows DROP CONSTRAINT user_follows_pkey;
 ALTER TABLE ONLY public.profiles DROP CONSTRAINT profiles_pkey;
 ALTER TABLE ONLY public.profile_types DROP CONSTRAINT profile_types_pkey;
+ALTER TABLE ONLY public.posts DROP CONSTRAINT posts_pkey;
+ALTER TABLE ONLY public.post_media DROP CONSTRAINT post_media_pkey;
 ALTER TABLE ONLY public.masterclasses DROP CONSTRAINT masterclasses_pkey;
 ALTER TABLE ONLY public.logs DROP CONSTRAINT logs_pkey;
 ALTER TABLE ONLY public.languages DROP CONSTRAINT languages_pkey;
@@ -67,6 +80,9 @@ ALTER TABLE ONLY public.event_types DROP CONSTRAINT event_types_pkey;
 ALTER TABLE ONLY public.event_goers DROP CONSTRAINT event_goers_pkey;
 ALTER TABLE ONLY public.countries DROP CONSTRAINT countries_pkey;
 ALTER TABLE ONLY public.continents DROP CONSTRAINT continents_pkey;
+ALTER TABLE ONLY public.community_profile DROP CONSTRAINT community_profile_pkey;
+ALTER TABLE ONLY public.communities DROP CONSTRAINT communities_pkey;
+ALTER TABLE ONLY public.communities DROP CONSTRAINT communities_name_key;
 ALTER TABLE ONLY public.cities DROP CONSTRAINT cities_pkey;
 ALTER TABLE ONLY public.artworks DROP CONSTRAINT artworks_pkey;
 ALTER TABLE ONLY public.artwork_types DROP CONSTRAINT artwork_types_pkey;
@@ -88,6 +104,7 @@ ALTER TABLE public.artwork_likes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.art_types ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.art_media_types ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.art_categories ALTER COLUMN id DROP DEFAULT;
+DROP TABLE public.votes;
 DROP TABLE public.users;
 DROP SEQUENCE public.user_types_id_seq;
 DROP TABLE public.user_types;
@@ -97,6 +114,8 @@ DROP TABLE public.user_follows;
 DROP TABLE public.profiles;
 DROP SEQUENCE public.profile_types_id_seq;
 DROP TABLE public.profile_types;
+DROP TABLE public.posts;
+DROP TABLE public.post_media;
 DROP TABLE public.masterclasses;
 DROP SEQUENCE public.logs_id_seq;
 DROP TABLE public.logs;
@@ -112,6 +131,8 @@ DROP SEQUENCE public.event_goers_id_seq;
 DROP TABLE public.event_goers;
 DROP TABLE public.countries;
 DROP TABLE public.continents;
+DROP TABLE public.community_profile;
+DROP TABLE public.communities;
 DROP SEQUENCE public.cities_id_seq;
 DROP TABLE public.cities;
 DROP TABLE public.artworks;
@@ -365,6 +386,35 @@ ALTER SEQUENCE public.cities_id_seq OWNER TO mondatelier;
 
 ALTER SEQUENCE public.cities_id_seq OWNED BY public.cities.id;
 
+
+--
+-- Name: communities; Type: TABLE; Schema: public; Owner: kursat
+--
+
+CREATE TABLE public.communities (
+    id integer NOT NULL,
+    name character varying(120) NOT NULL,
+    description text,
+    created_at timestamp without time zone DEFAULT now(),
+    logo_img_path text,
+    profile_id text
+);
+
+
+ALTER TABLE public.communities OWNER TO kursat;
+
+--
+-- Name: community_profile; Type: TABLE; Schema: public; Owner: kursat
+--
+
+CREATE TABLE public.community_profile (
+    id integer NOT NULL,
+    profile_id character varying(255),
+    community_id integer
+);
+
+
+ALTER TABLE public.community_profile OWNER TO kursat;
 
 --
 -- Name: continents; Type: TABLE; Schema: public; Owner: mondatelier
@@ -624,6 +674,37 @@ CREATE TABLE public.masterclasses (
 ALTER TABLE public.masterclasses OWNER TO mondatelier;
 
 --
+-- Name: post_media; Type: TABLE; Schema: public; Owner: kursat
+--
+
+CREATE TABLE public.post_media (
+    id integer NOT NULL,
+    post_id integer,
+    path text
+);
+
+
+ALTER TABLE public.post_media OWNER TO kursat;
+
+--
+-- Name: posts; Type: TABLE; Schema: public; Owner: kursat
+--
+
+CREATE TABLE public.posts (
+    id integer NOT NULL,
+    community_id integer,
+    profile_id text NOT NULL,
+    parent_post_id integer,
+    title character varying(124) NOT NULL,
+    content text NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    edited_at timestamp without time zone
+);
+
+
+ALTER TABLE public.posts OWNER TO kursat;
+
+--
 -- Name: profile_types; Type: TABLE; Schema: public; Owner: mondatelier
 --
 
@@ -783,6 +864,21 @@ CREATE TABLE public.users (
 
 
 ALTER TABLE public.users OWNER TO mondatelier;
+
+--
+-- Name: votes; Type: TABLE; Schema: public; Owner: kursat
+--
+
+CREATE TABLE public.votes (
+    id integer NOT NULL,
+    profile_id text NOT NULL,
+    post_id integer NOT NULL,
+    vote smallint NOT NULL,
+    created_at timestamp without time zone DEFAULT now()
+);
+
+
+ALTER TABLE public.votes OWNER TO kursat;
 
 --
 -- Name: art_categories id; Type: DEFAULT; Schema: public; Owner: mondatelier
@@ -1213,6 +1309,30 @@ COPY public.cities (id, name, country_id) FROM stdin;
 104	Manchester	185
 105	Birmingham	185
 106	Glasgow	185
+\.
+
+
+--
+-- Data for Name: communities; Type: TABLE DATA; Schema: public; Owner: kursat
+--
+
+COPY public.communities (id, name, description, created_at, logo_img_path, profile_id) FROM stdin;
+3	Graffiti	Graffity club	2025-09-06 15:31:39.137	/communities/graf.webp	2
+4	Swing	Swing and blues	2025-09-06 15:31:39.143	/communities/swing.webp	3
+5	NewOrleansJazz	jazz in new orleans!!!	2025-09-06 15:31:39.143	/communities/neworl.jpg	3
+6	Street Art	Street art community...	2025-09-06 15:31:39.143	/communities/street.jpg	1
+1	Lindy Hop	A community for lindy hop fans	2025-09-06 15:31:39.137892	/communities/lindy.jpg	1
+2	Dubstep	A community of dubstep lovers.	2025-09-06 15:31:39.143182	/communities/dub.jpg	1
+\.
+
+
+--
+-- Data for Name: community_profile; Type: TABLE DATA; Schema: public; Owner: kursat
+--
+
+COPY public.community_profile (id, profile_id, community_id) FROM stdin;
+2	1	4
+1	1	1
 \.
 
 
@@ -2373,7 +2493,63 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 1037	2025-09-06 09:53:22.425172+03	ERROR	Runtime Error: Bad credentials
 1034	2025-09-06 09:26:45.023735+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1035	2025-09-06 09:26:45.024162+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
+1038	2025-09-06 12:18:40.676176+03	ERROR	Runtime Error: User not found
+1043	2025-09-07 12:30:39.83548+03	ERROR	Runtime Error: User not found
+1048	2025-09-07 12:41:50.654744+03	ERROR	Runtime Error: User not found
+1050	2025-09-07 12:48:37.43803+03	ERROR	Runtime Error: User not found
+1059	2025-09-07 12:52:11.765322+03	ERROR	Runtime Error: User not found
+1063	2025-09-07 12:52:23.394845+03	ERROR	Runtime Error: User not found
+1064	2025-09-07 12:52:24.000108+03	ERROR	Runtime Error: User not found
+1066	2025-09-07 12:52:24.716359+03	ERROR	Runtime Error: User not found
+1074	2025-09-07 12:53:06.48368+03	ERROR	Runtime Error: User not found
+1079	2025-09-07 12:54:38.544576+03	ERROR	Runtime Error: User not found
+1080	2025-09-07 12:56:21.733032+03	ERROR	Runtime Error: User not found
+1081	2025-09-07 12:57:13.978733+03	ERROR	Runtime Error: User not found
+1085	2025-09-07 13:06:19.657919+03	ERROR	Runtime Error: User not found
+1087	2025-09-07 13:09:28.600193+03	ERROR	Runtime Error: User not found
+1089	2025-09-07 13:09:28.885553+03	ERROR	Runtime Error: User not found
+1093	2025-09-07 13:09:33.377914+03	ERROR	Runtime Error: User not found
 1036	2025-09-06 09:26:45.02452+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
+1039	2025-09-07 11:01:19.975843+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.community.Post.getId()" because the return value of "com.cakmak.mondatelier.Model.community.Post.getParent()" is null
+1045	2025-09-07 12:33:07.906288+03	ERROR	Runtime Error: User not found
+1047	2025-09-07 12:37:19.519063+03	ERROR	Runtime Error: User not found
+1049	2025-09-07 12:41:50.673499+03	ERROR	Runtime Error: User not found
+1051	2025-09-07 12:48:37.438031+03	ERROR	Runtime Error: User not found
+1052	2025-09-07 12:48:38.851393+03	ERROR	Runtime Error: User not found
+1053	2025-09-07 12:48:38.938034+03	ERROR	Runtime Error: User not found
+1054	2025-09-07 12:51:03.268166+03	ERROR	Runtime Error: User not found
+1055	2025-09-07 12:51:03.295252+03	ERROR	Runtime Error: User not found
+1057	2025-09-07 12:52:11.737179+03	ERROR	Runtime Error: User not found
+1058	2025-09-07 12:52:11.765322+03	ERROR	Runtime Error: User not found
+1060	2025-09-07 12:52:13.296273+03	ERROR	Runtime Error: User not found
+1061	2025-09-07 12:52:13.330025+03	ERROR	Runtime Error: User not found
+1068	2025-09-07 12:52:25.416164+03	ERROR	Runtime Error: User not found
+1069	2025-09-07 12:52:25.421414+03	ERROR	Runtime Error: User not found
+1070	2025-09-07 12:52:40.979284+03	ERROR	Runtime Error: User not found
+1072	2025-09-07 12:52:41.940652+03	ERROR	Runtime Error: User not found
+1075	2025-09-07 12:53:06.488497+03	ERROR	Runtime Error: User not found
+1076	2025-09-07 12:53:27.801289+03	ERROR	Runtime Error: User not found
+1078	2025-09-07 12:53:40.902183+03	ERROR	Runtime Error: User not found
+1082	2025-09-07 12:57:23.001201+03	ERROR	Runtime Error: User not found
+1084	2025-09-07 13:06:19.65792+03	ERROR	Runtime Error: User not found
+1088	2025-09-07 13:09:28.885553+03	ERROR	Runtime Error: User not found
+1090	2025-09-07 13:09:29.968807+03	ERROR	Runtime Error: User not found
+1091	2025-09-07 13:09:30.26814+03	ERROR	Runtime Error: User not found
+1092	2025-09-07 13:09:33.376758+03	ERROR	Runtime Error: User not found
+1041	2025-09-07 12:30:28.164337+03	ERROR	Runtime Error: User not found
+1040	2025-09-07 12:30:28.16433+03	ERROR	Runtime Error: User not found
+1042	2025-09-07 12:30:39.824379+03	ERROR	Runtime Error: User not found
+1044	2025-09-07 12:31:41.587345+03	ERROR	Runtime Error: User not found
+1046	2025-09-07 12:36:14.481405+03	ERROR	Runtime Error: User not found
+1056	2025-09-07 12:52:11.737178+03	ERROR	Runtime Error: User not found
+1062	2025-09-07 12:52:23.393773+03	ERROR	Runtime Error: User not found
+1065	2025-09-07 12:52:24.00317+03	ERROR	Runtime Error: User not found
+1067	2025-09-07 12:52:24.720363+03	ERROR	Runtime Error: User not found
+1071	2025-09-07 12:52:40.98086+03	ERROR	Runtime Error: User not found
+1073	2025-09-07 12:52:48.118304+03	ERROR	Runtime Error: User not found
+1077	2025-09-07 12:53:27.80128+03	ERROR	Runtime Error: User not found
+1083	2025-09-07 13:01:32.358368+03	ERROR	Runtime Error: User not found
+1086	2025-09-07 13:09:28.600193+03	ERROR	Runtime Error: User not found
 \.
 
 
@@ -2383,6 +2559,39 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 
 COPY public.masterclasses (id, profile_id, title, description, sessions, session_duration, session_price, created_at, art_category_id, city_id, thumbnail_url) FROM stdin;
 1	1	Jazz Piano	Jazz harmony and improvisation classes	5	60	5000	2025-07-05 05:38:27.626591+03	4	10	\N
+\.
+
+
+--
+-- Data for Name: post_media; Type: TABLE DATA; Schema: public; Owner: kursat
+--
+
+COPY public.post_media (id, post_id, path) FROM stdin;
+1	4	/posts/artex1.jpg
+2	4	/posts/artex2.jpg
+\.
+
+
+--
+-- Data for Name: posts; Type: TABLE DATA; Schema: public; Owner: kursat
+--
+
+COPY public.posts (id, community_id, profile_id, parent_post_id, title, content, created_at, edited_at) FROM stdin;
+1	1	1	\N	Hello World	This is my first dummy post in community 1.	2024-01-05 10:15:23	2024-01-05 10:15:23
+2	2	2	\N	Random Thoughts	Just dropping some random ideas here.	2024-02-12 14:45:09	2024-02-12 14:45:09
+4	4	1	\N	Daily Routine	I usually wake up, code, and drink coffee.	2024-04-18 07:33:40	2024-04-18 07:33:40
+5	5	2	\N	Tech News	AI is advancing faster than ever.	2024-05-22 16:11:12	2024-05-22 16:11:12
+6	6	3	\N	Music Recommendation	You should listen to lo-fi beats.	2024-06-11 20:55:47	2024-06-11 20:55:47
+9	3	1	\N	Coding Journey	Started learning Spring Boot, exciting stuff!	2024-08-02 18:44:09	2024-08-02 18:44:09
+11	5	3	\N	Travel Idea	Thinking about visiting Japan in autumn.	2024-09-01 08:33:45	2024-09-01 08:33:45
+12	6	1	\N	Food Talk	Anyone tried making homemade ramen?	2024-09-15 12:50:33	2024-09-15 12:50:33
+14	2	1	\N	Sports Update	Watched an incredible football match yesterday.	2024-10-21 17:45:59	2024-10-21 17:45:59
+3	3	3	1	Community Update	Sharing some updates about community 3.	2024-03-07 09:20:55	2024-03-07 09:20:55
+7	1	2	9	Weekend Plans	Planning a hiking trip this weekend.	2024-07-03 11:05:28	2024-07-03 11:05:28
+8	2	3	9	Book Review	I recently read an amazing sci-fi novel.	2024-07-19 13:25:37	2024-07-19 13:25:37
+13	1	3	14	Motivation	Stay consistent, small progress every day matters.	2024-10-05 10:10:10	2024-10-05 10:10:10
+15	3	2	14	Random Question	What’s your go-to productivity hack?	2024-11-11 22:30:18	2024-11-11 22:30:18
+10	4	2	\N	Movie Night	Rewatched Inception last night, still mind-blowing.	2025-08-14 21:19:05	2025-08-14 21:19:05
 \.
 
 
@@ -2402,7 +2611,9 @@ COPY public.profile_types (id, type) FROM stdin;
 --
 
 COPY public.profiles (id, user_id, profile_type_id, profile_name, firstname, lastname, dob, bio, personal_website, country_id, banner_path, profile_picture_path, show_real_name, active) FROM stdin;
-1	1	3	cakmakkursat	Kursat	Cakmak	1994-02-14 00:00:00	An experimental artist	https://cakmakkursat.com	10	/banner/1756280280123_1920px-View_on_the_waal_janvangoyen.jpg	/pp/1756469902651_Screenshotatpng	f	f
+1	1	3	cakmakkursat	Kursat	Cakmak	1994-02-14 00:00:00	An experimental artist	https://cakmakkursat.com	10	/banner/1756280280123_1920px-View_on_the_waal_janvangoyen.jpg	/pp/1757150347060_IMGWAjpg	t	t
+3	3	2	dev1	dev	eins	1994-02-14 00:00:00	An experimental artist	https://cakmakkursat.com	179	\N	/pp/prp1.webp	f	f
+2	2	1	peo1	peo	eins	1994-02-14 00:00:00	An experimental artist	https://cakmakkursat.com	10	\N	/pp/prp2.jpg	t	t
 \.
 
 
@@ -2487,8 +2698,6 @@ usr47u8v9w0x	1	scarlett.collins@example.com	hashed_password_47	2024-04-25 08:50:
 usr48v9w0x1y	1	elijah.stewart@example.com	hashed_password_48	2024-05-08 13:25:51+03	2024-05-08 13:25:51+03	t
 usr49w0x1y2z	1	addison.sanchez@example.com	hashed_password_49	2024-02-22 10:40:44+03	2024-02-22 10:40:44+03	t
 1	1	cakmakkur@hotmail.com	$2a$10$.yf9DD4A8LKkF8KTwQYo6.mC16gto.wKq8sxrnaGYeD1lfyIewUDi	2025-07-05 04:37:04.886533+03	2025-07-05 04:37:04.886533+03	t
-37382666-89f5-45af-b42f-a75a2194e278	1	newEmail&#64;hotmail.com	$2a$10$rVCk85eAH6w0.H3UT8qmPeeKQJFqPxfce.7IuQLV.Prqa57eqbyMS	2025-08-24 14:23:50.677+03	2025-08-24 14:23:50.677+03	f
-5a6230bd-bc08-4942-8892-9a38d2a14e49	1	newEmail@hotmail.com	$2a$10$xHXkNOODw7gZTpcGjX4WX.VVqRxR4bUPv/eqa5y0EH8OK8SbVDl8y	2025-08-24 14:33:52.568+03	2025-08-24 14:33:52.568+03	f
 80fa1a45-3fe4-4adb-a920-c500841152f2	1	email@hotmail.com	$2a$10$0ZEjPaAjn41RytMErCNvIeG4105dZ61agctuGyrRg3jhZN.oy0wEq	2025-08-24 14:42:59.104+03	2025-08-24 14:42:59.112+03	f
 310c6e9d-46d0-40a6-a76b-c83e9343f68a	1	em@hotmail.com	$2a$10$te3ALDlbYi3DmAHxSaf0kuYjm3TpSkQ7x.CwRuNQGMfDaDxchqV2i	2025-08-24 14:44:13.081+03	2025-08-24 14:44:13.086+03	f
 79303fb6-980f-4c2d-8c61-71ecd3c5f8c4	1	qw@hotmail.com	$2a$10$L21Ygoc2.yNFNnScTfJSR.tjOX/GpkTlhm.5BrshO9Lum9q8cqEva	2025-08-24 14:48:41.444+03	2025-08-24 14:48:41.445+03	f
@@ -2500,9 +2709,19 @@ c82a238b-5e4b-461a-82c3-b9a76e8ae177	1	new123123123@hotmail.com	$2a$10$rSb1A8jiz
 3c87e4da-f25a-46ff-ba4a-d342a11351f5	1	bndfbdfb@hotmail.com	$2a$10$.lHHRv3X.eipRBw.5ta7SehOhA./ETUw9TuYXy3R2MS0i2AmDcgym	2025-08-24 15:19:12.712+03	2025-08-24 15:19:12.712+03	t
 5231dda7-fbaa-48e1-ab08-748dfface446	1	plplp@hotmail.com	$2a$10$/LDgJG7i8.k7mWg.1ZoDG.lzUQB8AZrqN5cbLGL0GIiy7GzZmwsjS	2025-08-24 15:27:07.103+03	2025-08-24 15:27:07.103+03	t
 eac9c8e8-47ce-4a8c-b80a-2beb708931d7	1	plplp@hotmail.com	$2a$10$0IfAFAfPYOp9LX/JZ9ByKehmYH8XBkYn9mQ7EgmIjaaPR/g6C.B32	2025-08-24 15:27:07.103+03	2025-08-24 15:27:07.103+03	t
+3	1	dev1@hotmail.com	$2a$10$.yf9DD4A8LKkF8KTwQYo6.mC16gto.wKq8sxrnaGYeD1lfyIewUDi	2025-08-24 14:33:52.568+03	2025-08-24 14:33:52.568+03	t
 bc852353-ee05-46d6-8091-04ca8f910ad9	1	yxcyxc@hotmail.com	$2a$10$WBFnGhdHT8LV6rISQNup.OqZg.g6vYWlZVO92NrRH.0mMFrRwfauC	2025-08-24 15:31:54.073+03	2025-08-24 15:31:54.073+03	t
 d837c1f6-4f0c-4cab-a845-96d638476f9b	1	asdfdasdasd@hotmail.com	$2a$10$v.u0AXtSHROpUGtrpt2FbOg5yN6XzfsmcHZ2UbR8i1ybUIqw3wEBi	2025-08-24 15:41:45.519+03	2025-08-24 15:41:45.519+03	t
 0843a88f-5043-4d6c-8510-cc137f558f8d	1	kc@dof.vco	$2a$10$59y0a8jgJC8U37p6ta6YyuXecSM1Cij6VuVX05fqx4k7/2/lMlteC	2025-08-24 21:20:26.78+03	2025-08-24 21:20:26.78+03	t
+2	1	peo1@hotmail.com	$2a$10$.yf9DD4A8LKkF8KTwQYo6.mC16gto.wKq8sxrnaGYeD1lfyIewUDi	2025-08-24 14:23:50.677+03	2025-08-24 14:23:50.677+03	t
+\.
+
+
+--
+-- Data for Name: votes; Type: TABLE DATA; Schema: public; Owner: kursat
+--
+
+COPY public.votes (id, profile_id, post_id, vote, created_at) FROM stdin;
 \.
 
 
@@ -2573,7 +2792,7 @@ SELECT pg_catalog.setval('public.languages_id_seq', 2, true);
 -- Name: logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: mondatelier
 --
 
-SELECT pg_catalog.setval('public.logs_id_seq', 1037, true);
+SELECT pg_catalog.setval('public.logs_id_seq', 1093, true);
 
 
 --
@@ -2662,6 +2881,30 @@ ALTER TABLE ONLY public.cities
 
 
 --
+-- Name: communities communities_name_key; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.communities
+    ADD CONSTRAINT communities_name_key UNIQUE (name);
+
+
+--
+-- Name: communities communities_pkey; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.communities
+    ADD CONSTRAINT communities_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: community_profile community_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.community_profile
+    ADD CONSTRAINT community_profile_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: continents continents_pkey; Type: CONSTRAINT; Schema: public; Owner: mondatelier
 --
 
@@ -2742,6 +2985,22 @@ ALTER TABLE ONLY public.masterclasses
 
 
 --
+-- Name: post_media post_media_pkey; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.post_media
+    ADD CONSTRAINT post_media_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: posts posts_pkey; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: profile_types profile_types_pkey; Type: CONSTRAINT; Schema: public; Owner: mondatelier
 --
 
@@ -2787,6 +3046,22 @@ ALTER TABLE ONLY public.user_types
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: votes votes_pkey; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT votes_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: votes votes_profile_id_post_id_key; Type: CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT votes_profile_id_post_id_key UNIQUE (profile_id, post_id);
 
 
 --
@@ -2867,6 +3142,30 @@ ALTER TABLE ONLY public.artworks
 
 ALTER TABLE ONLY public.cities
     ADD CONSTRAINT cities_country_id_fkey FOREIGN KEY (country_id) REFERENCES public.countries(id);
+
+
+--
+-- Name: communities communities_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.communities
+    ADD CONSTRAINT communities_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+
+--
+-- Name: community_profile community_profile_community_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.community_profile
+    ADD CONSTRAINT community_profile_community_id_fkey FOREIGN KEY (community_id) REFERENCES public.communities(id);
+
+
+--
+-- Name: community_profile community_profile_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.community_profile
+    ADD CONSTRAINT community_profile_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id);
 
 
 --
@@ -2966,6 +3265,38 @@ ALTER TABLE ONLY public.masterclasses
 
 
 --
+-- Name: post_media post_media_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.post_media
+    ADD CONSTRAINT post_media_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id);
+
+
+--
+-- Name: posts posts_community_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_community_id_fkey FOREIGN KEY (community_id) REFERENCES public.communities(id) ON DELETE CASCADE;
+
+
+--
+-- Name: posts posts_parent_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_parent_post_id_fkey FOREIGN KEY (parent_post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: posts posts_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.posts
+    ADD CONSTRAINT posts_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
+
+
+--
 -- Name: profiles profiles_country_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: mondatelier
 --
 
@@ -3043,6 +3374,22 @@ ALTER TABLE ONLY public.user_preferences
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_user_type_id_fkey FOREIGN KEY (user_type_id) REFERENCES public.user_types(id) ON DELETE SET NULL;
+
+
+--
+-- Name: votes votes_post_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT votes_post_id_fkey FOREIGN KEY (post_id) REFERENCES public.posts(id) ON DELETE CASCADE;
+
+
+--
+-- Name: votes votes_profile_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.votes
+    ADD CONSTRAINT votes_profile_id_fkey FOREIGN KEY (profile_id) REFERENCES public.profiles(id) ON DELETE CASCADE;
 
 
 --
@@ -3306,6 +3653,41 @@ GRANT ALL ON FUNCTION public.pgp_sym_encrypt_bytea(bytea, text, text) TO mondate
 
 
 --
+-- Name: TABLE communities; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON TABLE public.communities TO mondatelier;
+
+
+--
+-- Name: TABLE community_profile; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON TABLE public.community_profile TO mondatelier;
+
+
+--
+-- Name: TABLE post_media; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON TABLE public.post_media TO mondatelier;
+
+
+--
+-- Name: TABLE posts; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON TABLE public.posts TO mondatelier;
+
+
+--
+-- Name: TABLE votes; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON TABLE public.votes TO mondatelier;
+
+
+--
 -- Name: DEFAULT PRIVILEGES FOR SEQUENCES; Type: DEFAULT ACL; Schema: public; Owner: kursat
 --
 
@@ -3323,5 +3705,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE kursat IN SCHEMA public GRANT ALL ON TABLES TO
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Ft3oKi2fvdFSfhDhKA0tYnz403czwIXbA8YyM9Uwl1N0tGFKa8FBvfqNC2OLpDC
+\unrestrict I2ubD8DU15HPN1rwDrE9f5Ec9LcAggPdyERxdshRX4loSm5UYeodAoYRXdpO7VJ
 

@@ -66,5 +66,10 @@ public class CommunityService {
         return communityDtos;
     }
 
+    public CommunityDto getCommunityById(Long communityId) {
+        Community c = communityRepository.findById(communityId).orElseThrow(() -> new RuntimeException("Community not found"));
+        return DTOMappers.toCommunityDTO(c);
+    }
+
 
 }
