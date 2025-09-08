@@ -4,19 +4,29 @@ import { DateFormatter } from "../../util/DateFormatter";
 import type { Profile } from "../../dto/Profile";
 import Carousel from "../fx/Carousel";
 import type { CommunityDto } from "../../dto/CommunityDto";
+import useAxiosPrivate from "../../auth/useAxiosPrivate";
 
 interface PostProps {
   post: PostDto;
+  myCommunities: CommunityDto[];
+  updateMyCommunities: (communityDto: CommunityDto) => void;
 }
 
 const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 
-export default function Post({ post }: PostProps) {
+export default function Post({
+  post,
+  myCommunities,
+  updateMyCommunities,
+}: PostProps) {
+  const axiosPrivate = useAxiosPrivate();
+
   const [profile, setProfile] = useState<Profile>();
   const [community, setCommunity] = useState<CommunityDto>();
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
+  const [isFollowing, setIsFollowing] = useState(false);
 
   const fetchProfile = async () => {
     try {
@@ -38,10 +48,13 @@ export default function Post({ post }: PostProps) {
     }
   };
 
-  useEffect(() => {
-    fetchProfile();
-    fetchCommunity();
-  }, []);
+  const handleFollowClick = async () => {
+    try {
+      updateMyCommunities(community!);
+    } catch (error) {
+      console.error("Error following community:", error);
+    }
+  };
 
   useEffect(() => {
     if (post.postMediaPathList && post.postMediaPathList.length > 0) {
@@ -54,15 +67,44 @@ export default function Post({ post }: PostProps) {
     }
   }, [post.postMediaPathList]);
 
+  useEffect(() => {
+    fetchProfile();
+    fetchCommunity();
+  }, []);
+
+  useEffect(() => {
+    if (myCommunities.find((community) => community.id === post.communityId)) {
+      setIsFollowing(true);
+    } else {
+      setIsFollowing(false);
+    }
+  }, [myCommunities, post.communityId]);
+
   return (
     <div className="post-main-container">
       <div>
-        <div className="sidebar-community">
+        <div className="post-community">
           <img
             src={`${UPLOADS_PATH}${community?.logoImgPath}`}
             alt="community thumbnail"
           />
           <div className="community-name">{community?.name}</div>
+          <span className="post-community-middledot">&#183;</span>
+          {isFollowing ? (
+            <button
+              className="post-follow-toggle post-follow-toggle--unfollow"
+              onClick={handleFollowClick}
+            >
+              Unfollow
+            </button>
+          ) : (
+            <button
+              className="post-follow-toggle post-follow-toggle--follow"
+              onClick={handleFollowClick}
+            >
+              Follow
+            </button>
+          )}
         </div>
         <span className="post-title">{post.title}</span>
       </div>

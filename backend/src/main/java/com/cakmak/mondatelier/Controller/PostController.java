@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -24,13 +26,18 @@ public class PostController {
         this.postService = postService;
     }
 
+    // returns most recent 10 (defined currently in the repository) posts
+    // after the last post sent in the feed
     @GetMapping("/recent")
     public ResponseEntity<List<PostDto>> getRecentPosts(
-            @RequestParam(defaultValue = "0") int page)
+            @RequestParam(required = false) String lastCreatedAt,
+            @RequestParam(required = false) Long lastId)
     {
-        int defaultPageSize = 25;
-        Page<PostDto> postPage = postService.getFeed(page, defaultPageSize);
-        return ResponseEntity.ok(postPage.getContent());
+        String iso = lastCreatedAt.replace("Z", "");
+        LocalDateTime lastCreatedAtLDT = LocalDateTime.parse(iso);
+
+        List<PostDto> posts = postService.getFeed(lastCreatedAtLDT, lastId);
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/me")
@@ -38,10 +45,9 @@ public class PostController {
     {
         User user = AuthUtil.getCurrentUser();
 
-        List<PostDto> postPage = postService.getMyFeed(user.getProfile().getId());
-        return ResponseEntity.ok(postPage);
+        List<PostDto> posts = postService.getMyFeed(user.getProfile().getId());
+        return ResponseEntity.ok(posts);
 
-        // return also recent if myfeed is empty
     }
 
 }

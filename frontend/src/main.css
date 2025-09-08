@@ -2444,6 +2444,18 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 1.2rem;
 }
 
+.community-user-amount {
+  font-size: 0.6rem;
+  color: lightgray;
+  text-wrap: nowrap;
+}
+
+.community-name-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .post-main-container {
   background-color: rgb(27, 27, 27);
   padding: 15px;
@@ -2524,7 +2536,46 @@ input[type=number]::-webkit-outer-spin-button {
   column-gap: 5px;
 }
 .post-profile--right-comment img {
+  width: 25px;
+}
+
+.post-community {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  column-gap: 10px;
+  padding: 5px 0px;
+}
+.post-community img {
   width: 20px;
+  aspect-ratio: 1;
+  display: inline;
+}
+
+.post-follow-toggle {
+  font-size: 0.9rem;
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 0px 11px;
+}
+.post-follow-toggle:hover {
+  cursor: pointer;
+}
+
+.post-follow-toggle--unfollow {
+  background-color: rgba(128, 128, 128, 0.727);
+  color: white;
+}
+
+.post-follow-toggle--follow {
+  background-color: rgb(255, 255, 207);
+  font-weight: 600;
+  color: black;
+}
+
+.post-community-middledot {
+  font-size: 1.3rem;
+  padding: 0px 6px;
 }
 
 *,

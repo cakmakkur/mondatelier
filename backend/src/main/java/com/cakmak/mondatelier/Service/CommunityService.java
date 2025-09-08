@@ -1,14 +1,16 @@
 package com.cakmak.mondatelier.Service;
 
+import com.cakmak.mondatelier.Model.Profile;
+import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.CommunityProfile;
 import com.cakmak.mondatelier.Repository.CommunityProfileRepository;
 import com.cakmak.mondatelier.Repository.CommunityRepository;
 import com.cakmak.mondatelier.Repository.PostRepository;
+import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.CommunityDto;
-import com.cakmak.mondatelier.dto.PostDto;
-import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -25,16 +27,19 @@ public class CommunityService {
     private final CommunityRepository communityRepository;
     private final PostRepository postRepository;
     private final CommunityProfileRepository communityProfileRepository;
+    private final ProfileRepository profileRepository;
 
     private final List<CommunityDto> topCommunities = new ArrayList<>();
 
     public CommunityService(
             CommunityRepository communityRepository,
             PostRepository postRepository,
-            CommunityProfileRepository communityProfileRepository) {
+            CommunityProfileRepository communityProfileRepository,
+            ProfileRepository profileRepository) {
         this.communityRepository = communityRepository;
         this.postRepository = postRepository;
         this.communityProfileRepository = communityProfileRepository;
+        this.profileRepository = profileRepository;
     }
 
     // makes sure it runs once after right after service is initialised
@@ -69,6 +74,42 @@ public class CommunityService {
     public CommunityDto getCommunityById(Long communityId) {
         Community c = communityRepository.findById(communityId).orElseThrow(() -> new RuntimeException("Community not found"));
         return DTOMappers.toCommunityDTO(c);
+    }
+
+    @Transactional
+    public void followCommunity(Long communityId, User user) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new RuntimeException("Community not found"));
+
+        Profile profile = user.getProfile();
+
+        CommunityProfile cpExists = communityProfileRepository.findByProfileAndCommunity(profile, community);
+        if (cpExists != null) {
+            throw new RuntimeException("Community follow already exists");
+        }
+
+        CommunityProfile cp = new CommunityProfile();
+        cp.setProfile(profile);
+        cp.setCommunity(community);
+
+        communityProfileRepository.save(cp);
+    }
+
+    @Transactional
+    public void unfollowCommunity(Long communityId, User user) {
+        Community community = communityRepository.findById(communityId)
+                .orElseThrow(() -> new RuntimeException("Community not found"));
+
+        Profile profile = user.getProfile();
+
+        CommunityProfile cp = communityProfileRepository.findByProfileAndCommunity(profile, community);
+
+        if (cp == null) {
+            throw new RuntimeException("Community follow already does not exist");
+        }
+
+        communityProfileRepository.delete(cp);
+
     }
 
 

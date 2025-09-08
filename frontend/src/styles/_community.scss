@@ -155,3 +155,15 @@
 .community-new-text {
   font-size: 1.2rem;
 }
+
+.community-user-amount {
+  font-size: 0.6rem;
+  color: lightgray;
+  text-wrap: nowrap;
+}
+
+.community-name-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
