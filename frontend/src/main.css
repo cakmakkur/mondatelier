@@ -2325,7 +2325,30 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: blue;
 }
 
+.community-liked,
 .community-home {
+  display: flex;
+  flex-direction: row;
+  align-items: end;
+  column-gap: 10px;
+  font-size: 1.2rem;
+  padding-bottom: 10px;
+}
+.community-liked img,
+.community-home img {
+  width: 30px;
+  aspect-ratio: 1;
+}
+.community-liked span,
+.community-home span {
+  align-content: end;
+}
+.community-liked:hover,
+.community-home:hover {
+  cursor: pointer;
+}
+
+.community-recent-post {
   display: flex;
   flex-direction: row;
   align-items: end;
@@ -2334,14 +2357,14 @@ input[type=number]::-webkit-outer-spin-button {
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.225);
 }
-.community-home img {
+.community-recent-post img {
   width: 30px;
   aspect-ratio: 1;
 }
-.community-home span {
+.community-recent-post span {
   align-content: end;
 }
-.community-home:hover {
+.community-recent-post:hover {
   cursor: pointer;
 }
 
@@ -2367,7 +2390,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .sidebar-communities--extended {
-  max-height: 250px;
+  max-height: 800px;
 }
 
 .recent-communities {
@@ -2396,7 +2419,9 @@ input[type=number]::-webkit-outer-spin-button {
   position: absolute;
   bottom: 3px;
   right: 3px;
-  z-index: 1000;
+  width: 28px;
+  height: 28px;
+  z-index: 100;
   border: none;
   background: none;
   padding: 2px;
@@ -2454,6 +2479,15 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+.delete-recent-communities {
+  font-size: 0.9rem;
+  text-align: end;
+  color: rgb(161, 2, 2);
+}
+.delete-recent-communities:hover {
+  cursor: pointer;
 }
 
 .post-main-container {

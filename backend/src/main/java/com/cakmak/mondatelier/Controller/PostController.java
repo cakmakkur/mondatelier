@@ -26,15 +26,20 @@ public class PostController {
         this.postService = postService;
     }
 
-    // returns most recent 10 (defined currently in the repository) posts
+    // returns most recent 15 posts
     // after the last post sent in the feed
+    // limit is defined in the service method
     @GetMapping("/recent")
     public ResponseEntity<List<PostDto>> getRecentPosts(
             @RequestParam(required = false) String lastCreatedAt,
             @RequestParam(required = false) Long lastId)
     {
-        String iso = lastCreatedAt.replace("Z", "");
-        LocalDateTime lastCreatedAtLDT = LocalDateTime.parse(iso);
+        LocalDateTime lastCreatedAtLDT = null;
+
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
 
         List<PostDto> posts = postService.getFeed(lastCreatedAtLDT, lastId);
         return ResponseEntity.ok(posts);

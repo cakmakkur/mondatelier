@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict I2ubD8DU15HPN1rwDrE9f5Ec9LcAggPdyERxdshRX4loSm5UYeodAoYRXdpO7VJ
+\restrict R1nbvm0CpeRioR5W6JSWPS6XDibm8Nmb0eIOJ6wYIrd0YHMX0V9sgVoUQePIU4I
 
 -- Dumped from database version 17.6 (Postgres.app)
 -- Dumped by pg_dump version 17.6 (Postgres.app)
@@ -99,6 +99,7 @@ ALTER TABLE public.languages ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.events_likes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.event_types ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.event_goers ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.community_profile ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.cities ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.artwork_likes ALTER COLUMN id DROP DEFAULT;
 ALTER TABLE public.art_types ALTER COLUMN id DROP DEFAULT;
@@ -131,6 +132,7 @@ DROP SEQUENCE public.event_goers_id_seq;
 DROP TABLE public.event_goers;
 DROP TABLE public.countries;
 DROP TABLE public.continents;
+DROP SEQUENCE public.community_profile_id_seq;
 DROP TABLE public.community_profile;
 DROP TABLE public.communities;
 DROP SEQUENCE public.cities_id_seq;
@@ -408,13 +410,34 @@ ALTER TABLE public.communities OWNER TO kursat;
 --
 
 CREATE TABLE public.community_profile (
-    id integer NOT NULL,
-    profile_id character varying(255),
+    id bigint NOT NULL,
+    profile_id text,
     community_id integer
 );
 
 
 ALTER TABLE public.community_profile OWNER TO kursat;
+
+--
+-- Name: community_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: kursat
+--
+
+CREATE SEQUENCE public.community_profile_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.community_profile_id_seq OWNER TO kursat;
+
+--
+-- Name: community_profile_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kursat
+--
+
+ALTER SEQUENCE public.community_profile_id_seq OWNED BY public.community_profile.id;
+
 
 --
 -- Name: continents; Type: TABLE; Schema: public; Owner: mondatelier
@@ -916,6 +939,13 @@ ALTER TABLE ONLY public.cities ALTER COLUMN id SET DEFAULT nextval('public.citie
 
 
 --
+-- Name: community_profile id; Type: DEFAULT; Schema: public; Owner: kursat
+--
+
+ALTER TABLE ONLY public.community_profile ALTER COLUMN id SET DEFAULT nextval('public.community_profile_id_seq'::regclass);
+
+
+--
 -- Name: event_goers id; Type: DEFAULT; Schema: public; Owner: mondatelier
 --
 
@@ -1331,8 +1361,10 @@ COPY public.communities (id, name, description, created_at, logo_img_path, profi
 --
 
 COPY public.community_profile (id, profile_id, community_id) FROM stdin;
-2	1	4
-1	1	1
+12	1	4
+13	1	3
+14	1	2
+15	1	5
 \.
 
 
@@ -2509,6 +2541,15 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 1087	2025-09-07 13:09:28.600193+03	ERROR	Runtime Error: User not found
 1089	2025-09-07 13:09:28.885553+03	ERROR	Runtime Error: User not found
 1093	2025-09-07 13:09:33.377914+03	ERROR	Runtime Error: User not found
+1103	2025-09-08 17:59:39.599388+03	ERROR	Runtime Error: could not execute statement [ERROR: null value in column "id" of relation "community_profile" violates not-null constraint\n  Detail: Failing row contains (null, 1, 4).] [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; SQL [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; constraint [id" of relation "community_profile]
+1104	2025-09-08 18:04:12.706013+03	ERROR	Runtime Error: could not execute statement [ERROR: duplicate key value violates unique constraint "community_profile_pkey"\n  Detail: Key (id)=(2) already exists.] [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; SQL [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; constraint [community_profile_pkey]
+1107	2025-09-08 19:46:09.136103+03	ERROR	Runtime Error: Method parameter 'lastCreatedAt': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDateTime'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam java.time.LocalDateTime] for value [Mon Sep 08 2025 18:46:08 GMT 0200 (Central European Summer Time)]
+1111	2025-09-08 19:47:26.466711+03	ERROR	Runtime Error: Method parameter 'lastCreatedAt': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDateTime'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam java.time.LocalDateTime] for value [2025-09-08T16:47:26.280Z]
+1114	2025-09-08 19:51:50.213799+03	ERROR	Runtime Error: Text '2025-09-08T16:51:50.038Z' could not be parsed, unparsed text found at index 23
+1116	2025-09-08 19:52:32.307133+03	ERROR	Runtime Error: Text '2025-09-08T16:52:32.130Z' could not be parsed, unparsed text found at index 23
+1119	2025-09-08 19:54:42.669672+03	ERROR	Runtime Error: Text 'Mon Sep 08 2025 18:54:35 GM' could not be parsed at index 0
+1120	2025-09-08 19:54:59.923575+03	ERROR	Runtime Error: Text 'Mon Sep 08 2025 18:54:59 GM' could not be parsed at index 0
+1124	2025-09-08 20:57:39.514819+03	ERROR	Runtime Error: Text '2024-01-05T10:15:23.000 00:00' could not be parsed, unparsed text found at index 23
 1036	2025-09-06 09:26:45.02452+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.Country.getCities()" because "country" is null
 1039	2025-09-07 11:01:19.975843+03	ERROR	Runtime Error: Cannot invoke "com.cakmak.mondatelier.Model.community.Post.getId()" because the return value of "com.cakmak.mondatelier.Model.community.Post.getParent()" is null
 1045	2025-09-07 12:33:07.906288+03	ERROR	Runtime Error: User not found
@@ -2536,6 +2577,19 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 1090	2025-09-07 13:09:29.968807+03	ERROR	Runtime Error: User not found
 1091	2025-09-07 13:09:30.26814+03	ERROR	Runtime Error: User not found
 1092	2025-09-07 13:09:33.376758+03	ERROR	Runtime Error: User not found
+1094	2025-09-07 17:42:49.271892+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1095	2025-09-07 17:43:17.808715+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1096	2025-09-07 17:43:19.919322+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1097	2025-09-07 17:43:49.557016+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1098	2025-09-07 17:44:16.478178+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1099	2025-09-07 17:44:46.110153+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1101	2025-09-08 17:51:10.057163+03	ERROR	Runtime Error: could not execute statement [ERROR: null value in column "id" of relation "community_profile" violates not-null constraint\n  Detail: Failing row contains (null, 1, 4).] [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; SQL [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; constraint [id" of relation "community_profile]
+1105	2025-09-08 19:37:49.517257+03	ERROR	Runtime Error: JDBC exception executing SQL [/* dynamic native SQL query */ SELECT * FROM posts WHERE (? IS NULL OR created_at < ?    OR (created_at = ? AND (? IS NULL OR id < ?))) ORDER BY created_at DESC, id DESC LIMIT ?] [ERROR: could not determine data type of parameter $1] [n/a]; SQL [n/a]
+1108	2025-09-08 19:46:11.447727+03	ERROR	Runtime Error: Method parameter 'lastCreatedAt': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDateTime'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam java.time.LocalDateTime] for value [Mon Sep 08 2025 18:46:08 GMT 0200 (Central European Summer Time)]
+1112	2025-09-08 19:49:17.537872+03	ERROR	Runtime Error: Method parameter 'lastId': Failed to convert value of type 'java.lang.String' to required type 'java.lang.Long'; For input string: "null"
+1115	2025-09-08 19:52:30.518299+03	ERROR	Runtime Error: Text '2025-09-08T16:51:50.038Z' could not be parsed, unparsed text found at index 23
+1117	2025-09-08 19:53:29.692079+03	ERROR	Runtime Error: Text '2025-09-08' could not be parsed at index 10
+1122	2025-09-08 19:55:39.003066+03	ERROR	Runtime Error: Text '2025-09-08' could not be parsed at index 10
 1041	2025-09-07 12:30:28.164337+03	ERROR	Runtime Error: User not found
 1040	2025-09-07 12:30:28.16433+03	ERROR	Runtime Error: User not found
 1042	2025-09-07 12:30:39.824379+03	ERROR	Runtime Error: User not found
@@ -2550,6 +2604,15 @@ COPY public.logs (id, "time", type, message) FROM stdin;
 1077	2025-09-07 12:53:27.80128+03	ERROR	Runtime Error: User not found
 1083	2025-09-07 13:01:32.358368+03	ERROR	Runtime Error: User not found
 1086	2025-09-07 13:09:28.600193+03	ERROR	Runtime Error: User not found
+1100	2025-09-07 17:45:15.913933+03	ERROR	Runtime Error: failed to lazily initialize a collection of role: com.cakmak.mondatelier.Model.community.Post.postMediaList: could not initialize proxy - no Session
+1102	2025-09-08 17:56:52.231305+03	ERROR	Runtime Error: could not execute statement [ERROR: null value in column "id" of relation "community_profile" violates not-null constraint\n  Detail: Failing row contains (null, 1, 4).] [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; SQL [/* insert for com.cakmak.mondatelier.Model.community.CommunityProfile */insert into community_profile (community_id,profile_id) values (?,?)]; constraint [id" of relation "community_profile]
+1106	2025-09-08 19:37:51.110479+03	ERROR	Runtime Error: JDBC exception executing SQL [/* dynamic native SQL query */ SELECT * FROM posts WHERE (? IS NULL OR created_at < ?    OR (created_at = ? AND (? IS NULL OR id < ?))) ORDER BY created_at DESC, id DESC LIMIT ?] [ERROR: could not determine data type of parameter $1] [n/a]; SQL [n/a]
+1109	2025-09-08 19:46:15.388184+03	ERROR	Runtime Error: Method parameter 'lastCreatedAt': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDateTime'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam java.time.LocalDateTime] for value [Mon Sep 08 2025 18:46:15 GMT 0200 (Central European Summer Time)]
+1110	2025-09-08 19:47:25.260247+03	ERROR	Runtime Error: Method parameter 'lastCreatedAt': Failed to convert value of type 'java.lang.String' to required type 'java.time.LocalDateTime'; Failed to convert from type [java.lang.String] to type [@org.springframework.web.bind.annotation.RequestParam java.time.LocalDateTime] for value [2025-09-08T16:47:25.156Z]
+1113	2025-09-08 19:51:48.88396+03	ERROR	Runtime Error: Text '2025-09-08T16:49:17.252Z' could not be parsed, unparsed text found at index 23
+1118	2025-09-08 19:54:33.201674+03	ERROR	Runtime Error: Text 'Mon Sep 08 2025 18:54:33 GM' could not be parsed at index 0
+1121	2025-09-08 19:55:33.337135+03	ERROR	Runtime Error: Text '2025-09-08' could not be parsed at index 10
+1123	2025-09-08 19:56:02.632589+03	ERROR	Runtime Error: Text '2025-09-08T16:56:02.347Z' could not be parsed, unparsed text found at index 23
 \.
 
 
@@ -2761,6 +2824,13 @@ SELECT pg_catalog.setval('public.cities_id_seq', 106, true);
 
 
 --
+-- Name: community_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kursat
+--
+
+SELECT pg_catalog.setval('public.community_profile_id_seq', 15, true);
+
+
+--
 -- Name: event_goers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: mondatelier
 --
 
@@ -2792,7 +2862,7 @@ SELECT pg_catalog.setval('public.languages_id_seq', 2, true);
 -- Name: logs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: mondatelier
 --
 
-SELECT pg_catalog.setval('public.logs_id_seq', 1093, true);
+SELECT pg_catalog.setval('public.logs_id_seq', 1124, true);
 
 
 --
@@ -3667,6 +3737,13 @@ GRANT ALL ON TABLE public.community_profile TO mondatelier;
 
 
 --
+-- Name: SEQUENCE community_profile_id_seq; Type: ACL; Schema: public; Owner: kursat
+--
+
+GRANT ALL ON SEQUENCE public.community_profile_id_seq TO mondatelier;
+
+
+--
 -- Name: TABLE post_media; Type: ACL; Schema: public; Owner: kursat
 --
 
@@ -3705,5 +3782,5 @@ ALTER DEFAULT PRIVILEGES FOR ROLE kursat IN SCHEMA public GRANT ALL ON TABLES TO
 -- PostgreSQL database dump complete
 --
 
-\unrestrict I2ubD8DU15HPN1rwDrE9f5Ec9LcAggPdyERxdshRX4loSm5UYeodAoYRXdpO7VJ
+\unrestrict R1nbvm0CpeRioR5W6JSWPS6XDibm8Nmb0eIOJ6wYIrd0YHMX0V9sgVoUQePIU4I
 

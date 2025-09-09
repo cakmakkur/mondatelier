@@ -5,4 +5,5 @@ export interface CommunityDto {
   createdAt: Date;
   logoImgPath: string;
   profileId: string;
+  followerAmount: number;
 }

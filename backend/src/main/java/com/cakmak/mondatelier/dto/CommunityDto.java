@@ -8,6 +8,7 @@ public record CommunityDto (
         String description,
         Date createdAt,
         String logoImgPath,
-        String profileId
+        String profileId,
+        Integer followerAmount
 ) {
 }

@@ -143,7 +143,8 @@ public class DTOMappers {
                 community.getDescription(),
                 community.getCreatedAt(),
                 community.getLogoImgPath(),
-                community.getProfile().getId()
+                community.getProfile().getId(),
+                community.getCommunityProfiles().size()
         );
     }
 

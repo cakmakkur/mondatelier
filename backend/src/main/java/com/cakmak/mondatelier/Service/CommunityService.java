@@ -92,6 +92,8 @@ public class CommunityService {
         cp.setProfile(profile);
         cp.setCommunity(community);
 
+        community.getCommunityProfiles().add(cp);
+
         communityProfileRepository.save(cp);
     }
 
@@ -107,6 +109,8 @@ public class CommunityService {
         if (cp == null) {
             throw new RuntimeException("Community follow already does not exist");
         }
+
+        community.getCommunityProfiles().remove(cp);
 
         communityProfileRepository.delete(cp);
 
