@@ -4,6 +4,7 @@ import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.CommunityService;
 import com.cakmak.mondatelier.dto.CommunityDto;
 import com.cakmak.mondatelier.util.AuthUtil;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,5 +55,17 @@ public class CommunityController {
         communityService.unfollowCommunity(communityId, user);
 
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<CommunityDto>> searchCommunities(
+            @RequestParam String query,
+            @RequestParam int page) {
+
+        int PAGE_SIZE = 6;
+
+        Page<CommunityDto> cp = communityService.query(query, page, PAGE_SIZE);
+
+        return ResponseEntity.ok().body(cp);
     }
 }

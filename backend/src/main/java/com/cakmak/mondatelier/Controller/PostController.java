@@ -7,12 +7,8 @@ import com.cakmak.mondatelier.dto.PostDto;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,6 +20,11 @@ public class PostController {
 
     public PostController(PostService postService) {
         this.postService = postService;
+    }
+
+    @GetMapping("{id}")
+    public PostDto getPostById(@PathVariable Long id) {
+        return postService.getPostById(id);
     }
 
     // returns most recent 15 posts
@@ -52,6 +53,26 @@ public class PostController {
 
         List<PostDto> posts = postService.getMyFeed(user.getProfile().getId());
         return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/by-community/{communityId}")
+    public ResponseEntity<List<PostDto>> getMyPostsByCommunity(
+            @PathVariable Long communityId) {
+        List<PostDto> posts = postService.getByCommunityId(communityId);
+
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<PostDto>> searchPosts(
+            @RequestParam String query,
+            @RequestParam int page) {
+
+        int PAGE_SIZE = 6;
+
+        Page<PostDto> cp = postService.query(query, page, PAGE_SIZE);
+
+        return ResponseEntity.ok().body(cp);
 
     }
 

@@ -6,7 +6,10 @@ import useAxiosPrivate from "../auth/useAxiosPrivate";
 import Post from "../components/community/Post.tsx";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store.ts";
-import { addCommunity } from "../store/recentCommunitiesSlice.ts";
+import {
+  addCommunity,
+  clearCommunities,
+} from "../store/recentCommunitiesSlice.ts";
 import CommunitySearchBar from "../components/userActions/CommunitySearchBar.tsx";
 import type { PostDto } from "../dto/PostDto.ts";
 import CreateCommunity from "../components/userActions/CreateCommunity.tsx";
@@ -36,7 +39,7 @@ export default function Community() {
   const [myCommunities, setMyCommunities] = useState<CommunityDto[]>([]);
 
   const [feed, setFeed] = useState<PostDto[]>([]);
-  const [feedPage, setFeedPage] = useState<FeedPageParams>({
+  const feedbackPageRef = useRef<FeedPageParams>({
     lastCreatedAt: "",
     lastId: null,
   });
@@ -59,7 +62,7 @@ export default function Community() {
     observer.current = new IntersectionObserver(
       async (entries) => {
         if (entries[0].isIntersecting) {
-          await fetchRecentFeed();
+          await fetchRecentFeedAndPopulateFeed();
         }
       },
       { root: null, threshold: 0.1 }
@@ -112,7 +115,7 @@ export default function Community() {
   };
 
   const clearRecentCommunities = () => {
-    localStorage.removeItem("recentCommunities");
+    dispatch(clearCommunities());
   };
 
   const fetchTopCommunities = async () => {
@@ -127,6 +130,7 @@ export default function Community() {
     }
   };
 
+  // fetches most recent 25 posts of the user's communities
   const fetchMyFeed = async () => {
     if (feedLoadingRef.current) return;
     if (!auth) return;
@@ -142,13 +146,14 @@ export default function Community() {
           setFeed((prev) => [...prev, ...newBatch]);
         }
       }
-      feedLoadingRef.current = false;
     } catch (error) {
       console.error("Error fetching feed:", error);
+    } finally {
+      feedLoadingRef.current = false;
     }
   };
 
-  const fetchRecentFeed = async () => {
+  const fetchRecentFeedAndPopulateFeed = async () => {
     if (feedLoadingRef.current) return;
 
     // end of feed flag to stop fetching next batch until page reload
@@ -157,12 +162,16 @@ export default function Community() {
     try {
       feedLoadingRef.current = true;
       const response = await fetch(
-        `${POST_PATH}/recent?lastCreatedAt=${feedPage.lastCreatedAt}${
-          feedPage.lastId ? `&lastId=${feedPage.lastId}` : ""
+        `${POST_PATH}/recent?lastCreatedAt=${
+          feedbackPageRef.current.lastCreatedAt
+        }${
+          feedbackPageRef.current.lastId
+            ? `&lastId=${feedbackPageRef.current.lastId}`
+            : ""
         }`
       );
 
-      if (!response.ok) return;
+      if (response.status === 404) return (endOfFeedRef.current = true);
 
       const data: PostDto[] = await response.json();
       if (data.length === 0) return;
@@ -181,12 +190,12 @@ export default function Community() {
         }
 
         // update pagination parameters using the actual new batch
-        setFeedPage({
+        feedbackPageRef.current = {
           lastCreatedAt: new Date(
             newBatch[newBatch.length - 1].createdAt
           ).toISOString(),
           lastId: newBatch[newBatch.length - 1].id,
-        });
+        };
 
         return [...prev, ...newBatch];
       });
@@ -215,7 +224,7 @@ export default function Community() {
     } finally {
       try {
         // fetches recent feed based on date of creation
-        await fetchRecentFeed();
+        await fetchRecentFeedAndPopulateFeed();
       } catch (err) {
         console.warn(err);
       }
@@ -227,38 +236,98 @@ export default function Community() {
     initiate();
   }, [auth]);
 
-  const handleClickCommunity = (community: CommunityDto) => {
-    // TODO: fetch posts from that community
+  const populateWithPostsByCOmmunity = async (community: CommunityDto) => {
+    endOfFeedRef.current = false;
+    feedLoadingRef.current = true;
+    feedbackPageRef.current = {
+      lastCreatedAt: "",
+      lastId: null,
+    };
+
+    try {
+      const response = await fetch(`${POST_PATH}/by-community/${community.id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFeed(data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      feedLoadingRef.current = false;
+    }
+
+    // add it to recent communities
     dispatch(addCommunity(community));
+  };
+
+  const handleClickPostInSearchResult = async (id: number) => {
+    try {
+      const response = await fetch(`${POST_PATH}/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        setFeed([data, ...feed]);
+        window.scrollTo(0, 0);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // on click on the community in search result
+  // fetches the community and repopulates the feed with its posts
+  const handleClickCommunityInSearchResult = async (id: number) => {
+    try {
+      const response = await fetch(`${COMMUNITIES_PATH}/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        await populateWithPostsByCOmmunity(data);
+        window.scrollTo(0, 0);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // initiates the page again / soft reload
   const handleClickHome = () => {
+    endOfFeedRef.current = false;
+    feedbackPageRef.current = {
+      lastCreatedAt: "",
+      lastId: null,
+    };
     initiate();
   };
 
   // fetches posts that the user liked
-
   const handleClickLiked = () => {
     fetchMyLiked();
   };
 
   const fetchMyLiked = async () => {
+    endOfFeedRef.current = false;
     try {
+      feedLoadingRef.current = true;
       const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
       if (response.status === 200) {
         setFeed(response.data);
       }
     } catch (err) {
       console.warn(err);
+    } finally {
+      feedLoadingRef.current = false;
     }
   };
 
   // resets the feed and fetches recent feed from start
   const handleClickRecentPost = async () => {
     try {
+      endOfFeedRef.current = false;
       setFeed([]);
-      await fetchRecentFeed();
+      feedbackPageRef.current = {
+        lastCreatedAt: "",
+        lastId: null,
+      };
+      await fetchRecentFeedAndPopulateFeed();
     } catch (err) {
       console.error(err);
     }
@@ -296,7 +365,7 @@ export default function Community() {
           <span>Top Communities</span>
           {topCommunities?.map((community) => (
             <div
-              onClick={() => handleClickCommunity(community)}
+              onClick={() => populateWithPostsByCOmmunity(community)}
               className="sidebar-community"
               key={community.id}
             >
@@ -402,7 +471,12 @@ export default function Community() {
         )}
       </div>
       <div className="community-main-subdiv community-main-subdiv--center">
-        <CommunitySearchBar />
+        <CommunitySearchBar
+          handleClickCommunityInSearchResult={
+            handleClickCommunityInSearchResult
+          }
+          handleClickPostInSearchResult={handleClickPostInSearchResult}
+        />
         {feed?.map((post, i) => {
           let isTrigger = false;
 
@@ -415,7 +489,7 @@ export default function Community() {
           }
 
           return (
-            <span key={i} ref={isTrigger ? lastVisibleRef : null}>
+            <span key={post.id} ref={isTrigger ? lastVisibleRef : null}>
               <Post
                 post={post}
                 myCommunities={myCommunities}

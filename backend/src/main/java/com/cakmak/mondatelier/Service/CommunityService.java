@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Service;
 
+import com.cakmak.mondatelier.Exception.CommunityNotFoundException;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.community.Community;
@@ -14,6 +15,9 @@ import jakarta.transaction.Transactional;
 import lombok.Getter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -113,8 +117,21 @@ public class CommunityService {
         community.getCommunityProfiles().remove(cp);
 
         communityProfileRepository.delete(cp);
-
     }
+
+    @Transactional
+    public Page<CommunityDto> query(String query, int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+
+        Page<Community> communities = communityRepository.findByNameContainingIgnoreCase(query, pageable);
+
+        if (communities.isEmpty()) {
+            throw new CommunityNotFoundException("Community not found");
+        }
+
+        return communities.map(DTOMappers::toCommunityDTO);
+    }
+
 
 
 }

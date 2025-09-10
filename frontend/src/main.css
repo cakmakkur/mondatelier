@@ -2439,9 +2439,10 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .community-search-bar-main {
-  flex: 1;
+  position: relative;
 }
 .community-search-bar-main input {
+  padding: 3px 3px 3px 10px;
   color: rgba(255, 255, 255, 0.639);
   padding: 0px 15px;
   font-size: 1.2rem;
@@ -2450,6 +2451,45 @@ input[type=number]::-webkit-outer-spin-button {
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.064);
   height: 40px;
+}
+
+.community-search-bar-icon {
+  position: absolute;
+  right: 13px;
+  top: 8px;
+}
+.community-search-bar-icon:hover {
+  cursor: pointer;
+}
+
+.community-search-bar-results-main {
+  width: 100%;
+  background-color: rgb(39.75, 39.75, 39.75);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.064);
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  row-gap: 10px;
+  padding: 10px;
+  position: absolute;
+  top: 45px;
+}
+
+.community-search-bar-result {
+  padding: 5px 5px 5px 10px;
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  column-gap: 10px;
+}
+.community-search-bar-result img {
+  height: 20px;
+  aspect-ratio: 1;
+}
+.community-search-bar-result:hover {
+  cursor: pointer;
+  background-color: rgb(52, 52, 52);
 }
 
 .community-new {
@@ -2485,8 +2525,10 @@ input[type=number]::-webkit-outer-spin-button {
   font-size: 0.9rem;
   text-align: end;
   color: rgb(161, 2, 2);
+  transition: 0.1s;
 }
 .delete-recent-communities:hover {
+  color: red;
   cursor: pointer;
 }
 

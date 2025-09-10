@@ -51,6 +51,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
 
+    @ExceptionHandler
+    public ResponseEntity<String> postNotFoundException (PostNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> CommunityNotFoundException (CommunityNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
         logger.log(LogTypes.ERROR, "Runtime Error: " + e.getMessage());

@@ -1,7 +1,10 @@
 package com.cakmak.mondatelier.Repository;
 
+import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
 import com.cakmak.mondatelier.converter.CommunityPostCount;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +15,8 @@ import java.util.List;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+    List<Post> findByCommunity(Community community);
 
     @Query(value = "SELECT community_id AS communityId, COUNT(*) AS postCount " +
             "FROM posts " +
@@ -40,5 +45,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             nativeQuery = true
     )    List<Post> findMostRecent25FromMyCommunities(@Param("communityId") Long communityId);
 
+
+    Page<Post> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 
 }
