@@ -165,8 +165,10 @@ public class DTOMappers {
                 post.getContent(),
                 post.getCreatedAt(),
                 post.getEditedAt(),
-                mediaPaths
-        );
+                mediaPaths,
+                post.getProfile().getProfilePicturePath(),
+                post.getProfile().getProfileName()
+                );
     }
 
 }

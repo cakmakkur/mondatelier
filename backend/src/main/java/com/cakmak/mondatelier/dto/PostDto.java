@@ -12,6 +12,8 @@ public record PostDto(
         String content,
         Date createdAt,
         Date editedAt,
-        List<String> postMediaPathList
+        List<String> postMediaPathList,
+        String profilePicturePath,
+        String profileName
 ) {
 }

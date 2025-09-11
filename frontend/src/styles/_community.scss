@@ -242,3 +242,34 @@
     cursor: pointer;
   }
 }
+
+.community-search-bar-result-profile {
+  display: flex;
+  flex-direction: row;
+  column-gap: 12px;
+  color: rgb(218, 218, 218);
+  font-size: 0.9rem;
+  & img {
+    border-radius: 50%;
+    width: 20px;
+    aspect-ratio: 1;
+  }
+}
+
+.community-search-bar-result-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: $moon-yellow;
+  text-wrap: nowrap;
+}
+
+.searchbar-middledot {
+  transform: scale(1.5);
+}
+
+.community-search-bar-result-content {
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

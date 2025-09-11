@@ -128,7 +128,7 @@ export default function CommunitySearchBar({
         value={query}
         type="text"
         className="community-search-bar-input"
-        placeholder="Search communities and posts..."
+        placeholder="Search in communities and posts..."
       />
       <img
         className="community-search-bar-icon"
@@ -171,7 +171,21 @@ export default function CommunitySearchBar({
                   setQuery("");
                 }}
               >
-                {result.title}
+                <div className="community-search-bar-result-profile">
+                  <img
+                    src={`${UPLOADS_PATH}${result.profilePicturePath}`}
+                    alt="profile picture"
+                  />
+                  {result.profileName}
+                </div>
+                <span className="searchbar-middledot">&#183;</span>
+                <span className="community-search-bar-result-title">
+                  {result.title}
+                </span>
+                <div className="searchbar-middledot">&#183;</div>
+                <span className="community-search-bar-result-content">
+                  {result.content}
+                </span>
               </div>
             );
           }

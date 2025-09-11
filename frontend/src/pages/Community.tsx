@@ -71,6 +71,7 @@ export default function Community() {
     observer.current.observe(node);
   }, []);
 
+  // updates the communities that the user follows
   const updateMyCommunities = async (communityDto: CommunityDto) => {
     const exists = myCommunities.some((c) => c.id === communityDto.id);
 
@@ -101,6 +102,7 @@ export default function Community() {
     }
   };
 
+  // fetches the communities that the user follows
   const fetchMyCommunities = async () => {
     if (auth) {
       try {
@@ -114,6 +116,7 @@ export default function Community() {
     }
   };
 
+  // clears recently visited communities from the localstorage
   const clearRecentCommunities = () => {
     dispatch(clearCommunities());
   };
@@ -157,6 +160,7 @@ export default function Community() {
     if (feedLoadingRef.current) return;
 
     // end of feed flag to stop fetching next batch until page reload
+    // TODO: add a refresh button + notification div
     if (endOfFeedRef.current) return;
 
     try {
@@ -236,7 +240,13 @@ export default function Community() {
     initiate();
   }, [auth]);
 
-  const populateWithPostsByCOmmunity = async (community: CommunityDto) => {
+  // TODO: these posts also receive observer flag, which triggers fetching of
+  // next batch of recent posts, which i don't want
+  // it should only display the posts from the community and not load anything irrelevant
+
+  // fetches posts by community, populates the feed
+  // and adds the community to recent communities
+  const populateWithPostsByCommunity = async (community: CommunityDto) => {
     endOfFeedRef.current = false;
     feedLoadingRef.current = true;
     feedbackPageRef.current = {
@@ -260,6 +270,9 @@ export default function Community() {
     dispatch(addCommunity(community));
   };
 
+  // on click on the post in search result
+  // fetches the post and puts it at the top of the feed
+  // finally scrolls to the top
   const handleClickPostInSearchResult = async (id: number) => {
     try {
       const response = await fetch(`${POST_PATH}/${id}`);
@@ -275,12 +288,13 @@ export default function Community() {
 
   // on click on the community in search result
   // fetches the community and repopulates the feed with its posts
+  // finally scrolls to the top
   const handleClickCommunityInSearchResult = async (id: number) => {
     try {
       const response = await fetch(`${COMMUNITIES_PATH}/${id}`);
       if (response.ok) {
         const data = await response.json();
-        await populateWithPostsByCOmmunity(data);
+        await populateWithPostsByCommunity(data);
         window.scrollTo(0, 0);
       }
     } catch (err) {
@@ -303,6 +317,7 @@ export default function Community() {
     fetchMyLiked();
   };
 
+  // fetches posts that the user liked and populates the feed
   const fetchMyLiked = async () => {
     endOfFeedRef.current = false;
     try {
@@ -346,7 +361,7 @@ export default function Community() {
         </div>
         <div onClick={handleClickRecentPost} className="community-recent-post">
           <img src="/recent.svg" alt="" />
-          <span>Recent Post</span>
+          <span>Recent Posts</span>
         </div>
         <div className="community-new">
           <span className="community-new-icon">+</span>
@@ -365,7 +380,7 @@ export default function Community() {
           <span>Top Communities</span>
           {topCommunities?.map((community) => (
             <div
-              onClick={() => populateWithPostsByCOmmunity(community)}
+              onClick={() => populateWithPostsByCommunity(community)}
               className="sidebar-community"
               key={community.id}
             >
@@ -401,43 +416,46 @@ export default function Community() {
             </div>
           )}
         </div>
-
-        <div
-          className={`sidebar-communities ${
-            recentCommunitiesExtended ? "sidebar-communities--extended" : ""
-          }`}
-        >
-          <span>Recent Communities</span>
-          {recent.map((community) => (
-            <div className="sidebar-community" key={community.id}>
-              <img
-                src={`${UPLOADS_PATH}${community.logoImgPath}`}
-                alt="community thumbnail"
-              />
-              <div className="community-name">{community.name}</div>
-            </div>
-          ))}
-          {recent.length > 3 && (
+        {recent.length > 0 && (
+          <>
             <div
-              onClick={() => {
-                setRecentCommunitiesExtended(!recentCommunitiesExtended);
-              }}
-              className={`sidebar-community-accordeon-button ${
-                recentCommunitiesExtended
-                  ? "sidebar-community-accordeon-button--up"
-                  : ""
+              className={`sidebar-communities ${
+                recentCommunitiesExtended ? "sidebar-communities--extended" : ""
               }`}
             >
-              <img src="/down.svg" alt="" />
+              <span>Recent Communities</span>
+              {recent.map((community) => (
+                <div className="sidebar-community" key={community.id}>
+                  <img
+                    src={`${UPLOADS_PATH}${community.logoImgPath}`}
+                    alt="community thumbnail"
+                  />
+                  <div className="community-name">{community.name}</div>
+                </div>
+              ))}
+              {recent.length > 3 && (
+                <div
+                  onClick={() => {
+                    setRecentCommunitiesExtended(!recentCommunitiesExtended);
+                  }}
+                  className={`sidebar-community-accordeon-button ${
+                    recentCommunitiesExtended
+                      ? "sidebar-community-accordeon-button--up"
+                      : ""
+                  }`}
+                >
+                  <img src="/down.svg" alt="" />
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div
-          onClick={clearRecentCommunities}
-          className="delete-recent-communities"
-        >
-          Delete recent communities
-        </div>
+            <div
+              onClick={clearRecentCommunities}
+              className="delete-recent-communities"
+            >
+              Delete recent communities
+            </div>
+          </>
+        )}
 
         {auth && (
           <div

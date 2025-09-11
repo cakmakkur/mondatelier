@@ -8,4 +8,6 @@ export interface PostDto {
   profileId: string;
   editedAt: Date | null;
   postMediaPathList: string[];
+  profilePicturePath: string;
+  profileName: string;
 }
