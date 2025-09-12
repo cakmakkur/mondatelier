@@ -2,12 +2,14 @@ package com.cakmak.mondatelier.Controller;
 
 
 import com.cakmak.mondatelier.Model.User;
+import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.Service.PostService;
 import com.cakmak.mondatelier.dto.PostDto;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,7 +24,7 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/get-post/{id}")
     public PostDto getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
@@ -33,7 +35,8 @@ public class PostController {
     @GetMapping("/recent")
     public ResponseEntity<List<PostDto>> getRecentPosts(
             @RequestParam(required = false) String lastCreatedAt,
-            @RequestParam(required = false) Long lastId)
+            @RequestParam(required = false) Long lastId
+    )
     {
         LocalDateTime lastCreatedAtLDT = null;
 
@@ -42,23 +45,42 @@ public class PostController {
             lastCreatedAtLDT = LocalDateTime.parse(iso);
         }
 
-        List<PostDto> posts = postService.getFeed(lastCreatedAtLDT, lastId);
+        List<PostDto> posts = postService.getRecentPosts(lastCreatedAtLDT, lastId);
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<List<PostDto>> getMyPosts()
+
+    @GetMapping("/from-my-communities")
+    public ResponseEntity<List<PostDto>> getPostsFromMyCommunities(
+            @RequestParam(required = false) String lastCreatedAt,
+            @RequestParam(required = false) Long lastId
+    )
     {
         User user = AuthUtil.getCurrentUser();
 
-        List<PostDto> posts = postService.getMyFeed(user.getProfile().getId());
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
+
+        List<PostDto> posts = postService.getPostsFromMyCommunities(user.getProfile().getId(), lastId, lastCreatedAtLDT);
         return ResponseEntity.ok(posts);
     }
 
-    @GetMapping("/by-community/{communityId}")
-    public ResponseEntity<List<PostDto>> getMyPostsByCommunity(
-            @PathVariable Long communityId) {
-        List<PostDto> posts = postService.getByCommunityId(communityId);
+    @GetMapping("/by-community")
+    public ResponseEntity<List<PostDto>> getPostsByCommunity(
+            @RequestParam Long communityId,
+            @RequestParam(required = false) Long lastId,
+            @RequestParam(required = false) String lastCreatedAt ) {
+
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
+
+        List<PostDto> posts = postService.getPostsByCommunity(communityId, lastId, lastCreatedAtLDT);
 
         return ResponseEntity.ok(posts);
     }
@@ -73,7 +95,31 @@ public class PostController {
         Page<PostDto> cp = postService.query(query, page, PAGE_SIZE);
 
         return ResponseEntity.ok().body(cp);
+    }
 
+    @PostMapping("/create")
+    public ResponseEntity<Void> createPost(
+            @RequestPart("post") PostDto post,
+            @RequestPart("images") List<MultipartFile> files) {
+
+        User user = AuthUtil.getCurrentUser();
+
+        postService.createNewPost(
+                user.getProfile(),
+                post,
+                files
+                );
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deletePost(@RequestBody PostDto postDto) {
+        User user = AuthUtil.getCurrentUser();
+
+        postService.deletePost(user.getProfile().getId(), postDto);
+
+        return ResponseEntity.ok().build();
     }
 
 }

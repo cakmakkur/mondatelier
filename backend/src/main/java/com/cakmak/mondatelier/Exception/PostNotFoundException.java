@@ -5,6 +5,6 @@ public class PostNotFoundException extends RuntimeException {
     super(message);
   }
   public PostNotFoundException() {
-    super("Media not found");
+    super("Post not found");
   }
 }

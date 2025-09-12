@@ -10,14 +10,17 @@ import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
 import com.cakmak.mondatelier.Model.community.PostMedia;
 import com.cakmak.mondatelier.Model.event.Event;
+import com.cakmak.mondatelier.Repository.PostRepository;
 import com.cakmak.mondatelier.dto.*;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.print.attribute.standard.Media;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DTOMappers {
+
     public static ArtworkDTO toArtworkDTO(Artwork artwork, String[] artTypes, String mediaType) {
         List<MediaDTO> mediaDTOList = new ArrayList<>();
         for (ArtworkMedia a : artwork.getMediaList()) {
@@ -167,7 +170,9 @@ public class DTOMappers {
                 post.getEditedAt(),
                 mediaPaths,
                 post.getProfile().getProfilePicturePath(),
-                post.getProfile().getProfileName()
+                post.getProfile().getProfileName(),
+                post.getChildrenPostsAmount(),
+                post.getLikesAmount()
                 );
     }
 

@@ -1,3 +1,5 @@
+// BROKEN!!!!!!
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import type { CommunityDto } from "../dto/CommunityDto.ts";
@@ -21,8 +23,10 @@ const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 
 interface FeedPageParams {
   lastCreatedAt: string;
-  lastId: number | null;
+  lastId: number;
 }
+
+type DisplayTypes = "byCommunity" | "recent" | "myFeed" | "home";
 
 export default function Community() {
   const axiosPrivate = useAxiosPrivate();
@@ -41,10 +45,12 @@ export default function Community() {
   const [feed, setFeed] = useState<PostDto[]>([]);
   const feedbackPageRef = useRef<FeedPageParams>({
     lastCreatedAt: "",
-    lastId: null,
+    lastId: 0,
   });
   const feedLoadingRef = useRef<boolean>(false);
-  const endOfFeedRef = useRef<boolean>(false);
+  const [pageLoading, setPageLoading] = useState(true);
+  const currentDisplayRef = useRef<DisplayTypes>("home");
+  const [endOfFeed, setEndOfFeed] = useState(false);
 
   const [topCommunitiesExtended, setTopCommunitiesExtended] = useState(false);
   const [myCommunitiesExtended, setMyCommunitiesExtended] = useState(false);
@@ -54,22 +60,32 @@ export default function Community() {
   // observer and lastVisiblRef to track the threshhold dom element
   // to fetch the next batch of posts
   const observer = useRef<IntersectionObserver | null>(null);
-  const lastVisibleRef = useCallback((node: HTMLSpanElement | null) => {
-    if (observer.current) observer.current.disconnect();
+  const lastVisibleRef = useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (observer.current) observer.current.disconnect();
 
-    if (!node) return;
+      if (!node) return;
 
-    observer.current = new IntersectionObserver(
-      async (entries) => {
-        if (entries[0].isIntersecting) {
-          await fetchRecentFeedAndPopulateFeed();
-        }
-      },
-      { root: null, threshold: 0.1 }
-    );
+      observer.current = new IntersectionObserver(
+        async (entries) => {
+          if (entries[0].isIntersecting) {
+            if (
+              (currentDisplayRef.current === "recent" && !endOfFeed) ||
+              (currentDisplayRef.current === "myFeed" && endOfFeed)
+            ) {
+              await fetchRecentFeedAndPopulateFeed();
+            } else if (currentDisplayRef.current === "myFeed" && !endOfFeed) {
+              await fetchMyFeedAndPopulateFeed();
+            }
+          }
+        },
+        { root: null, threshold: 0.1 }
+      );
 
-    observer.current.observe(node);
-  }, []);
+      observer.current.observe(node);
+    },
+    [endOfFeed, feed]
+  );
 
   // updates the communities that the user follows
   const updateMyCommunities = async (communityDto: CommunityDto) => {
@@ -81,8 +97,8 @@ export default function Community() {
           `${COMMUNITIES_PATH}/unfollow/${communityDto.id}`
         );
         if (response.status === 204) {
-          setMyCommunities(
-            myCommunities.filter((c) => c.id !== communityDto.id)
+          setMyCommunities((prev) =>
+            prev.filter((c) => c.id !== communityDto.id)
           );
         }
       } catch (error) {
@@ -94,7 +110,7 @@ export default function Community() {
           `${COMMUNITIES_PATH}/follow/${communityDto.id}`
         );
         if (response.status === 200) {
-          setMyCommunities([...myCommunities, communityDto]);
+          setMyCommunities((prev) => [...prev, communityDto]);
         }
       } catch (error) {
         console.error("Error following community:", error);
@@ -104,15 +120,14 @@ export default function Community() {
 
   // fetches the communities that the user follows
   const fetchMyCommunities = async () => {
-    if (auth) {
-      try {
-        const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
-        if (response.status === 200) {
-          setMyCommunities(response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching communities:", error);
+    if (!auth) return;
+    try {
+      const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
+      if (response.status === 200) {
+        setMyCommunities(response.data);
       }
+    } catch (error) {
+      console.error("Error fetching communities:", error);
     }
   };
 
@@ -133,21 +148,32 @@ export default function Community() {
     }
   };
 
-  // fetches most recent 25 posts of the user's communities
-  const fetchMyFeed = async () => {
-    if (feedLoadingRef.current) return;
-    if (!auth) return;
+  // fetches a page of posts from communities that the user follows
+  const fetchMyFeedAndPopulateFeed = async () => {
+    if (feedLoadingRef.current || !auth) return;
+
+    if (currentDisplayRef.current !== "myFeed") {
+      feedbackPageRef.current = { lastCreatedAt: "", lastId: 0 };
+      currentDisplayRef.current = "myFeed";
+    } else if (feed.length > 0) {
+      feedbackPageRef.current = {
+        lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
+        lastId: feed[feed.length - 1].id,
+      };
+    }
+
     try {
       feedLoadingRef.current = true;
-      const response = await axiosPrivate.get(`${POST_PATH}/me`);
+      const response = await axiosPrivate.get(
+        `${POST_PATH}/from-my-communities?lastCreatedAt=${feedbackPageRef.current.lastCreatedAt}&lastId=${feedbackPageRef.current.lastId}`
+      );
       if (response.status === 200) {
-        const data = await response.data;
-        if (data.length > 0) {
-          const newBatch = data.filter(
-            (post: PostDto) => !feed.some((f) => f.id === post.id)
-          );
-          setFeed((prev) => [...prev, ...newBatch]);
-        }
+        const data = response.data;
+        filterAndAppendToFeed(data);
+      }
+      if (response.status === 404) {
+        setEndOfFeed(true);
+        return;
       }
     } catch (error) {
       console.error("Error fetching feed:", error);
@@ -157,52 +183,34 @@ export default function Community() {
   };
 
   const fetchRecentFeedAndPopulateFeed = async () => {
-    if (feedLoadingRef.current) return;
+    console.log("display: " + currentDisplayRef.current);
+    console.log("end of feed: " + endOfFeed);
 
-    // end of feed flag to stop fetching next batch until page reload
-    // TODO: add a refresh button + notification div
-    if (endOfFeedRef.current) return;
+    // if (feedLoadingRef.current || endOfFeed) return;
+
+    if (currentDisplayRef.current !== "recent") {
+      feedbackPageRef.current = { lastCreatedAt: "", lastId: 0 };
+      currentDisplayRef.current = "recent";
+    } else if (feed.length > 0) {
+      feedbackPageRef.current = {
+        lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
+        lastId: feed[feed.length - 1].id,
+      };
+    }
 
     try {
       feedLoadingRef.current = true;
       const response = await fetch(
-        `${POST_PATH}/recent?lastCreatedAt=${
-          feedbackPageRef.current.lastCreatedAt
-        }${
-          feedbackPageRef.current.lastId
-            ? `&lastId=${feedbackPageRef.current.lastId}`
-            : ""
-        }`
+        `${POST_PATH}/recent?lastId=${feedbackPageRef.current.lastId}&lastCreatedAt=${feedbackPageRef.current.lastCreatedAt}`
       );
 
-      if (response.status === 404) return (endOfFeedRef.current = true);
+      if (response.status === 404) {
+        setEndOfFeed(true);
+        return;
+      }
 
       const data: PostDto[] = await response.json();
-      if (data.length === 0) return;
-
-      setFeed((prev) => {
-        // filter out posts that are already in the feed
-        const newBatch = data.filter(
-          (post) => !prev.some((f) => f.id === post.id)
-        );
-
-        if (newBatch.length === 0) {
-          // sets endOfFeed flag up so that it doesn't try to fetch next batch
-          // of posts without a (page?) refresh
-          endOfFeedRef.current = true;
-          return prev;
-        }
-
-        // update pagination parameters using the actual new batch
-        feedbackPageRef.current = {
-          lastCreatedAt: new Date(
-            newBatch[newBatch.length - 1].createdAt
-          ).toISOString(),
-          lastId: newBatch[newBatch.length - 1].id,
-        };
-
-        return [...prev, ...newBatch];
-      });
+      filterAndAppendToFeed(data);
     } catch (error) {
       console.error("Error fetching feed:", error);
     } finally {
@@ -211,51 +219,50 @@ export default function Community() {
   };
 
   const initiate = async () => {
-    setFeed([]);
+    setFeed(() => []);
+    setEndOfFeed(false);
+    currentDisplayRef.current = "home";
 
-    // fetches the communities with most followers
-    fetchTopCommunities();
-    // fetches user's communities if auth !== undefined
-    fetchMyCommunities();
-    // retrieves recently viewed communities only from localstorage
+    await Promise.all([fetchTopCommunities(), fetchMyCommunities()]);
+    await fetchMyFeedAndPopulateFeed();
 
-    // try-catch ensures that myFeed comes first in the feed, recent comes afterwards.
-    try {
-      // fetches users feed based on followed communities
-      await fetchMyFeed();
-    } catch (err) {
-      console.warn(err);
-    } finally {
-      try {
-        // fetches recent feed based on date of creation
-        await fetchRecentFeedAndPopulateFeed();
-      } catch (err) {
-        console.warn(err);
-      }
-    }
+    setPageLoading(false);
   };
 
-  // initiates the page
+  function filterAndAppendToFeed(data: PostDto[]) {
+    setFeed((prev) => {
+      const newBatch = data.filter(
+        (post) => !prev.some((f: PostDto) => f.id === post.id)
+      );
+      if (newBatch.length === 0) setEndOfFeed(true);
+      return [...prev, ...newBatch];
+    });
+  }
+
   useEffect(() => {
     initiate();
   }, [auth]);
 
-  // TODO: these posts also receive observer flag, which triggers fetching of
-  // next batch of recent posts, which i don't want
-  // it should only display the posts from the community and not load anything irrelevant
-
-  // fetches posts by community, populates the feed
-  // and adds the community to recent communities
-  const populateWithPostsByCommunity = async (community: CommunityDto) => {
-    endOfFeedRef.current = false;
+  const fetchFeedByCommunityAndPopulateFeed = async (
+    community: CommunityDto
+  ) => {
+    setEndOfFeed(false);
     feedLoadingRef.current = true;
-    feedbackPageRef.current = {
-      lastCreatedAt: "",
-      lastId: null,
-    };
+
+    if (currentDisplayRef.current !== "byCommunity") {
+      feedbackPageRef.current = { lastCreatedAt: "", lastId: 0 };
+      currentDisplayRef.current = "byCommunity";
+    } else if (feed.length > 0) {
+      feedbackPageRef.current = {
+        lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
+        lastId: feed[feed.length - 1].id,
+      };
+    }
 
     try {
-      const response = await fetch(`${POST_PATH}/by-community/${community.id}`);
+      const response = await fetch(
+        `${POST_PATH}/by-community?communityId=${community.id}&lastCreatedAt=${feedbackPageRef.current.lastCreatedAt}&lastId=${feedbackPageRef.current.lastId}`
+      );
       if (response.ok) {
         const data = await response.json();
         setFeed(data);
@@ -266,7 +273,6 @@ export default function Community() {
       feedLoadingRef.current = false;
     }
 
-    // add it to recent communities
     dispatch(addCommunity(community));
   };
 
@@ -275,11 +281,13 @@ export default function Community() {
   // finally scrolls to the top
   const handleClickPostInSearchResult = async (id: number) => {
     try {
-      const response = await fetch(`${POST_PATH}/${id}`);
+      const response = await fetch(`${POST_PATH}/get-post/${id}`);
       if (response.ok) {
         const data = await response.json();
-        setFeed([data, ...feed]);
-        window.scrollTo(0, 0);
+        // remove post from feed if already exists
+        setFeed((prev) => prev.filter((f) => f.id !== data.id));
+        // append new one to the top of the feed
+        setFeed((prev) => [data, ...prev]);
       }
     } catch (err) {
       console.error(err);
@@ -290,11 +298,12 @@ export default function Community() {
   // fetches the community and repopulates the feed with its posts
   // finally scrolls to the top
   const handleClickCommunityInSearchResult = async (id: number) => {
+    currentDisplayRef.current = "byCommunity";
     try {
       const response = await fetch(`${COMMUNITIES_PATH}/${id}`);
       if (response.ok) {
         const data = await response.json();
-        await populateWithPostsByCommunity(data);
+        await fetchFeedByCommunityAndPopulateFeed(data);
         window.scrollTo(0, 0);
       }
     } catch (err) {
@@ -304,11 +313,6 @@ export default function Community() {
 
   // initiates the page again / soft reload
   const handleClickHome = () => {
-    endOfFeedRef.current = false;
-    feedbackPageRef.current = {
-      lastCreatedAt: "",
-      lastId: null,
-    };
     initiate();
   };
 
@@ -319,7 +323,6 @@ export default function Community() {
 
   // fetches posts that the user liked and populates the feed
   const fetchMyLiked = async () => {
-    endOfFeedRef.current = false;
     try {
       feedLoadingRef.current = true;
       const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
@@ -333,20 +336,33 @@ export default function Community() {
     }
   };
 
+  useEffect(() => {
+    console.log("feed", feed);
+  }, [feed]);
+
+  // possible BROKEN!!!!!
   // resets the feed and fetches recent feed from start
   const handleClickRecentPost = async () => {
+    setFeed(() => []);
+    setEndOfFeed(false);
+
     try {
-      endOfFeedRef.current = false;
-      setFeed([]);
       feedbackPageRef.current = {
         lastCreatedAt: "",
-        lastId: null,
+        lastId: 0,
       };
+      currentDisplayRef.current = "home";
+
       await fetchRecentFeedAndPopulateFeed();
     } catch (err) {
       console.error(err);
     }
   };
+
+  // TODO: Loading "page"
+  if (pageLoading) {
+    return <h1>Loading...</h1>;
+  }
 
   return (
     <div className="community-main-div">
@@ -380,7 +396,7 @@ export default function Community() {
           <span>Top Communities</span>
           {topCommunities?.map((community) => (
             <div
-              onClick={() => populateWithPostsByCommunity(community)}
+              onClick={() => fetchFeedByCommunityAndPopulateFeed(community)}
               className="sidebar-community"
               key={community.id}
             >
@@ -516,6 +532,11 @@ export default function Community() {
             </span>
           );
         })}
+        {endOfFeed && (
+          <div>
+            <button>Refresh</button>
+          </div>
+        )}
       </div>
       <div className="community-main-subdiv community-main-subdiv--right"></div>
     </div>

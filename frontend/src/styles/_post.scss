@@ -82,6 +82,9 @@
   & img {
     width: 22px;
   }
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .post-community {
@@ -122,4 +125,11 @@
 .post-community-middledot {
   font-size: 1.3rem;
   padding: 0px 6px;
+}
+
+.post-profile--right-like {
+  width: 30px;
+  &:hover {
+    cursor: pointer;
+  }
 }

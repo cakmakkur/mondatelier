@@ -2645,6 +2645,9 @@ input[type=number]::-webkit-outer-spin-button {
 .post-profile--right-comment img {
   width: 22px;
 }
+.post-profile--right-comment:hover {
+  cursor: pointer;
+}
 
 .post-community {
   display: flex;
@@ -2683,6 +2686,13 @@ input[type=number]::-webkit-outer-spin-button {
 .post-community-middledot {
   font-size: 1.3rem;
   padding: 0px 6px;
+}
+
+.post-profile--right-like {
+  width: 30px;
+}
+.post-profile--right-like:hover {
+  cursor: pointer;
 }
 
 *,

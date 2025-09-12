@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import type { PostDto } from "../../dto/PostDto";
 import { DateFormatter } from "../../util/DateFormatter";
-import type { Profile } from "../../dto/Profile";
 import Carousel from "../fx/Carousel";
 import type { CommunityDto } from "../../dto/CommunityDto";
-import useAxiosPrivate from "../../auth/useAxiosPrivate";
 
 interface PostProps {
   post: PostDto;
@@ -12,7 +10,6 @@ interface PostProps {
   updateMyCommunities: (communityDto: CommunityDto) => void;
 }
 
-const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 
@@ -21,22 +18,9 @@ export default function Post({
   myCommunities,
   updateMyCommunities,
 }: PostProps) {
-  const axiosPrivate = useAxiosPrivate();
-
-  const [profile, setProfile] = useState<Profile>();
   const [community, setCommunity] = useState<CommunityDto>();
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch(`${PROFILE_PATH}/${post.profileId}`);
-      const data = await response.json();
-      setProfile(data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
 
   const fetchCommunity = async () => {
     try {
@@ -68,7 +52,6 @@ export default function Post({
   }, [post.postMediaPathList]);
 
   useEffect(() => {
-    fetchProfile();
     fetchCommunity();
   }, []);
 
@@ -132,7 +115,7 @@ export default function Post({
             <img src="/comment.svg" alt="" />
             Comments (213)
           </span>
-          <span style={{ width: "30px" }}>
+          <span className="post-profile--right-like">
             <img src="/heart.svg" alt="" />
           </span>
         </span>

@@ -10,4 +10,6 @@ export interface PostDto {
   postMediaPathList: string[];
   profilePicturePath: string;
   profileName: string;
+  childrenPostsAmount: number;
+  likesAmount: number;
 }

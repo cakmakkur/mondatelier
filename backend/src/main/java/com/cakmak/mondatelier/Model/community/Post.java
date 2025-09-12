@@ -51,6 +51,12 @@ public class Post {
     @JoinColumn(name = "community_id")
     private Community community;
 
+    @Column(name = "children_posts_amount")
+    private Integer childrenPostsAmount;
+
+    @Column(name = "likes_amount")
+    private Integer likesAmount;
+
     private String title;
 
     private String content;
