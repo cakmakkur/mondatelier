@@ -13,31 +13,24 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
   useEffect(() => {
     startSlide();
     return () => clearInterval(intervalRef.current);
-  });
+    // run once on mount (and if imgUrls length changes)
+  }, [imgUrls.length]);
 
   const startSlide = () => {
     clearInterval(intervalRef.current);
     intervalRef.current = window.setInterval(() => {
       setActiveIndex((current) => {
-        if (activeIndex === imgUrls.length - 1 && sliderRef.current) {
+        if (current === imgUrls.length - 1) {
           setReversed(true);
           return current - 1;
-          return 0;
-        } else if (activeIndex === 0 && sliderRef.current) {
+        } else if (current === 0) {
           setReversed(false);
-          return 0;
+          return current + 1;
         } else {
-          return current + 1 * (reversed ? -1 : 1);
+          return current + (reversed ? -1 : 1);
         }
       });
-
-      requestAnimationFrame(() => {
-        const newTranslate = 0;
-        if (sliderRef.current) {
-          sliderRef.current.style.transform = `translateX(${newTranslate}vw)`;
-        }
-      });
-    }, 2000);
+    }, 5000);
   };
 
   const stopSlide = () => {
@@ -46,16 +39,16 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
 
   useEffect(() => {
     if (sliderRef.current) {
-      const factor = reversed ? -1 : 1;
-      const newTranslate = activeIndex * -100 * factor;
+      const newTranslate = activeIndex * -100;
       sliderRef.current.style.transform = `translateX(${newTranslate}%)`;
     }
   }, [activeIndex]);
 
   const prevSlide = () => {
-    const prevIndex = (activeIndex - 1) % imgUrls.length;
+    const prevIndex = (activeIndex - 1 + imgUrls.length) % imgUrls.length;
     setActiveIndex(prevIndex);
   };
+
   const nextSlide = () => {
     const nextIndex = (activeIndex + 1) % imgUrls.length;
     setActiveIndex(nextIndex);
@@ -64,10 +57,13 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
   return (
     <div
       onMouseEnter={stopSlide}
-      onMouseLeave={() => startSlide()}
+      onMouseLeave={startSlide}
       className="carousel_slider_container"
     >
-      <div ref={sliderRef} style={{ transition: "transform 1s ease-out" }}>
+      <div
+        ref={sliderRef}
+        style={{ transition: "transform 1s ease-out", display: "flex" }}
+      >
         {imgUrls.map((url, index) => (
           <img key={index} src={url} alt={`Slide ${index + 1}`} />
         ))}

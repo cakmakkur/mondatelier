@@ -96,14 +96,12 @@ export default function Community() {
 
     if (exists) {
       try {
-        const response = await axiosPrivate.delete(
+        await axiosPrivate.delete(
           `${COMMUNITIES_PATH}/unfollow/${communityDto.id}`
         );
-        if (response.status === 204) {
-          setMyCommunities((prev) =>
-            prev.filter((c) => c.id !== communityDto.id)
-          );
-        }
+        setMyCommunities((prev) =>
+          prev.filter((c) => c.id !== communityDto.id)
+        );
       } catch (error) {
         console.error("Error unfollowing community:", error);
       }
@@ -126,9 +124,7 @@ export default function Community() {
     if (!auth) return;
     try {
       const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
-      if (response.status === 200) {
-        setMyCommunities(response.data);
-      }
+      setMyCommunities(response.data);
     } catch (error) {
       console.error("Error fetching communities:", error);
     }
@@ -313,9 +309,7 @@ export default function Community() {
     try {
       feedLoadingRef.current = true;
       const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
-      if (response.status === 200) {
-        setFeed(response.data);
-      }
+      setFeed(response.data);
     } catch (err) {
       console.warn(err);
     } finally {
@@ -380,13 +374,13 @@ export default function Community() {
           <img src="/home.svg" alt="" />
           <span>Home</span>
         </div>
-        <div onClick={handleClickLiked} className="community-liked">
-          <img src="/heart-white.svg" alt="" />
-          <span>Liked</span>
-        </div>
         <div onClick={handleClickRecentPosts} className="community-recent-post">
           <img src="/recent.svg" alt="" />
           <span>Recent Posts</span>
+        </div>
+        <div onClick={handleClickLiked} className="community-liked">
+          <img src="/heart.svg" alt="" />
+          <span>Liked</span>
         </div>
         <div className="community-new">
           <span className="community-new-icon">+</span>
@@ -402,7 +396,7 @@ export default function Community() {
             topCommunitiesExtended ? "sidebar-communities--extended" : ""
           }`}
         >
-          <span>Top Communities</span>
+          <span className="sidebar-communities-title">Top Communities</span>
           {topCommunities?.map((community) => (
             <div
               onClick={() => handleClickCommunity(community)}
@@ -448,7 +442,9 @@ export default function Community() {
                 recentCommunitiesExtended ? "sidebar-communities--extended" : ""
               }`}
             >
-              <span>Recent Communities</span>
+              <span className="sidebar-communities-title">
+                Recent Communities
+              </span>
               {recent.map((community) => (
                 <div
                   onClick={() => handleClickCommunity(community)}
@@ -492,7 +488,7 @@ export default function Community() {
               myCommunitiesExtended ? "sidebar-communities--extended" : ""
             }`}
           >
-            <span> My Communities</span>
+            <span className="sidebar-communities-title"> My Communities</span>
             {myCommunities?.map((community) => (
               <div
                 onClick={() => handleClickCommunity(community)}

@@ -78,7 +78,7 @@ export default function NavBar() {
           />
           Events
         </Link>
-        {auth ? (
+        {/* {auth ? (
           <Link className="navBar_nav navbar-hide-buttons" to="#">
             <img
               src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
@@ -86,7 +86,7 @@ export default function NavBar() {
             />
             Messages
           </Link>
-        ) : null}
+        ) : null} */}
         {auth && profile ? (
           <Link className="publish_button" to={`/publish/${profile.id}`}>
             <img

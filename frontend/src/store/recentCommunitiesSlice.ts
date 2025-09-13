@@ -36,7 +36,7 @@ const recentCommunitiesSlice = createSlice({
 
       state.items.unshift(community);
 
-      if (state.items.length > 10) {
+      if (state.items.length > 7) {
         state.items = state.items.slice(0, 10);
       }
 

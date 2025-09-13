@@ -29,7 +29,7 @@
 
 .navBar__right {
   display: flex;
-  column-gap: 30px;
+  column-gap: 25px;
   align-items: center;
 }
 @media (max-width: 750px) {
@@ -2388,47 +2388,51 @@ input[type=number]::-webkit-outer-spin-button {
   }
 }
 
-.community-liked,
+.community-recent-post,
 .community-home {
   display: flex;
   flex-direction: row;
   align-items: end;
   column-gap: 10px;
   font-size: 1.2rem;
+  transition: 0.1s;
   padding-bottom: 10px;
 }
-.community-liked img,
+.community-recent-post img,
 .community-home img {
   width: 30px;
   aspect-ratio: 1;
 }
-.community-liked span,
+.community-recent-post span,
 .community-home span {
   align-content: end;
 }
-.community-liked:hover,
-.community-home:hover {
+.community-recent-post span:hover,
+.community-home span:hover {
+  color: rgb(255, 255, 207);
   cursor: pointer;
 }
 
-.community-recent-post {
+.community-liked {
   display: flex;
   flex-direction: row;
   align-items: end;
   column-gap: 10px;
   font-size: 1.2rem;
+  transition: 0.1s;
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.225);
 }
-.community-recent-post img {
+.community-liked img {
   width: 30px;
   aspect-ratio: 1;
 }
-.community-recent-post span {
+.community-liked span {
   align-content: end;
 }
-.community-recent-post:hover {
+.community-liked span:hover {
   cursor: pointer;
+  color: rgb(255, 255, 207);
 }
 
 .sidebar-communities {
@@ -2444,12 +2448,6 @@ input[type=number]::-webkit-outer-spin-button {
   max-height: 190px;
   overflow: hidden;
   transition: 0.3s;
-}
-.sidebar-communities span {
-  padding-bottom: 10px;
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.818);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.064);
 }
 
 .sidebar-communities--extended {
@@ -2480,7 +2478,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 .sidebar-community-accordeon-button {
   position: absolute;
-  bottom: 3px;
+  top: 10px;
   right: 3px;
   width: 28px;
   height: 28px;
@@ -2559,9 +2557,11 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   align-items: center;
   column-gap: 10px;
+  transition: 0.1s;
 }
 .community-new:hover {
   cursor: pointer;
+  color: rgb(255, 255, 207);
 }
 
 .community-new-icon {
@@ -2624,6 +2624,13 @@ input[type=number]::-webkit-outer-spin-button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sidebar-communities-title {
+  color: rgb(255, 255, 207);
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.064);
 }
 
 .post-main-container {

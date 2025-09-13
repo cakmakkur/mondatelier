@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useProfileContext } from "../../context/ProfileContext";
 import { useModalContext } from "../../context/ModalContext";
-
-// @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import ToolTip from "../../util/Tooltip";
@@ -59,7 +57,7 @@ export default function CreateEvent() {
     if (formValues.description === "") {
       newErrorMessages = {
         ...newErrorMessages,
-        description: "Give a description",
+        description: "Describe your event",
       };
       errorOccured = true;
     }
@@ -97,16 +95,12 @@ export default function CreateEvent() {
       const response = await axiosPrivate.post(`${EVENTS_PATH}`, formData, {
         headers,
       });
-      if (response.status === 200) {
-        // return success
-        overlayRef.current!.style.opacity = "1";
-        setTimeout(() => {
-          setComponentState(undefined);
-        }, 1700);
-        return response.data;
-      } else {
-        // handle error
-      }
+
+      overlayRef.current!.style.opacity = "1";
+      setTimeout(() => {
+        setComponentState(undefined);
+      }, 1700);
+      return response.data;
     } catch (error) {
       console.error(error);
       // handle error

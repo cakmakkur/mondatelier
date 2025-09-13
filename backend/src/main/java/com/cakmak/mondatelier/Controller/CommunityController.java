@@ -5,8 +5,11 @@ import com.cakmak.mondatelier.Service.CommunityService;
 import com.cakmak.mondatelier.dto.CommunityDto;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -67,5 +70,17 @@ public class CommunityController {
         Page<CommunityDto> cp = communityService.query(query, page, PAGE_SIZE);
 
         return ResponseEntity.ok().body(cp);
+    }
+
+    @PostMapping(
+            path = "/create",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> createCommunity(
+            @RequestPart("community") CommunityDto eventDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
+        // TODO: implement
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

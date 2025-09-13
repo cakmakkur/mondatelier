@@ -55,41 +55,46 @@
   }
 }
 
-.community-liked,
+.community-recent-post,
 .community-home {
   display: flex;
   flex-direction: row;
   align-items: end;
   column-gap: 10px;
   font-size: 1.2rem;
+  transition: 0.1s;
   & img {
     width: 30px;
     aspect-ratio: 1;
   }
   & span {
     align-content: end;
+    &:hover {
+      color: $moon-yellow;
+      cursor: pointer;
+    }
   }
-  &:hover {
-    cursor: pointer;
-  }
+
   padding-bottom: 10px;
 }
 
-.community-recent-post {
+.community-liked {
   display: flex;
   flex-direction: row;
   align-items: end;
   column-gap: 10px;
   font-size: 1.2rem;
+  transition: 0.1s;
   & img {
     width: 30px;
     aspect-ratio: 1;
   }
   & span {
     align-content: end;
-  }
-  &:hover {
-    cursor: pointer;
+    &:hover {
+      cursor: pointer;
+      color: $moon-yellow;
+    }
   }
   padding-bottom: 20px;
   border-bottom: 1px solid rgba(128, 128, 128, 0.225);
@@ -108,12 +113,6 @@
   max-height: 190px;
   overflow: hidden;
   transition: 0.3s;
-  & span {
-    padding-bottom: 10px;
-    font-size: 1.1rem;
-    color: $lightTextColor--highlight;
-    border-bottom: 1px solid $lightSeperatorColor;
-  }
 }
 
 .sidebar-communities--extended {
@@ -145,7 +144,7 @@
 
 .sidebar-community-accordeon-button {
   position: absolute;
-  bottom: 3px;
+  top: 10px;
   right: 3px;
   width: 28px;
   height: 28px;
@@ -225,8 +224,10 @@
   display: flex;
   align-items: center;
   column-gap: 10px;
+  transition: 0.1s;
   &:hover {
     cursor: pointer;
+    color: $moon-yellow;
   }
 }
 
@@ -290,4 +291,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.sidebar-communities-title {
+  color: $moon-yellow;
+  padding-bottom: 10px;
+  font-size: 1.1rem;
+  border-bottom: 1px solid $lightSeperatorColor;
 }

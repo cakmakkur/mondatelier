@@ -5,6 +5,7 @@ import com.cakmak.mondatelier.Service.EventService;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,9 +50,8 @@ public class EventController {
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
         eventService.createEvent(eventDTO, imageFile);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
     // returns currently random events
     @GetMapping("/highlights")
     public ResponseEntity<List<EventDTO>> getHighlights() {

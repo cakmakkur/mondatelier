@@ -25,15 +25,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "LIMIT 10", nativeQuery = true)
     List<CommunityPostCount> findTop10Communities();
 
-    // find first page of recent posts
-    @Query(value = "SELECT * FROM posts ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)
+    // find first page of recent parent posts
+    @Query(value = "SELECT * FROM posts " +
+            "WHERE parent_post_id IS NULL " +
+            "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)
     List<Post> findFirstBatchOfRecentPosts(
             @Param("limit") int limit);
 
-    // find subsequent pages of recent posts
-    @Query(value = "SELECT * FROM posts " +
+    // old query that worked before
+/*    @Query(value = "SELECT * FROM posts " +
             "WHERE created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId) " +
-            "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)
+            "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)*/
+
+    // find subsequent pages of recent parent posts
+    @Query(value = """
+    SELECT *
+    FROM posts
+    WHERE parent_post_id IS NULL
+      AND (
+        created_at < :lastCreatedAt
+        OR (created_at = :lastCreatedAt AND id < :lastId)
+      )
+    ORDER BY created_at DESC, id DESC
+    LIMIT :limit
+    """,
+            nativeQuery = true
+    )
     List<Post> findNextBatchOfRecentPosts(
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
             @Param("lastId") Long lastId,
@@ -41,20 +58,23 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     );
 
 
-    // find first page of posts from my communities
+    // find first page of parent posts from my communities
     @Query(value = "SELECT * FROM posts " +
             "WHERE (posts.community_id = :communityId)" +
+            "AND parent_post_id IS NULL " +
             "ORDER BY created_at DESC, id DESC LIMIT :limit ", nativeQuery = true)
     List<Post> findFirstBatchOfPostsFromMyCommunities(
             @Param("communityId") Long communityId,
             @Param("limit") int limit
     );
 
-    // find subsequent pages of posts from my communities
+    // find subsequent pages of parent posts from my communities
     @Query(value = "SELECT * FROM posts " +
-            "WHERE community_id = :communityId AND " +
-            "(created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId)) " +
-            "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)
+            "WHERE community_id = :communityId " +
+            "AND parent_post_id IS NULL " +
+            "AND (created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId)) " +
+            "ORDER BY created_at DESC, id DESC LIMIT :limit",
+            nativeQuery = true)
     List<Post> findNextBatchOfPostsFromMyCommunities(
             @Param("communityId") Long communityId,
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
@@ -62,11 +82,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             @Param("limit") int limit
     );
 
-
-
     Page<Post> findByTitleContainingIgnoreCase(String query, Pageable pageable);
-
-
 
     @Query(value = " SELECT * FROM posts p WHERE community_id = :communityId AND p.parent_post_id IS NULL ORDER BY created_at DESC ", nativeQuery = true)
     Page<Post> findByCommunityWithChildrenCount(@Param("communityId") Long communityId, Pageable pageable);
