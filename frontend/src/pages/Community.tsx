@@ -1,5 +1,3 @@
-// BROKEN!!!!!!
-
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import type { CommunityDto } from "../dto/CommunityDto.ts";
@@ -16,7 +14,6 @@ import CommunitySearchBar from "../components/userActions/CommunitySearchBar.tsx
 import type { PostDto } from "../dto/PostDto.ts";
 import CreateCommunity from "../components/userActions/CreateCommunity.tsx";
 
-// const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 const POST_PATH = import.meta.env.VITE_POST_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
@@ -73,11 +70,14 @@ export default function Community() {
         async (entries) => {
           if (entries[0].isIntersecting) {
             if (
-              (feedTypeRef.current === "recent" && !endOfFeed) ||
-              (feedTypeRef.current === "myFeed" && endOfFeed)
+              (feedTypeRef.current === "recent" && !endOfFeedRef.current) ||
+              (feedTypeRef.current === "myFeed" && endOfFeedRef.current)
             ) {
               await fetchRecentFeedAndPopulateFeed();
-            } else if (feedTypeRef.current === "myFeed" && !endOfFeed) {
+            } else if (
+              feedTypeRef.current === "myFeed" &&
+              !endOfFeedRef.current
+            ) {
               await fetchMyFeedAndPopulateFeed();
             }
           }
@@ -87,7 +87,7 @@ export default function Community() {
 
       observer.current.observe(node);
     },
-    [endOfFeed, feed]
+    [feed, endOfFeed]
   );
 
   // updates the communities that the user follows
@@ -160,33 +160,29 @@ export default function Community() {
       feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
       feedTypeRef.current = "myFeed";
       endOfFeedRef.current = false;
+      setEndOfFeed(false);
       window.scrollTo(0, 0);
       setFeed(() => []);
-    } else if (feed.length > 0 && !endOfFeedRef) {
+    } else if (feed.length > 0 && !endOfFeedRef.current) {
       feedPageRef.current = {
         lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
         lastId: feed[feed.length - 1].id,
       };
-    } else {
-      feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
-      setFeed(() => []);
-      window.scrollTo(0, 0);
     }
-
     try {
       const response = await axiosPrivate.get(
         `${POST_PATH}/from-my-communities?lastCreatedAt=${feedPageRef.current.lastCreatedAt}&lastId=${feedPageRef.current.lastId}`
       );
 
-      if (response.status === 404) {
+      const data = response.data;
+      filterAndAppendToFeed(data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      if (error.status === 404) {
         setEndOfFeed(true);
         endOfFeedRef.current = true;
         return;
       }
-
-      const data = response.data;
-      filterAndAppendToFeed(data);
-    } catch (error) {
       console.error("Error fetching feed:", error);
     } finally {
       feedLoadingRef.current = false;
@@ -197,24 +193,23 @@ export default function Community() {
     if (feedLoadingRef.current) return;
     feedLoadingRef.current = true;
 
-    if (feedTypeRef.current !== "recent") {
+    if (feedTypeRef.current === "myFeed" && endOfFeedRef.current) {
+      feedTypeRef.current = "recent";
+      endOfFeedRef.current = false;
+      setEndOfFeed(false);
+    } else if (feedTypeRef.current !== "recent") {
       feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
       feedTypeRef.current = "recent";
       endOfFeedRef.current = false;
+      setEndOfFeed(false);
       setFeed(() => []);
-
       window.scrollTo(0, 0);
-    } else if (feed.length > 0 && !endOfFeedRef) {
+    } else if (feed.length > 0 && !endOfFeedRef.current) {
       feedPageRef.current = {
         lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
         lastId: feed[feed.length - 1].id,
       };
-    } else {
-      feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
-      setFeed(() => []);
-      window.scrollTo(0, 0);
     }
-
     try {
       const response = await fetch(
         `${POST_PATH}/recent?lastId=${feedPageRef.current.lastId}&lastCreatedAt=${feedPageRef.current.lastCreatedAt}`
@@ -235,7 +230,7 @@ export default function Community() {
     }
   };
 
-  function filterAndAppendToFeed(data: PostDto[]) {
+  const filterAndAppendToFeed = (data: PostDto[]) => {
     setFeed((prev) => {
       const newData = data.filter(
         (post) => !prev.some((f: PostDto) => f.id === post.id)
@@ -243,7 +238,7 @@ export default function Community() {
       if (newData.length === 0) setEndOfFeed(true);
       return [...prev, ...newData];
     });
-  }
+  };
 
   const fetchFeedByCommunityAndPopulateFeed = async (
     community: CommunityDto
@@ -255,17 +250,14 @@ export default function Community() {
       feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
       feedTypeRef.current = "byCommunity";
       endOfFeedRef.current = false;
+      setEndOfFeed(false);
       window.scrollTo(0, 0);
       setFeed(() => []);
-    } else if (feed.length > 0 && !endOfFeedRef) {
+    } else if (feed.length > 0 && !endOfFeedRef.current) {
       feedPageRef.current = {
         lastCreatedAt: new Date(feed[feed.length - 1].createdAt).toISOString(),
         lastId: feed[feed.length - 1].id,
       };
-    } else {
-      feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
-      setFeed(() => []);
-      window.scrollTo(0, 0);
     }
 
     try {
@@ -331,7 +323,7 @@ export default function Community() {
 
   // resets the feed and fetches recent feed from start
   const handleClickRecentPosts = async () => {
-    feedTypeRef.current = "default";
+    feedTypeRef.current = "default"; // resets the page and feed
     try {
       await fetchRecentFeedAndPopulateFeed();
     } catch (err) {
@@ -341,7 +333,7 @@ export default function Community() {
 
   // resets the feed and fetches posts from given community from the start
   const handleClickCommunity = async (community: CommunityDto) => {
-    feedTypeRef.current = "default";
+    feedTypeRef.current = "default"; // resets the page and feed
     try {
       await fetchFeedByCommunityAndPopulateFeed(community);
     } catch (err) {
@@ -537,11 +529,11 @@ export default function Community() {
         {feed?.map((post, i) => {
           let isTrigger = false;
 
-          if (feed.length >= 5) {
+          if (feed.length >= 5 && !endOfFeedRef.current) {
             if (i === feed.length - 5) {
               isTrigger = true;
             }
-          } else if (i === feed.length - 1) {
+          } else if (i === feed.length - 1 && !endOfFeedRef.current) {
             isTrigger = true;
           }
 
