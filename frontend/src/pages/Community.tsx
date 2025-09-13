@@ -477,7 +477,8 @@ export default function Community() {
               onClick={clearRecentCommunities}
               className="delete-recent-communities"
             >
-              Delete recent communities
+              <img src="delete.svg" alt="" />
+              <span>Delete recent communities</span>
             </div>
           </>
         )}

@@ -120,7 +120,7 @@ export default function Post({
         <span className="post-profile--right">
           <span className="post-profile--right-comment">
             <img src="/comment.svg" alt="" />
-            Comments (213)
+            Comments ({post.childrenPostsAmount})
           </span>
           <span className="post-profile--right-like">
             <img src="/heart.svg" alt="" />

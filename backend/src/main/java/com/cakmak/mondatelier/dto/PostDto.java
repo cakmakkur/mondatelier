@@ -15,7 +15,7 @@ public record PostDto(
         List<String> postMediaPathList,
         String profilePicturePath,
         String profileName,
-        Integer commentAmount,
+        Integer childrenPostsAmount,
         Integer likesAmount
 ) {
 }

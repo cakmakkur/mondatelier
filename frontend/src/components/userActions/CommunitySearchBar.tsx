@@ -16,49 +16,43 @@ export default function CommunitySearchBar({
   fetchPostAndAppendItToTheTopOfTheFeed,
 }: SearchbarProps) {
   const [query, setQuery] = useState<string>("");
-  const [searchResult, setSearchResult] = useState<(CommunityDto | PostDto)[]>(
-    []
-  );
+  const [searchResults, setSearchResults] = useState<
+    (CommunityDto | PostDto)[]
+  >([]);
+  const searchInProgressRef = useRef(false);
   const communityPageRef = useRef<number>(0);
   const postPageRef = useRef<number>(0);
 
   const timeoutRef = useRef<number | undefined>(undefined);
 
-  const fetchCommunitySearchResult = async () => {
+  const fetchCommunitySearchResult = async (): Promise<CommunityDto[]> => {
     try {
       const response = await fetch(
         `${COMMUNITIES_PATH}/search?query=${query}&page=${communityPageRef.current}`
       );
       if (response.ok) {
         const data = await response.json();
-        const content = data.content;
-        const newBatch = content.filter(
-          (community: CommunityDto) =>
-            !searchResult.some((f) => f.id === community.id)
-        );
-        setSearchResult((prev) => [...prev, ...newBatch]);
+        return data.content ?? [];
       }
     } catch (error) {
       console.error("Error fetching communities:", error);
     }
+    return [];
   };
 
-  const fetchPostSearchResult = async () => {
+  const fetchPostSearchResult = async (): Promise<PostDto[]> => {
     try {
       const response = await fetch(
         `${POST_PATH}/search?query=${query}&page=${postPageRef.current}`
       );
       if (response.ok) {
         const data = await response.json();
-        const content = data.content;
-        const newBatch = content.filter(
-          (post: PostDto) => !searchResult.some((f) => f.id === post.id)
-        );
-        setSearchResult((prev) => [...prev, ...newBatch]);
+        return data.content ?? [];
       }
     } catch (error) {
       console.error("Error fetching posts:", error);
     }
+    return [];
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -74,8 +68,10 @@ export default function CommunitySearchBar({
 
   useEffect(() => {
     clearTimeout(timeoutRef.current);
+    searchInProgressRef.current = true;
+
     if (query === "") {
-      setSearchResult([]);
+      setSearchResults([]);
       return;
     }
     const debouncedSearch = debounce(search);
@@ -110,14 +106,19 @@ export default function CommunitySearchBar({
   };
 
   const search = async () => {
-    // clear search result when query changes
-    setSearchResult([]);
-
     try {
-      await fetchCommunitySearchResult();
-      await fetchPostSearchResult();
+      const [communityResults, postResults] = await Promise.all([
+        fetchCommunitySearchResult(),
+        fetchPostSearchResult(),
+      ]);
+
+      const combined = [...communityResults, ...postResults];
+
+      setSearchResults(combined);
     } catch (error) {
       console.error("Error fetching results:", error);
+    } finally {
+      searchInProgressRef.current = false;
     }
   };
 
@@ -137,10 +138,12 @@ export default function CommunitySearchBar({
         alt="search button"
       />
       <div
-        style={{ display: searchResult.length > 0 ? "block" : "none" }}
+        style={{
+          display: searchResults.length > 0 ? "block" : "none",
+        }}
         className="community-search-bar-results-main"
       >
-        {searchResult.map((result) => {
+        {searchResults.map((result) => {
           // if result is a community, render a community
           if ("logoImgPath" in result) {
             return (
@@ -161,7 +164,7 @@ export default function CommunitySearchBar({
             );
           }
           // if result is a post, render a post
-          else {
+          else if ("title" in result) {
             return (
               <div
                 key={result.id}
@@ -191,6 +194,15 @@ export default function CommunitySearchBar({
           }
         })}
       </div>
+      {query !== "" &&
+      searchResults.length === 0 &&
+      searchInProgressRef.current === false ? (
+        <div className="community-search-bar-results-main">
+          <div className="community-search-bar-result">Nothing found...</div>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

@@ -12,7 +12,7 @@
 .post-title {
   color: $lightTextColor--highlight;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.6rem;
 }
 
 .post-content {
@@ -109,7 +109,8 @@
   align-items: center;
   column-gap: 10px;
   padding: 5px 0px;
-
+  color: $moon-yellow;
+  font-size: 0.9rem;
   & img {
     width: 20px;
     aspect-ratio: 1;
@@ -119,11 +120,15 @@
 
 .post-follow-toggle {
   font-size: 0.9rem;
-  border: 1px solid black;
   border-radius: 15px;
   padding: 0px 11px;
+  border: 1px solid rgba(255, 255, 255, 0);
+
+  transition: 0.1s;
   &:hover {
     cursor: pointer;
+    box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.212);
+    border: 1px solid $moon-yellow;
   }
 }
 
