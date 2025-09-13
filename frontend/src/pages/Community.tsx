@@ -181,6 +181,8 @@ export default function Community() {
       if (error.status === 404) {
         setEndOfFeed(true);
         endOfFeedRef.current = true;
+        // TODO: starting from here, implement fetching of recent posts
+        // at this point there is no new post from communities
         return;
       }
       console.error("Error fetching feed:", error);

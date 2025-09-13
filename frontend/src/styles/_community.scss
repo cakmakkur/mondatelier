@@ -9,11 +9,23 @@
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   position: relative;
+
+  @include M {
+    grid-template-columns: 1fr 3fr;
+  }
+  @include S {
+    padding: 100px 40px 0px 40px;
+
+    display: flex;
+  }
 }
 
 .community-main-subdiv {
   padding: 0px 15px 0px 0px;
   row-gap: 15px;
+  @include S {
+    padding: 0;
+  }
 }
 
 .community-main-subdiv--left {
@@ -22,6 +34,9 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  @include S {
+    display: none;
+  }
 }
 .community-main-subdiv--center {
   width: 100%;
@@ -35,6 +50,9 @@
   width: 100%;
   height: 100%;
   background-color: blue;
+  @include M {
+    display: none;
+  }
 }
 
 .community-liked,

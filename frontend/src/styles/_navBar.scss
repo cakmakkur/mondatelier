@@ -29,12 +29,20 @@
     );
     z-index: -1;
   }
+
+  @include S {
+    padding: 1.8vh 5vw 0px;
+  }
 }
 
 .navBar__right {
   display: flex;
   column-gap: 30px;
   align-items: center;
+
+  @include S {
+    column-gap: 10px;
+  }
 }
 
 .navBar_nav {
@@ -67,6 +75,9 @@
     cursor: pointer;
     filter: brightness(1.3);
   }
+  @include S {
+    display: none;
+  }
 }
 
 .navBar_btn--login {
@@ -82,6 +93,10 @@
     color: white;
     border: 1px solid white;
   }
+  @include S {
+    font-size: 0.9rem;
+    width: 80px;
+  }
 }
 
 .navBar__title {
@@ -95,7 +110,7 @@
     transform: none;
   }
   @include S {
-    display: none;
+    font-size: 1.8rem;
   }
 }
 
@@ -145,6 +160,9 @@
     cursor: pointer;
     filter: brightness(1.3);
   }
+  @include S {
+    display: none;
+  }
 }
 
 .menu_button {
@@ -157,6 +175,9 @@
   border-radius: 2px;
   &:hover {
     cursor: pointer;
+  }
+  @include S {
+    transform: translateX(10px);
   }
 }
 

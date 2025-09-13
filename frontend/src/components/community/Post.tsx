@@ -105,8 +105,15 @@ export default function Post({
 
       <span className="post-details">
         <span className="post-profile--left">
-          <img src={`${UPLOADS_PATH}${post.profilePicturePath || ""}`} alt="" />
-          <span className="post-profile-name">{post.profileName || ""}</span>
+          <span className="post-profile--left-profile">
+            {" "}
+            <img
+              src={`${UPLOADS_PATH}${post.profilePicturePath || ""}`}
+              alt=""
+            />
+            <span className="post-profile-name">{post.profileName || ""}</span>
+          </span>
+
           <span className="post-details-middledot">&#183;</span>
           {post.createdAt ? DateFormatter.createdXAgo(post.createdAt) : ""}
         </span>
