@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.util;
 
+import com.cakmak.mondatelier.Exception.UserNotFoundException;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,6 @@ public class AuthUtil {
         }
 
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

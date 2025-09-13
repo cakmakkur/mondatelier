@@ -51,6 +51,9 @@ public class Post {
     @JoinColumn(name = "community_id")
     private Community community;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private List<PostLikes> postLikes;
+
     @Column(name = "children_posts_amount")
     private Integer childrenPostsAmount;
 

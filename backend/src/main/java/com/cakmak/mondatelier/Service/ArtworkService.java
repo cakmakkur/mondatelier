@@ -51,7 +51,7 @@ public class ArtworkService {
         boolean likeExists = artworkLikeRepository.findByArtwork_IdAndProfile_Id(id, currentUser.getProfile().getId()).isPresent();
         if (likeExists) {throw new RuntimeException("Artwork already liked");}
         boolean artworkExists = artworkRepository.findById(id).isPresent();
-        if (!artworkExists) {throw new RuntimeException("Artwork does not exist");}
+        if (!artworkExists) throw new ArtworkNotFoundException("ArtworkId: " + id);
         ArtworkLike artworkLike = new ArtworkLike();
         artworkLike.setArtwork(artworkRepository.findById(id).get());
         artworkLike.setProfile(currentUser.getProfile());

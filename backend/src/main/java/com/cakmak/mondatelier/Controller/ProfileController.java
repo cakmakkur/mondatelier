@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
+import com.cakmak.mondatelier.Exception.UserProfileMismatchException;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.ProfileService;
 import com.cakmak.mondatelier.dto.PublicProfileDTO;
@@ -41,7 +42,7 @@ public class ProfileController {
     ) {
         User currentUser = AuthUtil.getCurrentUser();
         if (!currentUser.getProfile().getId().equals(publicProfileDTO.id())) {
-            throw new RuntimeException("User's profile and target profile don't match");
+            throw new UserProfileMismatchException();
         }
         profileService.updatePublicProfile(publicProfileDTO, imageFile);
         return ResponseEntity.ok().build();
@@ -55,7 +56,7 @@ public class ProfileController {
             @RequestPart(value = "image") MultipartFile imageFile) {
         User currentUser = AuthUtil.getCurrentUser();
         if (!currentUser.getProfile().getId().equals(profileId)) {
-            throw new RuntimeException("User's profile and target profile don't match");
+            throw new UserProfileMismatchException();
         }
         profileService.updateProfilePicture(profileId, imageFile);
         PublicProfileDTO updatedProfileDTO = this.profileService.getProfileById(profileId);

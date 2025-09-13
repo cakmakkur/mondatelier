@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
+import com.cakmak.mondatelier.Exception.UserProfileMismatchException;
 import com.cakmak.mondatelier.Model.*;
 import com.cakmak.mondatelier.Repository.CityRepository;
 import com.cakmak.mondatelier.Repository.CountryRepository;
@@ -46,7 +47,7 @@ public class PreferencesController {
         User currentUser = AuthUtil.getCurrentUser();
 
         if (!currentUser.getProfile().getId().equals(profileId)) {
-            throw new RuntimeException("User's profile and target profile don't match");
+            throw new UserProfileMismatchException();
         }
 
         Profile profile = currentUser.getProfile(); // or profileRepository.findById(profileId).orElseThrow(...)

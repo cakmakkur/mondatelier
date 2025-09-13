@@ -2,6 +2,7 @@ package com.cakmak.mondatelier.Model;
 
 import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
+import com.cakmak.mondatelier.Model.community.PostLikes;
 import com.cakmak.mondatelier.Model.community.Vote;
 import com.cakmak.mondatelier.Model.event.Event;
 import com.cakmak.mondatelier.converter.ProfileTypesConverter;
@@ -81,5 +82,8 @@ public class Profile {
 
     @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<Post> posts;
+
+    @OneToMany(mappedBy = "profile", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private List<PostLikes> postLikes;
 
 }

@@ -1,5 +1,6 @@
 package com.cakmak.mondatelier.Service;
 
+import com.cakmak.mondatelier.Exception.EventNotFoundException;
 import com.cakmak.mondatelier.Exception.ProfileNotFoundException;
 import com.cakmak.mondatelier.Model.City;
 import com.cakmak.mondatelier.Model.Profile;
@@ -47,7 +48,7 @@ public class EventService {
     }
 
     public EventDTO getEventById(String id) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new RuntimeException("Event not found"));
+        Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
         return DTOMappers.toEventDTO(event);
     }
 
