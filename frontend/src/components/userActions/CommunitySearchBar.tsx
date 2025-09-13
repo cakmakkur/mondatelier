@@ -7,13 +7,13 @@ const POST_PATH = import.meta.env.VITE_POST_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
 interface SearchbarProps {
-  handleClickCommunityInSearchResult: (id: number) => Promise<void>;
-  handleClickPostInSearchResult: (id: number) => Promise<void>;
+  handleClickCommunity: (community: CommunityDto) => Promise<void>;
+  fetchPostAndAppendItToTheTopOfTheFeed: (id: number) => Promise<void>;
 }
 
 export default function CommunitySearchBar({
-  handleClickCommunityInSearchResult,
-  handleClickPostInSearchResult,
+  handleClickCommunity,
+  fetchPostAndAppendItToTheTopOfTheFeed,
 }: SearchbarProps) {
   const [query, setQuery] = useState<string>("");
   const [searchResult, setSearchResult] = useState<(CommunityDto | PostDto)[]>(
@@ -148,7 +148,7 @@ export default function CommunitySearchBar({
                 key={result.id}
                 className="community-search-bar-result"
                 onClick={() => {
-                  handleClickCommunityInSearchResult(result.id);
+                  handleClickCommunity(result);
                   setQuery("");
                 }}
               >
@@ -167,7 +167,7 @@ export default function CommunitySearchBar({
                 key={result.id}
                 className="community-search-bar-result"
                 onClick={() => {
-                  handleClickPostInSearchResult(result.id);
+                  fetchPostAndAppendItToTheTopOfTheFeed(result.id);
                   setQuery("");
                 }}
               >
