@@ -122,6 +122,10 @@ export default function CommunitySearchBar({
     }
   };
 
+  const cancelSearch = () => {
+    setQuery("");
+  };
+
   return (
     <div className="community-search-bar-main">
       <input
@@ -131,12 +135,18 @@ export default function CommunitySearchBar({
         className="community-search-bar-input"
         placeholder="Search in communities and posts..."
       />
-      <img
-        className="community-search-bar-icon"
-        onClick={search}
-        src="/search.svg"
-        alt="search button"
-      />
+      {query === "" ? (
+        <img
+          className="community-search-bar-icon"
+          onClick={search}
+          src="/search.svg"
+          alt="search button"
+        />
+      ) : (
+        <span onClick={cancelSearch} className="community-search-bar-x-icon">
+          X
+        </span>
+      )}
       <div
         style={{
           display: searchResults.length > 0 ? "block" : "none",

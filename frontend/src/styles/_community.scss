@@ -307,3 +307,13 @@
   border-bottom: 1px solid $lightSeperatorColor;
   font-weight: 600;
 }
+
+.community-search-bar-x-icon {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  font-size: 1.1rem;
+  &:hover {
+    cursor: pointer;
+  }
+}

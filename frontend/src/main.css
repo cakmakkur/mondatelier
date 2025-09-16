@@ -2642,6 +2642,16 @@ input[type=number]::-webkit-outer-spin-button {
   font-weight: 600;
 }
 
+.community-search-bar-x-icon {
+  position: absolute;
+  right: 15px;
+  top: 8px;
+  font-size: 1.1rem;
+}
+.community-search-bar-x-icon:hover {
+  cursor: pointer;
+}
+
 .post-main-container {
   background-color: rgb(27, 27, 27);
   padding: 15px;
