@@ -16,8 +16,6 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    List<Post> findByCommunity(Community community);
-
     @Query(value = "SELECT community_id AS communityId, COUNT(*) AS postCount " +
             "FROM posts " +
             "GROUP BY community_id " +
@@ -25,66 +23,74 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "LIMIT 10", nativeQuery = true)
     List<CommunityPostCount> findTop10Communities();
 
-    // find first page of recent parent posts
+    // find first page from all posts
     @Query(value = "SELECT * FROM posts " +
             "WHERE parent_post_id IS NULL " +
             "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)
     List<Post> findFirstBatchOfRecentPosts(
             @Param("limit") int limit);
 
-    // old query that worked before
-/*    @Query(value = "SELECT * FROM posts " +
-            "WHERE created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId) " +
-            "ORDER BY created_at DESC, id DESC LIMIT :limit", nativeQuery = true)*/
-
-    // find subsequent pages of recent parent posts
-    @Query(value = """
-    SELECT *
-    FROM posts
-    WHERE parent_post_id IS NULL
-      AND (
-        created_at < :lastCreatedAt
-        OR (created_at = :lastCreatedAt AND id < :lastId)
-      )
-    ORDER BY created_at DESC, id DESC
-    LIMIT :limit
-    """,
-            nativeQuery = true
-    )
+    // find subsequent pages from all posts
+    @Query(value = "SELECT * FROM posts " +
+            "WHERE parent_post_id IS NULL " +
+            "AND (created_at < :lastCreatedAt " +
+            "OR (created_at = :lastCreatedAt AND id < :lastId)) " +
+            "ORDER BY created_at DESC, id DESC LIMIT :limit",
+            nativeQuery = true)
     List<Post> findNextBatchOfRecentPosts(
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
             @Param("lastId") Long lastId,
             @Param("limit") int limit
     );
 
-
-    // find first page of parent posts from my communities
+    // find first page of parent by community
     @Query(value = "SELECT * FROM posts " +
             "WHERE (posts.community_id = :communityId)" +
             "AND parent_post_id IS NULL " +
             "ORDER BY created_at DESC, id DESC LIMIT :limit ", nativeQuery = true)
-    List<Post> findFirstBatchOfPostsFromMyCommunities(
+    List<Post> findFirstBatchOfPostsByCommunity(
             @Param("communityId") Long communityId,
             @Param("limit") int limit
     );
 
-    // find subsequent pages of parent posts from my communities
+    // find subsequent pages of parent posts by communities
     @Query(value = "SELECT * FROM posts " +
             "WHERE community_id = :communityId " +
             "AND parent_post_id IS NULL " +
             "AND (created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId)) " +
             "ORDER BY created_at DESC, id DESC LIMIT :limit",
             nativeQuery = true)
-    List<Post> findNextBatchOfPostsFromMyCommunities(
+    List<Post> findNextBatchOfPostsByCommunity(
             @Param("communityId") Long communityId,
             @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
             @Param("lastId") Long lastId,
             @Param("limit") int limit
     );
 
-    Page<Post> findByTitleContainingIgnoreCase(String query, Pageable pageable);
+    // find first page of child posts of by parent post
+    @Query(value = "SELECT * FROM posts " +
+            "WHERE parent_post_id = :postId " +
+            "ORDER BY created_at DESC, id DESC LIMIT :limit",
+            nativeQuery = true)
+    List<Post> getFirstBatchOfComments(
+            @Param("postId") Long postId,
+            @Param("limit") int limit
+    );
 
-    @Query(value = " SELECT * FROM posts p WHERE community_id = :communityId AND p.parent_post_id IS NULL ORDER BY created_at DESC ", nativeQuery = true)
-    Page<Post> findByCommunityWithChildrenCount(@Param("communityId") Long communityId, Pageable pageable);
+    // find subsequent pages of child posts of by parent post
+    @Query(value =
+            "SELECT * FROM posts " +
+            "WHERE parent_post_id = :postId " +
+            "AND (created_at < :lastCreatedAt OR (created_at = :lastCreatedAt AND id < :lastId)) " +
+            "ORDER BY created_at DESC, id DESC LIMIT :limit",
+            nativeQuery = true)
+    List<Post> getNextBatchOfComments(
+            @Param("postId") Long postId,
+            @Param("lastId") Long lastId,
+            @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
+            @Param("limit") int limit
+    );
+
+    Page<Post> findByTitleContainingIgnoreCase(String query, Pageable pageable);
 
 }

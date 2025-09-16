@@ -16,6 +16,7 @@ import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.PostDto;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,11 +31,15 @@ import java.util.List;
 @Service
 public class PostService {
 
+    @Value("${app.community.feed-limit}")
+    private int FEED_LIMIT;
+
+    @Value("${app.community.comment-limit}")
+    private int COMMENT_LIMIT;
+
     private final PostRepository postRepository;
     private final CommunityProfileRepository communityProfileRepository;
     private final CommunityRepository communityRepository;
-
-    private final int FEED_LIMIT = 15;
     private final PostMediaRepository postMediaRepository;
 
 
@@ -49,35 +54,44 @@ public class PostService {
     }
 
     public List<PostDto> getRecentPosts(
-            LocalDateTime lastCreatedAt,
+            String lastCreatedAt,
             Long lastId) {
 
         List<Post> nextBatch;
 
-        if (lastId == null || lastCreatedAt == null) {
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
+
+        if (lastId == 0 || lastCreatedAtLDT == null) {
             nextBatch = postRepository.findFirstBatchOfRecentPosts(FEED_LIMIT);
         } else {
-            nextBatch = postRepository.findNextBatchOfRecentPosts(lastCreatedAt, lastId, FEED_LIMIT);
+            nextBatch = postRepository.findNextBatchOfRecentPosts(lastCreatedAtLDT, lastId, FEED_LIMIT);
         }
 
         if(nextBatch.isEmpty()) throw new PostNotFoundException();
 
-        List<PostDto> postDtos = new ArrayList<>();
-        for (Post post : nextBatch) {
-            postDtos.add(DTOMappers.toPostDTO(post));
-        }
-
-        return postDtos;
+        return nextBatch.stream()
+                .map(DTOMappers::toPostDTO)
+                .toList();
     }
 
     public List<PostDto> getPostsFromMyCommunities(
 
             String profileId,
             Long lastId,
-            LocalDateTime lastCreatedAt) {
+            String lastCreatedAt) {
 
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
 
         List<CommunityProfile> communities = communityProfileRepository.findByProfile_Id(profileId);
+        if (communities.isEmpty()) throw new CommunityNotFoundException();
 
         List<Long> communityIds = communities.stream()
                 .map(cp -> cp.getCommunity().getId())
@@ -85,21 +99,19 @@ public class PostService {
 
         List<Post> nextBatch = new ArrayList<>();
 
-        // if user follows communities and requests the first batch of posts
-        if (!communities.isEmpty() && (lastId == 0 || lastCreatedAt == null)) {
+        if (lastId == 0 || lastCreatedAtLDT == null) {
             for (Long communityId : communityIds) {
-                nextBatch.addAll(postRepository.findFirstBatchOfPostsFromMyCommunities(
+                nextBatch.addAll(postRepository.findFirstBatchOfPostsByCommunity(
                         communityId,
                         FEED_LIMIT
                 ));
             }
         }
-        // if user follows communities and requests the subsequent batch of posts
-        else if (!communities.isEmpty()) {
+        else {
             for (Long communityId : communityIds) {
-                nextBatch.addAll(postRepository.findNextBatchOfPostsFromMyCommunities(
+                nextBatch.addAll(postRepository.findNextBatchOfPostsByCommunity(
                         communityId,
-                        lastCreatedAt,
+                        lastCreatedAtLDT,
                         lastId,
                         FEED_LIMIT
                 ));
@@ -118,36 +130,77 @@ public class PostService {
         return DTOMappers.toPostDTO(post);
     }
 
-    public List<PostDto> getPostsByCommunity(Long communityId, Long lastId, LocalDateTime lastCreatedAt) {
-        Community c = communityRepository.findById(communityId).orElse(null);
-        if (c == null) throw new CommunityNotFoundException();
+    public List<PostDto> getPostsByCommunity(
+            Long communityId,
+            Long lastId,
+            String lastCreatedAt) {
 
-        List<Post> posts = postRepository.findByCommunity(c);
-        if (posts.isEmpty()) throw new PostNotFoundException();
+        List<Post> nextBatch;
 
-        List<PostDto> postDtos = new ArrayList<>();
-        for (Post post : posts) {
-            postDtos.add(DTOMappers.toPostDTO(post));
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
         }
 
-        return postDtos;
+        if (lastId == 0 || lastCreatedAtLDT == null) {
+            nextBatch = postRepository.findFirstBatchOfPostsByCommunity(communityId, COMMENT_LIMIT);
+        } else {
+            nextBatch = postRepository.findNextBatchOfPostsByCommunity(communityId, lastCreatedAtLDT, lastId, COMMENT_LIMIT);
+        }
+
+        if (nextBatch.isEmpty()) throw new PostNotFoundException();
+
+        return nextBatch.stream()
+                .map(DTOMappers::toPostDTO)
+                .toList();
+    }
+
+    public List<PostDto> getComments (
+            Long postId,
+            Long lastId,
+            String lastCreatedAt) {
+
+        List<Post> nextBatch;
+
+        LocalDateTime lastCreatedAtLDT = null;
+        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
+            String iso = lastCreatedAt.replace("Z", "");
+            lastCreatedAtLDT = LocalDateTime.parse(iso);
+        }
+
+        if (lastId == 0 || lastCreatedAtLDT == null) {
+            nextBatch = postRepository.getFirstBatchOfComments(postId, COMMENT_LIMIT);
+        } else {
+            nextBatch = postRepository.getNextBatchOfComments(postId, lastId, lastCreatedAtLDT, COMMENT_LIMIT);
+        }
+
+        if (nextBatch.isEmpty()) throw new PostNotFoundException();
+
+        return nextBatch.stream()
+                .map(DTOMappers::toPostDTO)
+                .toList();
     }
 
     @Transactional
-    public Page<PostDto> query(String query, int pageNumber, int pageSize) {
+    public Page<PostDto> query(
+            String query,
+            int pageNumber,
+            int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<Post> posts = postRepository.findByTitleContainingIgnoreCase(query, pageable);
 
-        if (posts.isEmpty()) {
-            throw new PostNotFoundException("Post not found");
-        }
+        if (posts.isEmpty()) throw new PostNotFoundException();
 
         return posts.map(DTOMappers::toPostDTO);
     }
 
     @Transactional
-    public void createNewPost(Profile profile, PostDto postDto, List<MultipartFile> files) {
+    public void createNewPost(
+            Profile profile,
+            PostDto postDto,
+            List<MultipartFile> files) {
 
         if (!profile.getId().equals(postDto.profileId())) {
             throw new ProfileNotFoundException();

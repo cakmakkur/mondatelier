@@ -2,7 +2,6 @@ package com.cakmak.mondatelier.Controller;
 
 
 import com.cakmak.mondatelier.Model.User;
-import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.Service.PostService;
 import com.cakmak.mondatelier.dto.PostDto;
 import com.cakmak.mondatelier.util.AuthUtil;
@@ -11,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -29,23 +27,13 @@ public class PostController {
         return postService.getPostById(id);
     }
 
-    // returns most recent 15 posts
-    // after the last post sent in the feed
-    // limit is defined in the service method
     @GetMapping("/recent")
     public ResponseEntity<List<PostDto>> getRecentPosts(
             @RequestParam(required = false) String lastCreatedAt,
             @RequestParam(required = false) Long lastId
     )
     {
-        LocalDateTime lastCreatedAtLDT = null;
-
-        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
-            String iso = lastCreatedAt.replace("Z", "");
-            lastCreatedAtLDT = LocalDateTime.parse(iso);
-        }
-
-        List<PostDto> posts = postService.getRecentPosts(lastCreatedAtLDT, lastId);
+        List<PostDto> posts = postService.getRecentPosts(lastCreatedAt, lastId);
         return ResponseEntity.ok(posts);
     }
 
@@ -58,13 +46,7 @@ public class PostController {
     {
         User user = AuthUtil.getCurrentUser();
 
-        LocalDateTime lastCreatedAtLDT = null;
-        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
-            String iso = lastCreatedAt.replace("Z", "");
-            lastCreatedAtLDT = LocalDateTime.parse(iso);
-        }
-
-        List<PostDto> posts = postService.getPostsFromMyCommunities(user.getProfile().getId(), lastId, lastCreatedAtLDT);
+        List<PostDto> posts = postService.getPostsFromMyCommunities(user.getProfile().getId(), lastId, lastCreatedAt);
         return ResponseEntity.ok(posts);
     }
 
@@ -74,14 +56,7 @@ public class PostController {
             @RequestParam(required = false) Long lastId,
             @RequestParam(required = false) String lastCreatedAt ) {
 
-        LocalDateTime lastCreatedAtLDT = null;
-        if (!lastCreatedAt.isEmpty() && !lastCreatedAt.isBlank()) {
-            String iso = lastCreatedAt.replace("Z", "");
-            lastCreatedAtLDT = LocalDateTime.parse(iso);
-        }
-
-        List<PostDto> posts = postService.getPostsByCommunity(communityId, lastId, lastCreatedAtLDT);
-
+        List<PostDto> posts = postService.getPostsByCommunity(communityId, lastId, lastCreatedAt);
         return ResponseEntity.ok(posts);
     }
 
@@ -93,8 +68,18 @@ public class PostController {
         int PAGE_SIZE = 6;
 
         Page<PostDto> cp = postService.query(query, page, PAGE_SIZE);
-
         return ResponseEntity.ok().body(cp);
+    }
+
+    @GetMapping("comments")
+    public ResponseEntity<List<PostDto>> getChildrenPosts(
+            @RequestParam Long postId,
+            @RequestParam(required = false) Long lastId,
+            @RequestParam(required = false) String lastCreatedAt
+    ) {
+
+        List<PostDto> posts = postService.getComments(postId, lastId, lastCreatedAt);
+        return ResponseEntity.ok(posts);
     }
 
     @PostMapping("/create")
@@ -104,12 +89,7 @@ public class PostController {
 
         User user = AuthUtil.getCurrentUser();
 
-        postService.createNewPost(
-                user.getProfile(),
-                post,
-                files
-                );
-
+        postService.createNewPost(user.getProfile(), post, files);
         return ResponseEntity.ok().build();
     }
 
@@ -118,7 +98,6 @@ public class PostController {
         User user = AuthUtil.getCurrentUser();
 
         postService.deletePost(user.getProfile().getId(), postDto);
-
         return ResponseEntity.ok().build();
     }
 
