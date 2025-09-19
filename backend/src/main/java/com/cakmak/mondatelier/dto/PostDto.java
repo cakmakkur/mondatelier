@@ -5,7 +5,7 @@ import java.util.List;
 
 public record PostDto(
         Long id,
-        Long communityId,
+        CommunityDto communityDto,
         String profileId,
         Long parentPostId,
         String title,

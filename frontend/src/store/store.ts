@@ -1,13 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import eventReducer from "./eventSlice";
 import locationReducer from "./locationSlice";
-import recentCommunitiesReducer from "./recentCommunitiesSlice";
+import communityReducer from "./communitySlice";
 
 export const store = configureStore({
   reducer: {
     event: eventReducer,
     location: locationReducer,
-    recentCommunities: recentCommunitiesReducer,
+    community: communityReducer,
   },
 });
 

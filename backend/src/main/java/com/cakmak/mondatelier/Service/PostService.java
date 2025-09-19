@@ -213,7 +213,7 @@ public class PostService {
             throw new ProfileNotFoundException();
         }
 
-        Community community = communityRepository.findById(postDto.communityId()).orElseThrow(CommunityNotFoundException::new);
+        Community community = communityRepository.findById(postDto.communityDto().id()).orElseThrow(CommunityNotFoundException::new);
 
         // TODO: process the media here
         PostMedia postMedia = new PostMedia();

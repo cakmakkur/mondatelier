@@ -11,30 +11,19 @@ interface PostProps {
 }
 
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
-const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 
 export default function Post({
   post,
   myCommunities,
   updateMyCommunities,
 }: PostProps) {
-  const [community, setCommunity] = useState<CommunityDto>();
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
 
-  const fetchCommunity = async () => {
-    try {
-      const response = await fetch(`${COMMUNITIES_PATH}/${post.communityId}`);
-      const data = await response.json();
-      setCommunity(data);
-    } catch (error) {
-      console.error("Error fetching community:", error);
-    }
-  };
-
   const handleFollowClick = async () => {
+    if (post.communityDto === null) return;
     try {
-      updateMyCommunities(community!);
+      updateMyCommunities(post.communityDto);
     } catch (error) {
       console.error("Error following community:", error);
     }
@@ -52,26 +41,24 @@ export default function Post({
   }, [post.postMediaPathList]);
 
   useEffect(() => {
-    fetchCommunity();
-  }, []);
-
-  useEffect(() => {
-    if (myCommunities.find((community) => community.id === post.communityId)) {
+    if (
+      myCommunities.find((community) => community.id === post.communityDto?.id)
+    ) {
       setIsFollowing(true);
     } else {
       setIsFollowing(false);
     }
-  }, [myCommunities, post.communityId]);
+  }, [myCommunities, post.communityDto?.id]);
 
   return (
     <div className="post-main-container">
       <div>
         <div className="post-community">
           <img
-            src={`${UPLOADS_PATH}${community?.logoImgPath}`}
+            src={`${UPLOADS_PATH}${post.communityDto?.logoImgPath}`}
             alt="community thumbnail"
           />
-          <div className="community-name">{community?.name}</div>
+          <div className="community-name">{post.communityDto?.name}</div>
           <span className="post-community-middledot">&#183;</span>
           {isFollowing ? (
             <button

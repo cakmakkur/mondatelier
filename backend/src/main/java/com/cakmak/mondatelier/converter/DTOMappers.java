@@ -161,7 +161,7 @@ public class DTOMappers {
 
         return new PostDto(
                 post.getId(),
-                post.getCommunity().getId(),
+                toCommunityDTO(post.getCommunity()),
                 post.getProfile().getId(),
                 post.getParent() != null ? post.getParent().getId() : null,
                 post.getTitle(),

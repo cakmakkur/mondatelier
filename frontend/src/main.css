@@ -2405,6 +2405,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .community-recent-post span,
 .community-home span {
+  color: lightgray;
   align-content: end;
 }
 .community-recent-post span:hover,
@@ -2428,6 +2429,7 @@ input[type=number]::-webkit-outer-spin-button {
   aspect-ratio: 1;
 }
 .community-liked span {
+  color: white;
   align-content: end;
 }
 .community-liked span:hover {
@@ -2582,6 +2584,10 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: column;
   width: 100%;
+}
+
+.community-name {
+  color: lightgray;
 }
 
 .delete-recent-communities {

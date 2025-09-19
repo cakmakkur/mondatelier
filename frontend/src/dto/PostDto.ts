@@ -1,6 +1,8 @@
+import type { CommunityDto } from "./CommunityDto";
+
 export interface PostDto {
   id: number;
-  communityId: number | null;
+  communityDto: CommunityDto | null;
   parentPostId: number | null;
   title: string | null;
   content: string;

@@ -14,6 +14,8 @@ import Discover from "./pages/Discover";
 import Community from "./pages/Community";
 import Publish from "./pages/Publish";
 import LiveStreams from "./pages/LiveStreams";
+import Feed from "./components/community/Feed";
+import FullPost from "./components/community/FullPost";
 
 export default function App() {
   return (
@@ -26,11 +28,15 @@ export default function App() {
             <Route path="/profile/:profileId" element={<Profile />} />
             <Route path="events" element={<Events />} />
             <Route path="/discover" element={<Discover />} />
-            <Route path="/community" element={<Community />} />
+            <Route path="/community" element={<Community />}>
+              <Route index element={<Feed />} />
+              <Route path=":communityId" element={<Feed />} />
+              <Route path="liked" element={<Feed />} />
+              <Route path="post/:postId" element={<FullPost />} />
+            </Route>
             <Route path={`/publish/:profileId`} element={<Publish />} />
             <Route path="/help" element={<Help />} />
             <Route path="/livestreams" element={<LiveStreams />} />
-
             <Route
               path="/termsandconditions"
               element={<TermsAndConditions />}
