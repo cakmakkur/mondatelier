@@ -9,6 +9,7 @@ import { clearCommunities } from "../store/recentCommunitiesSlice.ts";
 
 import CreateCommunity from "../components/userActions/CreateCommunity.tsx";
 import { Link, Outlet } from "react-router-dom";
+import { clearRecentCommunities } from "../store/communitySlice.ts";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
@@ -32,8 +33,8 @@ export default function Community() {
     useState(false);
 
   // clears recently visited communities from the localstorage
-  const clearRecentCommunities = () => {
-    dispatch(clearCommunities());
+  const handleClearRecentCommunities = () => {
+    dispatch(clearRecentCommunities());
   };
 
   const fetchTopCommunities = async () => {
@@ -191,7 +192,7 @@ export default function Community() {
               )}
             </div>
             <div
-              onClick={clearRecentCommunities}
+              onClick={handleClearRecentCommunities}
               className="delete-recent-communities"
             >
               <img src="delete.svg" alt="" />

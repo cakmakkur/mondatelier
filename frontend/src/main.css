@@ -2429,7 +2429,7 @@ input[type=number]::-webkit-outer-spin-button {
   aspect-ratio: 1;
 }
 .community-liked span {
-  color: white;
+  color: lightgray;
   align-content: end;
 }
 .community-liked span:hover {
@@ -2545,6 +2545,7 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: row;
   column-gap: 10px;
+  color: lightgray;
 }
 .community-search-bar-result img {
   height: 20px;

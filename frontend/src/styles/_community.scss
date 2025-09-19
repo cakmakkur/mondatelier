@@ -90,7 +90,7 @@
     aspect-ratio: 1;
   }
   & span {
-    color: white;
+    color: lightgray;
     align-content: end;
     &:hover {
       cursor: pointer;
@@ -211,6 +211,7 @@
   display: flex;
   flex-direction: row;
   column-gap: 10px;
+  color: lightgray;
   & img {
     height: 20px;
     aspect-ratio: 1;

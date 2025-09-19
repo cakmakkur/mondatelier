@@ -1,20 +1,17 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import type { CommunityDto } from "../../dto/CommunityDto";
 import type { PostDto } from "../../dto/PostDto";
+import { Link } from "react-router-dom";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const POST_PATH = import.meta.env.VITE_POST_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
 interface SearchbarProps {
-  fetchFeedByCommunityAndPopulateFeed: (
-    community: CommunityDto
-  ) => Promise<void>;
   fetchPostAndAppendItToTheTopOfTheFeed: (id: number) => Promise<void>;
 }
 
 export default function CommunitySearchBar({
-  fetchFeedByCommunityAndPopulateFeed,
   fetchPostAndAppendItToTheTopOfTheFeed,
 }: SearchbarProps) {
   const [query, setQuery] = useState<string>("");
@@ -159,11 +156,11 @@ export default function CommunitySearchBar({
           // if result is a community, render a community
           if ("logoImgPath" in result) {
             return (
-              <div
-                key={result.id}
+              <Link
+                to={`/community/${result.id}`}
+                key={result.id + result.name}
                 className="community-search-bar-result"
                 onClick={() => {
-                  fetchFeedByCommunityAndPopulateFeed(result);
                   setQuery("");
                 }}
               >
@@ -172,7 +169,7 @@ export default function CommunitySearchBar({
                   alt="community logo"
                 />
                 {result.name}
-              </div>
+              </Link>
             );
           }
           // if result is a post, render a post

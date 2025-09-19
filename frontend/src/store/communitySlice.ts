@@ -22,12 +22,10 @@ const communitySlice = createSlice({
   reducers: {
     // RECENT COMMUNITIES
     addRecentCommunity: (state, action: PayloadAction<CommunityDto>) => {
-      const exists = state.recent.find((c) => c.id === action.payload.id);
-      if (!exists) {
-        state.recent.unshift(action.payload);
-        if (state.recent.length > 20) {
-          state.recent.pop(); // limit size
-        }
+      state.recent = state.recent.filter((c) => c.id !== action.payload.id);
+      state.recent.unshift(action.payload);
+      if (state.recent.length > 20) {
+        state.recent.pop();
       }
     },
     clearRecentCommunities: (state) => {

@@ -278,6 +278,8 @@ export default function Feed() {
           const res = await fetch(`${COMMUNITIES_PATH}/${communityId}`);
           const communityDto: CommunityDto = await res.json();
           fetchFeedByCommunityAndPopulateFeed(communityDto);
+          dispatch(addRecentCommunity(communityDto));
+          console.log("adding");
         } catch (err) {
           console.error(err);
         }
@@ -312,9 +314,6 @@ export default function Feed() {
   return (
     <div className="community-main-subdiv community-main-subdiv--center">
       <CommunitySearchBar
-        fetchFeedByCommunityAndPopulateFeed={
-          fetchFeedByCommunityAndPopulateFeed
-        }
         fetchPostAndAppendItToTheTopOfTheFeed={
           fetchPostAndAppendItToTheTopOfTheFeed
         }
