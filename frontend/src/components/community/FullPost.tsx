@@ -95,6 +95,9 @@ export default function FullPost() {
   return (
     <div className="fullpost-main-container">
       <div className="fullpost-mainpost-container">
+        <div className="fullpost-back-container">
+          <img src="/back.svg" alt="back to feed button icon" />
+        </div>
         <div>
           <span className="fullpost-details">
             <span className="post-profile--left">

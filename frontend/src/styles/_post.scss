@@ -164,7 +164,7 @@
 
 .fullpost-mainpost-container {
   background-color: $darkMode-contentBackground;
-  padding: 25px 25px 5px;
+  padding: 5px 25px 5px;
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -228,14 +228,18 @@
   width: 100%;
   padding: 10px 0px;
   position: relative;
-  & input {
+
+  & textarea {
     font-size: 1.3rem;
     width: 100%;
     background-color: black;
     color: lightgray;
     border: 1px solid $darkMode-contentBackground;
     border-radius: 5px;
-    padding: 10px 10px 10px 40px;
+    padding: 10px 105px 10px 40px;
+    resize: none;
+    overflow: hidden;
+    height: 52px;
   }
 }
 
@@ -248,18 +252,37 @@
 .fullpost-create-send {
   position: absolute;
   right: 10px;
-  top: 22px;
-  width: 30px;
+  bottom: 22px;
+  width: 35px;
   aspect-ratio: 1;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .fullpost-create-camara {
   position: absolute;
-  right: 50px;
-  top: 20px;
-  width: 34px;
+  right: 55px;
+  bottom: 25px;
+  width: 30px;
   aspect-ratio: 1;
   border: 1px solid #d3d3d3;
   padding: 5px;
   border-radius: 3px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.fullpost-back-container {
+  height: 60px;
+  width: 60px;
+  aspect-ratio: 1;
+  padding: 10px;
+  border-radius: 50%;
+  transition: 0.1s;
+  &:hover {
+    cursor: pointer;
+    background-color: rgb(42, 42, 42);
+  }
 }
