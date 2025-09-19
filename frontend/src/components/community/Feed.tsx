@@ -9,11 +9,9 @@ import type { CommunityDto } from "../../dto/CommunityDto.ts";
 import { useLocation, useParams } from "react-router-dom";
 import type { RootState } from "../../store/store.ts";
 import {
-  addMyCommunity,
   addRecentCommunity,
   appendToFeed,
   prependPost,
-  removeMyCommunity,
   setFeed,
 } from "../../store/communitySlice.ts";
 
@@ -32,10 +30,9 @@ export default function Feed() {
   const { auth } = useAuthContext();
 
   const dispatch = useDispatch();
-  const myCommunities = useSelector((state: RootState) => state.community.my);
 
-  const { communityId } = useParams(); // e.g. "/community/sports"
-  const location = useLocation(); // gives you the full path
+  const { communityId } = useParams();
+  const location = useLocation();
 
   const feed = useSelector((state: RootState) => state.community.feed);
 
@@ -82,32 +79,6 @@ export default function Feed() {
     },
     [feed, endOfFeed]
   );
-
-  const updateMyCommunities = async (communityDto: CommunityDto) => {
-    const exists = myCommunities.some((c) => c.id === communityDto.id);
-
-    if (exists) {
-      try {
-        await axiosPrivate.delete(
-          `${COMMUNITIES_PATH}/unfollow/${communityDto.id}`
-        );
-        dispatch(removeMyCommunity(communityDto.id));
-      } catch (error) {
-        console.error("Error unfollowing community:", error);
-      }
-    } else {
-      try {
-        const response = await axiosPrivate.post(
-          `${COMMUNITIES_PATH}/follow/${communityDto.id}`
-        );
-        if (response.status === 200) {
-          dispatch(addMyCommunity(communityDto));
-        }
-      } catch (error) {
-        console.error("Error following community:", error);
-      }
-    }
-  };
 
   // fetches a page of posts from communities that the user follows
   const fetchMyFeedAndPopulateFeed = async () => {
@@ -279,7 +250,6 @@ export default function Feed() {
           const communityDto: CommunityDto = await res.json();
           fetchFeedByCommunityAndPopulateFeed(communityDto);
           dispatch(addRecentCommunity(communityDto));
-          console.log("adding");
         } catch (err) {
           console.error(err);
         }
@@ -331,11 +301,7 @@ export default function Feed() {
 
         return (
           <span key={post.id} ref={isTrigger ? lastVisibleRef : null}>
-            <Post
-              post={post}
-              myCommunities={myCommunities}
-              updateMyCommunities={updateMyCommunities}
-            />
+            <Post post={post} />
           </span>
         );
       })}

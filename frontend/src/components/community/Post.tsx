@@ -3,22 +3,52 @@ import type { PostDto } from "../../dto/PostDto";
 import { DateFormatter } from "../../util/DateFormatter";
 import Carousel from "../fx/Carousel";
 import type { CommunityDto } from "../../dto/CommunityDto";
+import { Link } from "react-router-dom";
+import type { RootState } from "../../store/store";
+import { useDispatch, useSelector } from "react-redux";
+import useAxiosPrivate from "../../auth/useAxiosPrivate";
+import { addMyCommunity, removeMyCommunity } from "../../store/communitySlice";
 
 interface PostProps {
   post: PostDto;
-  myCommunities: CommunityDto[];
-  updateMyCommunities: (communityDto: CommunityDto) => void;
 }
-
+const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
-export default function Post({
-  post,
-  myCommunities,
-  updateMyCommunities,
-}: PostProps) {
+export default function Post({ post }: PostProps) {
+  const axiosPrivate = useAxiosPrivate();
+
+  const dispatch = useDispatch();
+  const myCommunities = useSelector((state: RootState) => state.community.my);
+
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
+
+  const updateMyCommunities = async (communityDto: CommunityDto) => {
+    const exists = myCommunities.some((c) => c.id === communityDto.id);
+
+    if (exists) {
+      try {
+        await axiosPrivate.delete(
+          `${COMMUNITIES_PATH}/unfollow/${communityDto.id}`
+        );
+        dispatch(removeMyCommunity(communityDto.id));
+      } catch (error) {
+        console.error("Error unfollowing community:", error);
+      }
+    } else {
+      try {
+        const response = await axiosPrivate.post(
+          `${COMMUNITIES_PATH}/follow/${communityDto.id}`
+        );
+        if (response.status === 200) {
+          dispatch(addMyCommunity(communityDto));
+        }
+      } catch (error) {
+        console.error("Error following community:", error);
+      }
+    }
+  };
 
   const handleFollowClick = async () => {
     if (post.communityDto === null) return;
@@ -105,10 +135,13 @@ export default function Post({
           {post.createdAt ? DateFormatter.createdXAgo(post.createdAt) : ""}
         </span>
         <span className="post-profile--right">
-          <span className="post-profile--right-comment">
+          <Link
+            to={`/community/post/${post.id}`}
+            className="post-profile--right-comment"
+          >
             <img src="/comment.svg" alt="" />
             Comments ({post.childrenPostsAmount})
-          </span>
+          </Link>
           <span className="post-profile--right-like">
             <img src="/heart.svg" alt="" />
           </span>

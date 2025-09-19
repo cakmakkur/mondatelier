@@ -5,11 +5,13 @@ import { useModalContext } from "../context/ModalContext.tsx";
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store.ts";
-import { clearCommunities } from "../store/recentCommunitiesSlice.ts";
 
 import CreateCommunity from "../components/userActions/CreateCommunity.tsx";
 import { Link, Outlet } from "react-router-dom";
-import { clearRecentCommunities } from "../store/communitySlice.ts";
+import {
+  clearRecentCommunities,
+  setMyCommunities,
+} from "../store/communitySlice.ts";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
@@ -23,9 +25,9 @@ export default function Community() {
 
   const dispatch = useDispatch();
   const recent = useSelector((state: RootState) => state.community.recent);
+  const myCommunities = useSelector((state: RootState) => state.community.my);
 
   const [topCommunities, setTopCommunities] = useState<CommunityDto[]>([]);
-  const [myCommunities, setMyCommunities] = useState<CommunityDto[]>([]);
 
   const [topCommunitiesExtended, setTopCommunitiesExtended] = useState(false);
   const [myCommunitiesExtended, setMyCommunitiesExtended] = useState(false);
@@ -54,7 +56,7 @@ export default function Community() {
     if (!auth) return;
     try {
       const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
-      setMyCommunities(response.data);
+      dispatch(setMyCommunities(response.data));
     } catch (error) {
       console.error("Error fetching communities:", error);
     }

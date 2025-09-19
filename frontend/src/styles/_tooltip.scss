@@ -2,7 +2,7 @@
 
 .tooltip_wrapper {
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%) scale(0);
   color: rgba(11, 14, 1, 0.762);
   background-color: $moon-yellow;
   font-size: 1rem;
@@ -11,7 +11,6 @@
   padding: 10px 5px;
   z-index: 10000;
   white-space: nowrap;
-  max-width: 100%;
   border-radius: 8px;
   pointer-events: none;
 }
@@ -23,7 +22,7 @@
   width: 40px;
   height: 60px;
   background: none;
-  top: 0;
+  top: 10px;
   opacity: 0;
   border-left: 20px solid transparent;
   border-right: 20px solid transparent;
@@ -33,7 +32,7 @@
 
 .tooltip_bottom {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%) translateY(100%);
   width: 40px;

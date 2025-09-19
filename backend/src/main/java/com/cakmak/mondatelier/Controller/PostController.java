@@ -1,6 +1,5 @@
 package com.cakmak.mondatelier.Controller;
 
-
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.PostService;
 import com.cakmak.mondatelier.dto.PostDto;
