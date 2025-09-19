@@ -1,6 +1,5 @@
 package com.cakmak.mondatelier.Repository;
 
-import com.cakmak.mondatelier.Model.community.Community;
 import com.cakmak.mondatelier.Model.community.Post;
 import com.cakmak.mondatelier.converter.CommunityPostCount;
 import org.springframework.data.domain.Page;
