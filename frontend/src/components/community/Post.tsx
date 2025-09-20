@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { PostDto } from "../../dto/PostDto";
 import { DateFormatter } from "../../util/DateFormatter";
 import Carousel from "../fx/Carousel";
@@ -12,14 +12,16 @@ import {
   removeMyCommunity,
   setScrollY,
 } from "../../store/communitySlice";
+import type { FeedTypes } from "./Feed";
 
 interface PostProps {
   post: PostDto;
+  feedType: FeedTypes;
 }
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, feedType }: PostProps) {
   const axiosPrivate = useAxiosPrivate();
 
   const dispatch = useDispatch();
@@ -27,6 +29,9 @@ export default function Post({ post }: PostProps) {
 
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const heartIconEmptyRef = useRef<HTMLImageElement>(null);
+  const heartIconFillRef = useRef<HTMLImageElement>(null);
 
   const updateMyCommunities = async (communityDto: CommunityDto) => {
     const exists = myCommunities.some((c) => c.id === communityDto.id);
@@ -63,6 +68,44 @@ export default function Post({ post }: PostProps) {
     }
   };
 
+  const handleLikeClick = () => {
+    setIsLiked(!isLiked);
+  };
+
+  useEffect(() => {
+    if (!heartIconEmptyRef.current || !heartIconFillRef.current) return;
+
+    if (isLiked) {
+      // liked → show fill, hide empty
+      heartIconFillRef.current.classList.remove(
+        "post-profile--right-like-inactive"
+      );
+      heartIconFillRef.current.classList.add("post-profile--right-like-active");
+
+      heartIconEmptyRef.current.classList.remove(
+        "post-profile--right-like-active"
+      );
+      heartIconEmptyRef.current.classList.add(
+        "post-profile--right-like-inactive"
+      );
+    } else {
+      // not liked → show empty, hide fill
+      heartIconEmptyRef.current.classList.remove(
+        "post-profile--right-like-inactive"
+      );
+      heartIconEmptyRef.current.classList.add(
+        "post-profile--right-like-active"
+      );
+
+      heartIconFillRef.current.classList.remove(
+        "post-profile--right-like-active"
+      );
+      heartIconFillRef.current.classList.add(
+        "post-profile--right-like-inactive"
+      );
+    }
+  }, [isLiked]);
+
   useEffect(() => {
     if (post.postMediaPathList && post.postMediaPathList.length > 0) {
       const fullPaths = post.postMediaPathList.map(
@@ -87,7 +130,10 @@ export default function Post({ post }: PostProps) {
   return (
     <div className="post-main-container">
       <div>
-        <div className="post-community">
+        <div
+          style={{ display: feedType === "byCommunity" ? "none" : "" }}
+          className="post-community"
+        >
           <img
             src={`${UPLOADS_PATH}${post.communityDto?.logoImgPath}`}
             alt="community thumbnail"
@@ -138,6 +184,9 @@ export default function Post({ post }: PostProps) {
           {post.createdAt ? DateFormatter.createdXAgo(post.createdAt) : ""}
         </span>
         <span className="post-profile--right">
+          <span className="post-profile--right-share">
+            <img src="/share.svg" alt="" />
+          </span>
           <Link
             onClick={() => dispatch(setScrollY(window.scrollY))}
             to={`/community/post/${post.id}`}
@@ -146,8 +195,19 @@ export default function Post({ post }: PostProps) {
             <img src="/comment.svg" alt="show comments button icon" />
             Comments ({post.childrenPostsAmount})
           </Link>
-          <span className="post-profile--right-like">
-            <img src="/heart.svg" alt="" />
+          <span onClick={handleLikeClick} className="post-profile--right-like">
+            <img
+              ref={heartIconEmptyRef}
+              className="post-profile--right-like-empty"
+              src="/heart.svg"
+              alt="like icon"
+            />
+            <img
+              ref={heartIconFillRef}
+              className="post-profile--right-like-fill"
+              src="/heart-fill.svg"
+              alt="unlike icon"
+            />
           </span>
         </span>
       </span>

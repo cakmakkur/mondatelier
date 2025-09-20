@@ -152,8 +152,50 @@
 
 .post-profile--right-like {
   width: 30px;
+  position: relative;
+  height: 30px;
   &:hover {
     cursor: pointer;
+  }
+}
+
+.post-profile--right-like-empty {
+  width: 30px;
+  position: absolute;
+  top: 0;
+}
+
+.post-profile--right-like-fill {
+  width: 30px;
+  top: 0px;
+  position: absolute;
+}
+
+.post-profile--right-like-active {
+  animation: post_like_scale_in 0.4s cubic-bezier(0.64, -0.02, 0.63, 1.24)
+    forwards;
+}
+
+.post-profile--right-like-inactive {
+  animation: post_like_scale_out 0.4s cubic-bezier(0.64, -0.02, 0.63, 1.24)
+    forwards;
+}
+
+@keyframes post_like_scale_in {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes post_like_scale_out {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
   }
 }
 
@@ -230,7 +272,7 @@
   position: relative;
 
   & textarea {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     width: 100%;
     background-color: black;
     color: lightgray;
@@ -284,5 +326,41 @@
   &:hover {
     cursor: pointer;
     background-color: rgb(42, 42, 42);
+  }
+}
+
+.post-profile--right-share {
+  width: 25px;
+  aspect-ratio: 1;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.community-end-of-feed {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.community-end-of-feed button {
+  color: rgba(255, 255, 255, 0);
+  background-color: black;
+  font-size: 2rem;
+  border: 1px solid rgb(165, 104, 177);
+  padding: 11px 30px 4px;
+  border-radius: 5px;
+  background: rgb(196, 73, 137);
+  background: linear-gradient(
+    338deg,
+    rgba(196, 73, 137, 1) 21%,
+    rgba(158, 39, 189, 1) 77%
+  );
+  background-clip: text;
+  -moz-background-clip: text;
+  &:hover {
+    cursor: pointer;
+    // border-color: rgb(139, 90, 148);
+    filter: brightness(1.3);
   }
 }

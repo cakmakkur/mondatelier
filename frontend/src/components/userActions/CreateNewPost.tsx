@@ -1,11 +1,15 @@
 import ToolTip from "../../util/Tooltip";
 
-function autoGrow(element: HTMLTextAreaElement) {
-  element.style.height = "5px";
-  element.style.height = element.scrollHeight + "px";
+interface CreateNewPostProps {
+  type: "main" | "comment";
 }
 
-export default function CreateNewComment() {
+export default function CreateNewPost({ type }: CreateNewPostProps) {
+  function autoGrow(element: HTMLTextAreaElement) {
+    element.style.height = "5px";
+    element.style.height = element.scrollHeight + "px";
+  }
+
   return (
     <div className="fullpost-create-comment">
       <div className="fullpost-create-placeholder">
@@ -13,7 +17,7 @@ export default function CreateNewComment() {
       </div>
       <textarea
         onInput={(e) => autoGrow(e.target as HTMLTextAreaElement)}
-        placeholder="Add a comment..."
+        placeholder={type === "main" ? "What's on your mind?" : "Add a comment"}
         className="fullpost-add-comment-input"
       />
       <div className="fullpost-create-camara">

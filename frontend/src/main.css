@@ -2335,7 +2335,7 @@ input[type=number]::-webkit-outer-spin-button {
   background-color: black;
   min-height: 100vh;
   color: rgba(255, 255, 255, 0.639);
-  padding: 150px 80px 0px 40px;
+  padding: 150px 80px 100px 40px;
   display: grid;
   grid-template-columns: 1fr 3fr 1fr;
   column-gap: 25px;
@@ -2666,6 +2666,60 @@ input[type=number]::-webkit-outer-spin-button {
   cursor: pointer;
 }
 
+.feed-community {
+  border: 1px solid rgb(255, 255, 207);
+  background-color: rgba(148, 154, 133, 0.174);
+  border-radius: 5px;
+  margin-top: 25px;
+}
+
+.communityBanner {
+  overflow: hidden;
+  width: 100%;
+  height: 150px;
+}
+
+.communityBanner img {
+  width: 100%;
+  aspect-ratio: 3;
+}
+
+.feed-community-details {
+  padding: 20px;
+  font-size: 1.5rem;
+}
+
+.feed-community-name {
+  color: rgb(255, 255, 207);
+  font-size: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.feed-community-description {
+  color: lightgray;
+}
+
+.feed-community-follow-toggle {
+  font-size: 1.5rem;
+  border-radius: 15px;
+  padding: 0px 11px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  transition: 0.1s;
+}
+.feed-community-follow-toggle:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 5px 1px rgba(255, 255, 255, 0.212);
+  border: 1px solid rgb(255, 255, 207);
+}
+
+.feed-community-buttons {
+  display: flex;
+  align-items: center;
+  margin-top: 15px;
+  column-gap: 20px;
+}
+
 .post-main-container {
   background-color: rgb(27, 27, 27);
   padding: 15px;
@@ -2818,11 +2872,49 @@ input[type=number]::-webkit-outer-spin-button {
 
 .post-profile--right-like {
   width: 30px;
+  position: relative;
+  height: 30px;
 }
 .post-profile--right-like:hover {
   cursor: pointer;
 }
 
+.post-profile--right-like-empty {
+  width: 30px;
+  position: absolute;
+  top: 0;
+}
+
+.post-profile--right-like-fill {
+  width: 30px;
+  top: 0px;
+  position: absolute;
+}
+
+.post-profile--right-like-active {
+  animation: post_like_scale_in 0.4s cubic-bezier(0.64, -0.02, 0.63, 1.24) forwards;
+}
+
+.post-profile--right-like-inactive {
+  animation: post_like_scale_out 0.4s cubic-bezier(0.64, -0.02, 0.63, 1.24) forwards;
+}
+
+@keyframes post_like_scale_in {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes post_like_scale_out {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
 .fullpost-main-container {
   display: flex;
   flex-direction: column;
@@ -2898,7 +2990,7 @@ input[type=number]::-webkit-outer-spin-button {
   position: relative;
 }
 .fullpost-create-comment textarea {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   width: 100%;
   background-color: black;
   color: lightgray;
@@ -2952,6 +3044,37 @@ input[type=number]::-webkit-outer-spin-button {
 .fullpost-back-container:hover {
   cursor: pointer;
   background-color: rgb(42, 42, 42);
+}
+
+.post-profile--right-share {
+  width: 25px;
+  aspect-ratio: 1;
+}
+.post-profile--right-share:hover {
+  cursor: pointer;
+}
+
+.community-end-of-feed {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.community-end-of-feed button {
+  color: rgba(255, 255, 255, 0);
+  background-color: black;
+  font-size: 2rem;
+  border: 1px solid rgb(165, 104, 177);
+  padding: 11px 30px 4px;
+  border-radius: 5px;
+  background: rgb(196, 73, 137);
+  background: linear-gradient(338deg, rgb(196, 73, 137) 21%, rgb(158, 39, 189) 77%);
+  background-clip: text;
+  -moz-background-clip: text;
+}
+.community-end-of-feed button:hover {
+  cursor: pointer;
+  filter: brightness(1.3);
 }
 
 *,

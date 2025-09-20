@@ -15,12 +15,16 @@ import {
   setRememberScroll,
   setFeed,
   setScrollY,
+  removeMyCommunity,
+  addMyCommunity,
 } from "../../store/communitySlice.ts";
+import CreateNewPost from "../userActions/CreateNewPost.tsx";
 
 const POST_PATH = import.meta.env.VITE_POST_PATH;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
+const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
 
-type FeedTypes = "byCommunity" | "recent" | "myFeed" | "default";
+export type FeedTypes = "byCommunity" | "recent" | "myFeed" | "default";
 
 interface FeedPageParams {
   lastCreatedAt: string;
@@ -42,6 +46,14 @@ export default function Feed() {
     (state: RootState) => state.community.rememberScroll
   );
 
+  const [currentCommunity, setCurrentCommunity] = useState<CommunityDto | null>(
+    null
+  );
+  const [isFollowing, setIsFollowing] = useState(false);
+
+  const myCommunities = useSelector((state: RootState) => state.community.my);
+
+  const pageLoadingRef = useRef<boolean>(false);
   const feedLoadingRef = useRef<boolean>(false);
   const [endOfFeed, setEndOfFeed] = useState(false);
   const endOfFeedRef = useRef(false);
@@ -53,13 +65,22 @@ export default function Feed() {
     lastId: 0,
   });
 
+  useEffect(() => {
+    if (
+      myCommunities.find((community) => community.id === currentCommunity?.id)
+    ) {
+      setIsFollowing(true);
+    } else {
+      setIsFollowing(false);
+    }
+  }, [myCommunities, currentCommunity]);
+
   // observer and lastVisiblRef to track the threshhold dom element
   // to fetch the next batch of posts
   const observer = useRef<IntersectionObserver | null>(null);
   const lastVisibleRef = useCallback(
     (node: HTMLSpanElement | null) => {
       if (observer.current) observer.current.disconnect();
-
       if (!node) return;
 
       observer.current = new IntersectionObserver(
@@ -85,6 +106,41 @@ export default function Feed() {
     },
     [feed, endOfFeed]
   );
+
+  const updateMyCommunities = async (communityDto: CommunityDto) => {
+    const exists = myCommunities.some((c) => c.id === communityDto.id);
+
+    if (exists) {
+      try {
+        await axiosPrivate.delete(
+          `${COMMUNITIES_PATH}/unfollow/${communityDto.id}`
+        );
+        dispatch(removeMyCommunity(communityDto.id));
+      } catch (error) {
+        console.error("Error unfollowing community:", error);
+      }
+    } else {
+      try {
+        const response = await axiosPrivate.post(
+          `${COMMUNITIES_PATH}/follow/${communityDto.id}`
+        );
+        if (response.status === 200) {
+          dispatch(addMyCommunity(communityDto));
+        }
+      } catch (error) {
+        console.error("Error following community:", error);
+      }
+    }
+  };
+
+  const handleFollowClick = async () => {
+    if (currentCommunity === null) return;
+    try {
+      updateMyCommunities(currentCommunity);
+    } catch (error) {
+      console.error("Error following community:", error);
+    }
+  };
 
   // fetches a page of posts from communities that the user follows
   const fetchMyFeedAndPopulateFeed = async () => {
@@ -234,46 +290,45 @@ export default function Feed() {
     }
   };
 
-  useEffect(() => {
-    if (scrollY !== 0 && rememberScroll) {
-      window.scrollTo(0, scrollY);
-      dispatch(setScrollY(0));
-      dispatch(setRememberScroll(false));
-      return;
-    } else {
-      dispatch(setScrollY(0));
-      dispatch(setRememberScroll(false));
-    }
-
+  const init = async () => {
+    pageLoadingRef.current = true;
     dispatch(setScrollY(0));
     dispatch(setRememberScroll(false));
-
     dispatch(setFeed([]));
     setEndOfFeed(false);
     endOfFeedRef.current = false;
     feedTypeRef.current = "default";
     feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
 
-    const init = async () => {
-      if (location.pathname === "/community") {
-        initiateDefaultFeed();
-      } else if (location.pathname === "/community/recent") {
-        fetchRecentFeedAndPopulateFeed();
-      } else if (location.pathname.includes("/community/liked")) {
-        fetchMyLiked();
-      } else if (location.pathname.includes("/community/post")) {
-        // handle fetch single post
-      } else if (communityId) {
-        try {
-          const res = await fetch(`${COMMUNITIES_PATH}/${communityId}`);
-          const communityDto: CommunityDto = await res.json();
-          fetchFeedByCommunityAndPopulateFeed(communityDto);
-          dispatch(addRecentCommunity(communityDto));
-        } catch (err) {
-          console.error(err);
-        }
+    if (location.pathname === "/community") {
+      await initiateDefaultFeed();
+    } else if (location.pathname === "/community/recent") {
+      await fetchRecentFeedAndPopulateFeed();
+    } else if (location.pathname.includes("/community/liked")) {
+      await fetchMyLiked();
+    } else if (location.pathname.includes("/community/post")) {
+      // handle fetch single post
+    } else if (communityId) {
+      try {
+        const res = await fetch(`${COMMUNITIES_PATH}/${communityId}`);
+        const communityDto: CommunityDto = await res.json();
+        setCurrentCommunity(communityDto);
+        await fetchFeedByCommunityAndPopulateFeed(communityDto);
+        dispatch(addRecentCommunity(communityDto));
+      } catch (err) {
+        console.error(err);
       }
-    };
+    }
+    pageLoadingRef.current = false;
+  };
+
+  useEffect(() => {
+    if (scrollY !== 0 && rememberScroll) {
+      window.scrollTo(0, scrollY);
+      dispatch(setScrollY(0));
+      dispatch(setRememberScroll(false));
+      return;
+    }
 
     init();
 
@@ -311,6 +366,43 @@ export default function Feed() {
           fetchPostAndAppendItToTheTopOfTheFeed
         }
       />
+      {feedTypeRef.current === "byCommunity" && (
+        <div className="feed-community">
+          <div className="communityBanner">
+            <img src={UPLOADS_PATH + currentCommunity?.logoImgPath} alt="" />
+          </div>
+          <div className="feed-community-details">
+            <div className="feed-community-name">
+              <h1>{currentCommunity?.name}</h1>
+            </div>
+            <div className="feed-community-description">
+              <p>{currentCommunity?.description}</p>
+            </div>
+            <div className="feed-community-buttons">
+              {isFollowing ? (
+                <button
+                  className="feed-community-follow-toggle post-follow-toggle--unfollow"
+                  onClick={handleFollowClick}
+                >
+                  Unfollow
+                </button>
+              ) : (
+                <button
+                  className="feed-community-follow-toggle post-follow-toggle--follow"
+                  onClick={handleFollowClick}
+                >
+                  Follow
+                </button>
+              )}
+              <span className="post-profile--right-share">
+                <img src="/share.svg" alt="" />
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+      <CreateNewPost type="main" />
+
       {feed?.map((post, i) => {
         let isTrigger = false;
 
@@ -324,13 +416,13 @@ export default function Feed() {
 
         return (
           <span key={post.id} ref={isTrigger ? lastVisibleRef : null}>
-            <Post post={post} />
+            <Post post={post} feedType={feedTypeRef.current} />
           </span>
         );
       })}
       {endOfFeed && (
-        <div>
-          <button>Refresh</button>
+        <div className="community-end-of-feed">
+          <button onClick={init}>Refresh</button>
         </div>
       )}
     </div>

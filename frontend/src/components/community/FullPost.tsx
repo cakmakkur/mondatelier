@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import type { PostDto } from "../../dto/PostDto";
 import { useSelector } from "react-redux";
@@ -6,7 +6,7 @@ import type { RootState } from "../../store/store";
 import { DateFormatter } from "../../util/DateFormatter";
 import Carousel from "../fx/Carousel";
 import Comment from "./Comment";
-import CreateNewComment from "../userActions/CreateNewComment";
+import CreateNewPost from "../userActions/CreateNewPost";
 import { setRememberScroll } from "../../store/communitySlice";
 import { useDispatch } from "react-redux";
 
@@ -34,6 +34,33 @@ export default function FullPost() {
 
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
 
+  const postsLoadingRef = useRef<boolean>(false);
+  const endOfFeedRef = useRef(false);
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastVisibleRef = useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (observer.current) observer.current.disconnect();
+
+      if (!node) return;
+
+      observer.current = new IntersectionObserver(
+        async (entries) => {
+          if (
+            entries[0].isIntersecting &&
+            !endOfFeedRef.current &&
+            !postsLoadingRef.current
+          ) {
+            fetchComments();
+          }
+        },
+        { root: null, threshold: 0.1 }
+      );
+
+      observer.current.observe(node);
+    },
+    [commentPosts, endOfFeedRef.current]
+  );
+
   const fetchPost = async () => {
     try {
       const response = await fetch(`${POST_PATH}/get-post/${postId}`);
@@ -45,34 +72,51 @@ export default function FullPost() {
   };
 
   const fetchComments = async () => {
+    if (postsLoadingRef.current) return;
+
+    postsLoadingRef.current = true;
     try {
       const response = await fetch(
         `${POST_PATH}/comments?postId=${postId}&lastId=${feedPageRef.current.lastId}&lastCreatedAt=${feedPageRef.current.lastCreatedAt}`
       );
       const data: PostDto[] = await response.json();
-      setCommentPosts((prev) => [...prev, ...data]);
+      const newComments = data.filter(
+        (post) => !commentPosts.find((p) => p.id === post.id)
+      );
+      setCommentPosts((prev) => [...prev, ...newComments]);
       feedPageRef.current = {
         lastCreatedAt: new Date(data[data.length - 1].createdAt).toISOString(),
         lastId: data[data.length - 1].id,
       };
+      if (response.status === 404) {
+        endOfFeedRef.current = true;
+        return;
+      }
     } catch (err) {
       console.error(err);
+    } finally {
+      postsLoadingRef.current = false;
     }
   };
 
   useEffect(() => {
-    if (feed && feed.length > 0) {
-      const post = feed.find((post) => post.id === Number(postId));
+    const init = async () => {
+      let post: PostDto | undefined;
+      if (feed && feed.length > 0) {
+        post = feed.find((p) => p.id === Number(postId));
+      }
+
       if (post) {
         setMainPost(post);
       } else {
-        fetchPost();
+        await fetchPost();
       }
-    } else {
-      fetchPost();
-    }
-    fetchComments();
-    window.scrollTo(0, 0);
+
+      await fetchComments();
+      window.scrollTo(0, 0);
+    };
+
+    init();
   }, []);
 
   useEffect(() => {
@@ -146,18 +190,37 @@ export default function FullPost() {
           )}
         </div>
         <span className="fullpost-bottom">
+          <span className="post-profile--right-share">
+            <img src="/share.svg" alt="" />
+          </span>
           <span className="post-profile--right-like">
             <img src="/heart.svg" alt="" />
           </span>
         </span>
       </div>
-      <CreateNewComment />
+      <CreateNewPost type="comment" />
       {commentPosts && commentPosts.length > 0 && (
         <div className="post-comments">
           <span className="post-comments-title"></span>
-          {commentPosts.map((comment) => (
-            <Comment post={comment} />
-          ))}
+          {commentPosts.map((comment, i) => {
+            let isTrigger = false;
+
+            if (commentPosts.length >= 5 && !endOfFeedRef.current) {
+              if (i === commentPosts.length - 5) {
+                isTrigger = true;
+              }
+            } else if (i === commentPosts.length - 1 && !endOfFeedRef.current) {
+              isTrigger = true;
+            }
+            return (
+              <span
+                key={comment.id + comment.profileId}
+                ref={isTrigger ? lastVisibleRef : null}
+              >
+                <Comment post={comment} />
+              </span>
+            );
+          })}
         </div>
       )}
     </div>
