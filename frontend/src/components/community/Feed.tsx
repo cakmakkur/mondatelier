@@ -12,7 +12,9 @@ import {
   addRecentCommunity,
   appendToFeed,
   prependPost,
+  setRememberScroll,
   setFeed,
+  setScrollY,
 } from "../../store/communitySlice.ts";
 
 const POST_PATH = import.meta.env.VITE_POST_PATH;
@@ -35,6 +37,10 @@ export default function Feed() {
   const location = useLocation();
 
   const feed = useSelector((state: RootState) => state.community.feed);
+  const scrollY = useSelector((state: RootState) => state.community.scrollY);
+  const rememberScroll = useSelector(
+    (state: RootState) => state.community.rememberScroll
+  );
 
   const feedLoadingRef = useRef<boolean>(false);
   const [endOfFeed, setEndOfFeed] = useState(false);
@@ -132,7 +138,7 @@ export default function Feed() {
       feedTypeRef.current = "recent";
       endOfFeedRef.current = false;
       setEndOfFeed(false);
-      dispatch(setFeed([])); // changed
+      dispatch(setFeed([]));
       window.scrollTo(0, 0);
     } else if (feed.length > 0 && !endOfFeedRef.current) {
       feedPageRef.current = {
@@ -229,6 +235,19 @@ export default function Feed() {
   };
 
   useEffect(() => {
+    if (scrollY !== 0 && rememberScroll) {
+      window.scrollTo(0, scrollY);
+      dispatch(setScrollY(0));
+      dispatch(setRememberScroll(false));
+      return;
+    } else {
+      dispatch(setScrollY(0));
+      dispatch(setRememberScroll(false));
+    }
+
+    dispatch(setScrollY(0));
+    dispatch(setRememberScroll(false));
+
     dispatch(setFeed([]));
     setEndOfFeed(false);
     endOfFeedRef.current = false;
@@ -257,6 +276,10 @@ export default function Feed() {
     };
 
     init();
+
+    // return () => {
+    //   window.removeEventListener("load");
+    // };
   }, [communityId, location.pathname]);
 
   // on click on the post in search result

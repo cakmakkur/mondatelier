@@ -1713,7 +1713,7 @@ input[type=number] {
   justify-content: space-between;
   align-items: end;
   margin: 0px 120px 40px 90px;
-  height: 500px;
+  height: 300px;
 }
 
 .events_header--left {
@@ -1964,6 +1964,14 @@ input[type=number] {
 .event_buttons__like:hover {
   cursor: pointer;
   background-color: rgb(255, 255, 207);
+}
+
+.events_no_events {
+  color: lightgray;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  font-size: 3rem;
 }
 
 .event_popup_wrapper {

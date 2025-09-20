@@ -8,18 +8,30 @@ interface CommunityState {
   recent: CommunityDto[];
   my: CommunityDto[];
   feed: PostDto[];
+  scrollY: number;
+  rememberScroll: boolean;
 }
 
 const initialState: CommunityState = {
   recent: [],
   my: [],
   feed: [],
+  scrollY: 0,
+  rememberScroll: false,
 };
 
 const communitySlice = createSlice({
   name: "community",
   initialState,
   reducers: {
+    // SCROLL
+    setScrollY: (state, action: PayloadAction<number>) => {
+      state.scrollY = action.payload;
+    },
+    setRememberScroll: (state, action: PayloadAction<boolean>) => {
+      state.rememberScroll = action.payload;
+    },
+
     // RECENT COMMUNITIES
     addRecentCommunity: (state, action: PayloadAction<CommunityDto>) => {
       state.recent = state.recent.filter((c) => c.id !== action.payload.id);
@@ -78,6 +90,8 @@ export const {
   appendToFeed,
   prependPost,
   clearFeed,
+  setScrollY,
+  setRememberScroll,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import type { PostDto } from "../../dto/PostDto";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
@@ -7,6 +7,8 @@ import { DateFormatter } from "../../util/DateFormatter";
 import Carousel from "../fx/Carousel";
 import Comment from "./Comment";
 import CreateNewComment from "../userActions/CreateNewComment";
+import { setRememberScroll } from "../../store/communitySlice";
+import { useDispatch } from "react-redux";
 
 const POST_PATH = import.meta.env.VITE_POST_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
@@ -17,18 +19,15 @@ interface FeedPageParams {
 }
 
 export default function FullPost() {
-  const location = useLocation();
-  const postId = useParams().postId;
+  const dispatch = useDispatch();
 
+  const postId = useParams().postId;
   const feed = useSelector((state: RootState) => state.community.feed);
 
   const feedPageRef = useRef<FeedPageParams>({
     lastCreatedAt: "",
     lastId: 0,
   });
-
-  console.log(location);
-  console.log(postId);
 
   const [mainPost, setMainPost] = useState<PostDto | null>(null);
   const [commentPosts, setCommentPosts] = useState<PostDto[]>([]);
@@ -87,6 +86,11 @@ export default function FullPost() {
     }
   }, [mainPost?.postMediaPathList]);
 
+  const handleReturn = () => {
+    dispatch(setRememberScroll(true));
+    history.back();
+  };
+
   // make a better loading screen
   if (!mainPost) {
     return <div>Loading...</div>;
@@ -95,7 +99,7 @@ export default function FullPost() {
   return (
     <div className="fullpost-main-container">
       <div className="fullpost-mainpost-container">
-        <div className="fullpost-back-container">
+        <div onClick={handleReturn} className="fullpost-back-container">
           <img src="/back.svg" alt="back to feed button icon" />
         </div>
         <div>

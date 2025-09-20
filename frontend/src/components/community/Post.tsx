@@ -7,7 +7,11 @@ import { Link } from "react-router-dom";
 import type { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
-import { addMyCommunity, removeMyCommunity } from "../../store/communitySlice";
+import {
+  addMyCommunity,
+  removeMyCommunity,
+  setScrollY,
+} from "../../store/communitySlice";
 
 interface PostProps {
   post: PostDto;
@@ -123,10 +127,9 @@ export default function Post({ post }: PostProps) {
       <span className="post-details">
         <span className="post-profile--left">
           <span className="post-profile--left-profile">
-            {" "}
             <img
               src={`${UPLOADS_PATH}${post.profilePicturePath || ""}`}
-              alt=""
+              alt="profile picture of the poster"
             />
             <span className="post-profile-name">{post.profileName || ""}</span>
           </span>
@@ -136,10 +139,11 @@ export default function Post({ post }: PostProps) {
         </span>
         <span className="post-profile--right">
           <Link
+            onClick={() => dispatch(setScrollY(window.scrollY))}
             to={`/community/post/${post.id}`}
             className="post-profile--right-comment"
           >
-            <img src="/comment.svg" alt="" />
+            <img src="/comment.svg" alt="show comments button icon" />
             Comments ({post.childrenPostsAmount})
           </Link>
           <span className="post-profile--right-like">
