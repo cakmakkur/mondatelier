@@ -10,6 +10,7 @@ interface CommunityState {
   feed: PostDto[];
   scrollY: number;
   rememberScroll: boolean;
+  likes: number[];
 }
 
 const initialState: CommunityState = {
@@ -18,6 +19,7 @@ const initialState: CommunityState = {
   feed: [],
   scrollY: 0,
   rememberScroll: false,
+  likes: [],
 };
 
 const communitySlice = createSlice({
@@ -30,6 +32,17 @@ const communitySlice = createSlice({
     },
     setRememberScroll: (state, action: PayloadAction<boolean>) => {
       state.rememberScroll = action.payload;
+    },
+
+    // LIKES
+    setLikes: (state, action: PayloadAction<number[]>) => {
+      state.likes = action.payload;
+    },
+    addLike: (state, action: PayloadAction<number>) => {
+      state.likes.push(action.payload);
+    },
+    removeLike: (state, action: PayloadAction<number>) => {
+      state.likes = state.likes.filter((l) => l !== action.payload);
     },
 
     // RECENT COMMUNITIES
@@ -92,6 +105,9 @@ export const {
   clearFeed,
   setScrollY,
   setRememberScroll,
+  setLikes,
+  addLike,
+  removeLike,
 } = communitySlice.actions;
 
 export default communitySlice.reducer;

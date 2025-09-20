@@ -1,6 +1,7 @@
 package com.cakmak.mondatelier.Controller;
 
 import com.cakmak.mondatelier.Model.User;
+import com.cakmak.mondatelier.Model.community.PostLikes;
 import com.cakmak.mondatelier.Service.PostService;
 import com.cakmak.mondatelier.dto.PostDto;
 import com.cakmak.mondatelier.util.AuthUtil;
@@ -98,6 +99,31 @@ public class PostController {
 
         postService.deletePost(user.getProfile().getId(), postDto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/like/{postId}")
+    public ResponseEntity<Void> followCommunity(@PathVariable Long postId) {
+        User user = AuthUtil.getCurrentUser();
+
+        postService.likePost(postId, user);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/unlike/{postId}")
+    public ResponseEntity<Void> unfollowCommunity(@PathVariable Long postId) {
+        User user = AuthUtil.getCurrentUser();
+
+        postService.unlikePost(postId, user);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/my-liked")
+    public ResponseEntity<List<Long>> getMyLikedPosts() {
+        User user = AuthUtil.getCurrentUser();
+        List<Long> likes = postService.getMyLikes(user);
+        return ResponseEntity.ok(likes);
     }
 
 }

@@ -8,11 +8,14 @@ import type { RootState } from "../../store/store";
 import { useDispatch, useSelector } from "react-redux";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import {
+  addLike,
   addMyCommunity,
+  removeLike,
   removeMyCommunity,
   setScrollY,
 } from "../../store/communitySlice";
 import type { FeedTypes } from "./Feed";
+import { useAuthContext } from "../../auth/AuthContext";
 
 interface PostProps {
   post: PostDto;
@@ -20,12 +23,15 @@ interface PostProps {
 }
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
+const POST_PATH = import.meta.env.VITE_POST_PATH;
 
 export default function Post({ post, feedType }: PostProps) {
   const axiosPrivate = useAxiosPrivate();
+  const { auth } = useAuthContext();
 
   const dispatch = useDispatch();
   const myCommunities = useSelector((state: RootState) => state.community.my);
+  const likes = useSelector((state: RootState) => state.community.likes);
 
   const [postMediaPathList, setPostMediaPathList] = useState<string[]>([]);
   const [isFollowing, setIsFollowing] = useState(false);
@@ -68,8 +74,35 @@ export default function Post({ post, feedType }: PostProps) {
     }
   };
 
-  const handleLikeClick = () => {
-    setIsLiked(!isLiked);
+  const handleLikeClick = async () => {
+    if (!auth) return; // here sign in modal
+    if (isLiked) {
+      try {
+        const response = await axiosPrivate.delete(
+          `${POST_PATH}/unlike/${post.id}`
+        );
+        if (response.status === 204) {
+          dispatch(removeLike(post.id));
+          setIsLiked(false);
+        }
+      } catch (error) {
+        console.error(error);
+        // handle error
+      }
+    } else {
+      try {
+        const response = await axiosPrivate.post(
+          `${POST_PATH}/like/${post.id}`
+        );
+        if (response.status === 200) {
+          dispatch(addLike(post.id));
+          setIsLiked(true);
+        }
+      } catch (error) {
+        console.error(error);
+        // handle error
+      }
+    }
   };
 
   useEffect(() => {
@@ -126,6 +159,12 @@ export default function Post({ post, feedType }: PostProps) {
       setIsFollowing(false);
     }
   }, [myCommunities, post.communityDto?.id]);
+
+  useEffect(() => {
+    if (likes.find((like) => like === post.id)) {
+      setIsLiked(true);
+    }
+  }, [likes, post.id]);
 
   return (
     <div className="post-main-container">

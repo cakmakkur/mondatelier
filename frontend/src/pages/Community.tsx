@@ -10,11 +10,13 @@ import CreateCommunity from "../components/userActions/CreateCommunity.tsx";
 import { Link, Outlet } from "react-router-dom";
 import {
   clearRecentCommunities,
+  setLikes,
   setMyCommunities,
 } from "../store/communitySlice.ts";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
+const POST_PATH = import.meta.env.VITE_POST_PATH;
 
 export default function Community() {
   const { auth } = useAuthContext();
@@ -62,9 +64,23 @@ export default function Community() {
     }
   };
 
+  const fetchMyLikes = async () => {
+    if (!auth) return;
+    try {
+      const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
+      dispatch(setLikes(response.data));
+    } catch (error) {
+      console.error("Error fetching likes:", error);
+    }
+  };
+
   const initiate = async () => {
     // fetch top communities and users communities if authenticated
-    await Promise.all([fetchTopCommunities(), fetchMyCommunities()]);
+    await Promise.all([
+      fetchTopCommunities(),
+      fetchMyCommunities(),
+      fetchMyLikes(),
+    ]);
     setPageLoading(false);
   };
 

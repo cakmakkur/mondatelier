@@ -4,14 +4,9 @@ import com.cakmak.mondatelier.Exception.CommunityNotFoundException;
 import com.cakmak.mondatelier.Exception.PostNotFoundException;
 import com.cakmak.mondatelier.Exception.ProfileNotFoundException;
 import com.cakmak.mondatelier.Model.Profile;
-import com.cakmak.mondatelier.Model.community.Community;
-import com.cakmak.mondatelier.Model.community.CommunityProfile;
-import com.cakmak.mondatelier.Model.community.Post;
-import com.cakmak.mondatelier.Model.community.PostMedia;
-import com.cakmak.mondatelier.Repository.CommunityProfileRepository;
-import com.cakmak.mondatelier.Repository.CommunityRepository;
-import com.cakmak.mondatelier.Repository.PostMediaRepository;
-import com.cakmak.mondatelier.Repository.PostRepository;
+import com.cakmak.mondatelier.Model.User;
+import com.cakmak.mondatelier.Model.community.*;
+import com.cakmak.mondatelier.Repository.*;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.PostDto;
 import jakarta.transaction.Transactional;
@@ -32,6 +27,7 @@ import java.util.List;
 @Service
 public class PostService {
 
+    private final PostLikesRepository postLikesRepository;
     @Value("${app.community.feed-limit}")
     private int FEED_LIMIT;
 
@@ -47,11 +43,12 @@ public class PostService {
     public PostService(
             PostRepository postRepository,
             CommunityProfileRepository communityProfileRepository,
-            CommunityRepository communityRepository, PostMediaRepository postMediaRepository) {
+            CommunityRepository communityRepository, PostMediaRepository postMediaRepository, PostLikesRepository postLikesRepository) {
         this.postRepository = postRepository;
         this.communityProfileRepository = communityProfileRepository;
         this.communityRepository = communityRepository;
         this.postMediaRepository = postMediaRepository;
+        this.postLikesRepository = postLikesRepository;
     }
 
     public List<PostDto> getRecentPosts(
@@ -245,5 +242,59 @@ public class PostService {
         }
 
         postRepository.delete(post);
+    }
+
+
+    @Transactional
+    public void likePost(Long postId, User user) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        Profile profile = user.getProfile();
+
+        PostLikes plExists = postLikesRepository.findByProfile_IdAndPost_Id(profile.getId(), post.getId());
+        if (plExists != null) {
+            throw new RuntimeException("Like already exists");
+        }
+
+        PostLikes pl = new PostLikes();
+        pl.setProfile(profile);
+        pl.setPost(post);
+
+        post.getPostLikes().add(pl);
+        profile.getPostLikes().add(pl);
+        postLikesRepository.save(pl);
+    }
+
+    @Transactional
+    public void unlikePost(Long postId, User user) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(PostNotFoundException::new);
+
+        Profile profile = user.getProfile();
+
+        PostLikes pl = postLikesRepository.findByProfile_IdAndPost_Id(profile.getId(), post.getId());
+
+        if (pl == null) {
+            throw new RuntimeException("Post like already does not exists");
+        }
+
+        profile.getPostLikes().remove(pl);
+        post.getPostLikes().remove(pl);
+
+        postLikesRepository.delete(pl);
+    }
+
+    public List<Long> getMyLikes(User user) {
+        Profile profile = user.getProfile();
+
+        List<PostLikes> postLikes = postLikesRepository.findByProfile_Id(profile.getId());
+        List<Long> likedPostIds = new ArrayList<>();
+
+        for (PostLikes postLike : postLikes) {
+            likedPostIds.add(postLike.getPost().getId());
+        }
+
+        return likedPostIds;
     }
 }

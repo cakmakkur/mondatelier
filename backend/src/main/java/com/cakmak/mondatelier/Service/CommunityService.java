@@ -89,7 +89,7 @@ public class CommunityService {
 
         CommunityProfile cpExists = communityProfileRepository.findByProfileAndCommunity(profile, community);
         if (cpExists != null) {
-            throw new RuntimeException("Community follow already exists");
+            throw new CommunityNotFoundException("Already liked");
         }
 
         CommunityProfile cp = new CommunityProfile();
@@ -104,14 +104,14 @@ public class CommunityService {
     @Transactional
     public void unfollowCommunity(Long communityId, User user) {
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new RuntimeException("Community not found"));
+                .orElseThrow(() -> new CommunityNotFoundException("Community not found"));
 
         Profile profile = user.getProfile();
 
         CommunityProfile cp = communityProfileRepository.findByProfileAndCommunity(profile, community);
 
         if (cp == null) {
-            throw new RuntimeException("Community follow already does not exist");
+            throw new CommunityNotFoundException("Already unliked");
         }
 
         community.getCommunityProfiles().remove(cp);
