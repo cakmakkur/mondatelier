@@ -11,8 +11,10 @@ import com.cakmak.mondatelier.Repository.PostRepository;
 import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.CommunityDto;
+import com.cakmak.mondatelier.util.UploadImage;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,10 @@ public class CommunityService {
     private final ProfileRepository profileRepository;
 
     private final List<CommunityDto> topCommunities = new ArrayList<>();
+
+    @Value("${app.upload.dir}")
+    private String uploadDir;
+
 
     public CommunityService(
             CommunityRepository communityRepository,
@@ -133,5 +140,28 @@ public class CommunityService {
     }
 
 
+    @Transactional
+    public void createCommunity(
+            User user,
+            CommunityDto communityDto,
+            MultipartFile imageFile) {
+
+        Profile profile = user.getProfile();
+
+        Community c = new Community();
+        c.setName(communityDto.name());
+        c.setDescription(communityDto.description());
+        c.setProfile(profile);
+
+
+        // Save image if exists
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String fileName = UploadImage.upload(imageFile, uploadDir, "communities");
+            c.setLogoImgPath("/communities/" + fileName);
+        }
+
+        communityRepository.save(c);
+
+    }
 
 }

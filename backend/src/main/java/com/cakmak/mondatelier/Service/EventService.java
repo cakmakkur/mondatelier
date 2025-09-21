@@ -90,7 +90,7 @@ public class EventService {
             event.setThumbnailUrl("/events/" + fileName);
         }
 
-        eventRepository.save(event); // save event regardless of image
+        eventRepository.save(event);
     }
 
 }

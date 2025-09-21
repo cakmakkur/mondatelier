@@ -16,7 +16,6 @@ export default function Community() {
   const [formValues, setFormValues] = useState({
     name: "",
     description: "",
-    logoImgPath: "",
   });
 
   const emptyErrorMessages = {
@@ -116,7 +115,10 @@ export default function Community() {
         <span>New community created successfully</span>
       </div>
       <BgFx2 />
-      <form className="popup_form" onSubmit={(e) => postCommunity(e)}>
+      <form
+        className="popup_form_community_add"
+        onSubmit={(e) => postCommunity(e)}
+      >
         <h1 style={{ color: "white" }}>Create new community</h1>
         <div
           style={{ display: "flex", flexDirection: "row", columnGap: "30px" }}
@@ -179,7 +181,7 @@ export default function Community() {
               ) : null}
             </label>
             <button type="submit" className="popup_form__submit">
-              Create new Community
+              Create
             </button>
           </div>
         </div>

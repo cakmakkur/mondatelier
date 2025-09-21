@@ -76,11 +76,11 @@ public class CommunityController {
             path = "/create",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> createCommunity(
-            @RequestPart("community") CommunityDto eventDTO,
+            @RequestPart("community") CommunityDto communityDto,
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
 
-        // TODO: implement
-
+        User user = AuthUtil.getCurrentUser();
+        communityService.createCommunity(user, communityDto, imageFile);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

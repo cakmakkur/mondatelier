@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import About from "../components/profile/About";
 import Art from "../components/profile/art/Art";
 import Collections from "../components/profile/Collections";
-import Follow from "../components/profile/Follow";
 import ProfileDisplaySections from "../components/profile/ProfileDisplaySections";
 import { useAuthContext } from "../auth/AuthContext";
 import { useParams } from "react-router-dom";

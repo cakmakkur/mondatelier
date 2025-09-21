@@ -216,7 +216,12 @@ export default function Post({ post, feedType }: PostProps) {
               src={`${UPLOADS_PATH}${post.profilePicturePath || ""}`}
               alt="profile picture of the poster"
             />
-            <span className="post-profile-name">{post.profileName || ""}</span>
+            <Link
+              to={`/profile/${post.profileId || ""}`}
+              className="post-profile-name"
+            >
+              {post.profileName || ""}
+            </Link>
           </span>
 
           <span className="post-details-middledot">&#183;</span>

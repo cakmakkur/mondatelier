@@ -84,8 +84,9 @@
 .profile_display {
   display: grid;
   grid-template-columns: 1fr 3.5fr;
-  padding: 75px 4.5vw 0px;
+  padding: 75px 10vw 0px;
   position: relative;
+  column-gap: 20px;
   @include S {
     display: flex;
     flex-direction: column;
@@ -95,7 +96,6 @@
 
 .profile_display--left {
   height: 100vh;
-  width: 100%;
   display: flex;
   flex-direction: column;
   row-gap: 5px;
