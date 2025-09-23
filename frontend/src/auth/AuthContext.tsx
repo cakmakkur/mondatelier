@@ -150,10 +150,11 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     refreshAccessToken();
   }, []);
 
-  const logout = () => {
+  const logout = async () => {
     try {
-      axios.post(LOGOUT_URL, {}, { withCredentials: true });
+      await axios.post(LOGOUT_URL, {}, { withCredentials: true });
       setAuth(undefined);
+      window.location.reload();
     } catch (error) {
       console.error("Logout failed:", error);
     }

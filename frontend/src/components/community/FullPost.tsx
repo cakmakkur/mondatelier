@@ -198,7 +198,10 @@ export default function FullPost() {
           </span>
         </span>
       </div>
-      <CreateNewPost type="comment" />
+      <CreateNewPost
+        communityId={mainPost.communityDto!.id}
+        parentPostId={mainPost.id}
+      />
       {commentPosts && commentPosts.length > 0 && (
         <div className="post-comments">
           <span className="post-comments-title"></span>

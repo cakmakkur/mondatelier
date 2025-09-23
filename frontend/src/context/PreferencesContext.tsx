@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-// @ts-expect-error axios context usage
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useAuthContext } from "../auth/AuthContext";
 import { defaultPreferences, type Preferences } from "../dto/Preferences";

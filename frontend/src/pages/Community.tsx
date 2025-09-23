@@ -13,6 +13,7 @@ import {
   setLikes,
   setMyCommunities,
 } from "../store/communitySlice.ts";
+import Login from "../components/auth/Login.tsx";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
@@ -111,7 +112,13 @@ export default function Community() {
         <div className="community-new">
           <span className="community-new-icon">+</span>
           <span
-            onClick={() => setComponentState(CreateCommunity)}
+            onClick={() => {
+              if (auth) {
+                setComponentState(CreateCommunity);
+              } else {
+                setComponentState(Login);
+              }
+            }}
             className="community-new-text"
           >
             New Community

@@ -3,6 +3,7 @@ package com.cakmak.mondatelier.Controller;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.community.PostLikes;
 import com.cakmak.mondatelier.Service.PostService;
+import com.cakmak.mondatelier.dto.NewPostDto;
 import com.cakmak.mondatelier.dto.PostDto;
 import com.cakmak.mondatelier.util.AuthUtil;
 import org.springframework.data.domain.Page;
@@ -84,12 +85,12 @@ public class PostController {
 
     @PostMapping("/create")
     public ResponseEntity<Void> createPost(
-            @RequestPart("post") PostDto post,
-            @RequestPart("images") List<MultipartFile> files) {
+            @RequestPart("post") NewPostDto newPost,
+            @RequestPart(value="images", required = false) List<MultipartFile> files) {
 
         User user = AuthUtil.getCurrentUser();
 
-        postService.createNewPost(user.getProfile(), post, files);
+        postService.createNewPost(user.getProfile(), newPost, files);
         return ResponseEntity.ok().build();
     }
 

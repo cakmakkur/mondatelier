@@ -19,6 +19,8 @@ import {
   addMyCommunity,
 } from "../../store/communitySlice.ts";
 import CreateNewPost from "../userActions/CreateNewPost.tsx";
+import { useModalContext } from "../../context/ModalContext.tsx";
+import Login from "../auth/Login.tsx";
 
 const POST_PATH = import.meta.env.VITE_POST_PATH;
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
@@ -36,6 +38,7 @@ export default function Feed() {
   const { auth } = useAuthContext();
 
   const dispatch = useDispatch();
+  const { setComponentState } = useModalContext();
 
   const { communityId } = useParams();
   const location = useLocation();
@@ -134,6 +137,9 @@ export default function Feed() {
   };
 
   const handleFollowClick = async () => {
+    if (!auth) {
+      setComponentState(Login);
+    }
     if (currentCommunity === null) return;
     try {
       updateMyCommunities(currentCommunity);
@@ -378,31 +384,44 @@ export default function Feed() {
             <div className="feed-community-description">
               <p>{currentCommunity?.description}</p>
             </div>
-            <div className="feed-community-buttons">
-              {isFollowing ? (
-                <button
-                  className="feed-community-follow-toggle post-follow-toggle--unfollow"
-                  onClick={handleFollowClick}
-                >
-                  Unfollow
-                </button>
-              ) : (
-                <button
-                  className="feed-community-follow-toggle post-follow-toggle--follow"
-                  onClick={handleFollowClick}
-                >
-                  Follow
-                </button>
-              )}
-              <span className="post-profile--right-share">
-                <img src="/share.svg" alt="" />
-              </span>
+            <div className="feed-community-bottom">
+              <div className="feed-community-buttons">
+                {isFollowing ? (
+                  <button
+                    className="feed-community-follow-toggle post-follow-toggle--unfollow"
+                    onClick={handleFollowClick}
+                  >
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    className="feed-community-follow-toggle post-follow-toggle--follow"
+                    onClick={handleFollowClick}
+                  >
+                    Follow
+                  </button>
+                )}
+                <span className="post-profile--right-share">
+                  <img src="/share.svg" alt="" />
+                </span>
+              </div>
+              {
+                <div className="feed-community-user-amount">
+                  {currentCommunity!.followerAmount < 1000
+                    ? currentCommunity!.followerAmount
+                    : currentCommunity!.followerAmount < 1000000
+                    ? `${currentCommunity!.followerAmount / 1000}K`
+                    : "Too Many"}{" "}
+                  Profiles
+                </div>
+              }
             </div>
           </div>
         </div>
       )}
-      <CreateNewPost type="main" />
-
+      {feedTypeRef.current === "byCommunity" && (
+        <CreateNewPost communityId={Number(communityId)} />
+      )}
       {feed?.map((post, i) => {
         let isTrigger = false;
 

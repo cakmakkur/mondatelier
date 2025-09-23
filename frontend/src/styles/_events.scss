@@ -131,6 +131,8 @@
   background-color: $moon-yellow;
   padding: 5px 5px 10px;
   transition: 0.2s;
+  border-top: 1px solid black;
+
   border-bottom: 1px solid black;
   &:hover {
     transform: scale(1.04);
@@ -182,7 +184,10 @@
 }
 
 .event_profile_name {
-  font-size: 1rem;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .events_display_event {
@@ -201,6 +206,13 @@
   column-gap: 10px;
   align-items: center;
   margin: 10px 0px;
+}
+
+.event_buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: $moon-yellow;
 }
 
 .event_main--digital {
@@ -248,18 +260,23 @@
   text-overflow: ellipsis;
 }
 
+.event_buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+}
+
 .event_buttons__like {
   display: flex;
   flex-direction: row;
   align-items: start;
   column-gap: 5px;
-  border: 1px solid gray;
   padding: 7px 12px 3px;
   border-radius: 5px;
   font-size: 1.2rem;
   color: rgb(0, 0, 35);
   font-weight: 600;
-  background-color: lighten($moon-yellow, 10%);
   transition: 0.1s;
   & img {
     display: inline;

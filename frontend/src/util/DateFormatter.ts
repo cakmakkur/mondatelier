@@ -34,7 +34,9 @@ export class DateFormatter {
     const timestamp = new Date(rawDate).getTime();
     const timeDiff = Date.now() - timestamp;
     const hoursDiff = Math.floor(timeDiff / (1000 * 60 * 60));
-    if (hoursDiff < 24) {
+    if (hoursDiff < 1) {
+      return "Just now";
+    } else if (hoursDiff < 24) {
       return hoursDiff + " hours ago";
     } else {
       const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));

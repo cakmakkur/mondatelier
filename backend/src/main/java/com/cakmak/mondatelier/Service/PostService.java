@@ -8,6 +8,7 @@ import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.community.*;
 import com.cakmak.mondatelier.Repository.*;
 import com.cakmak.mondatelier.converter.DTOMappers;
+import com.cakmak.mondatelier.dto.NewPostDto;
 import com.cakmak.mondatelier.dto.PostDto;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
@@ -203,31 +204,28 @@ public class PostService {
     @Transactional
     public void createNewPost(
             Profile profile,
-            PostDto postDto,
+            NewPostDto newPostDto,
             List<MultipartFile> files) {
 
-        if (!profile.getId().equals(postDto.profileId())) {
+        if (!profile.getId().equals(newPostDto.profileId())) {
             throw new ProfileNotFoundException();
         }
 
-        Community community = communityRepository.findById(postDto.communityDto().id()).orElseThrow(CommunityNotFoundException::new);
+        Community community = communityRepository.findById(newPostDto.communityId()).orElseThrow(CommunityNotFoundException::new);
 
         // TODO: process the media here
-        PostMedia postMedia = new PostMedia();
-        postMedia = null;
 
         Post newPost = new Post();
 
-        if (postDto.parentPostId() != null) {
-            Post parent = postRepository.findById(postDto.parentPostId()).orElse(null);
+        if (newPostDto.parentPostId() != null) {
+            Post parent = postRepository.findById(newPostDto.parentPostId()).orElse(null);
             newPost.setParent(parent);
         }
 
-        newPost.setTitle(postDto.title());
-        newPost.setContent(postDto.content());
+        newPost.setTitle(newPostDto.title());
+        newPost.setContent(newPostDto.content());
         newPost.setProfile(profile);
         newPost.setCommunity(community);
-        newPost.getPostMediaList().add(postMedia);
 
         postRepository.save(newPost);
         // postMediaRepository.save(postMedia);

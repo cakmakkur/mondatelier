@@ -60,7 +60,7 @@ public class AuthenticationController {
     public ResponseEntity<?> logout(HttpServletResponse response) {
         Cookie refreshCookie = new Cookie("refreshToken", null);
         refreshCookie.setHttpOnly(true);
-        refreshCookie.setSecure(true); // only in production HTTPS
+        refreshCookie.setSecure(false); // only in production HTTPS
         refreshCookie.setPath("/auth/refresh");
         refreshCookie.setMaxAge(0);
         response.addCookie(refreshCookie);

@@ -4,6 +4,10 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CommunityDto } from "../dto/CommunityDto";
 import type { PostDto } from "../dto/PostDto";
 
+const RECENT_COMMUNITIES_LIMIT = import.meta.env.VITE_RECENT_COMMUNITIES_LIMIT;
+const LOCALSTORAGE_RECENT_COMMUNITIES = import.meta.env
+  .VITE_LOCALSTORAGE_RECENT_COMMUNITIES;
+
 interface CommunityState {
   recent: CommunityDto[];
   my: CommunityDto[];
@@ -14,13 +18,22 @@ interface CommunityState {
 }
 
 const initialState: CommunityState = {
-  recent: [],
+  recent: loadRecentCommunities(),
   my: [],
   feed: [],
   scrollY: 0,
   rememberScroll: false,
   likes: [],
 };
+
+function loadRecentCommunities(): CommunityDto[] {
+  try {
+    const stored = localStorage.getItem("recentCommunities");
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
 
 const communitySlice = createSlice({
   name: "community",
@@ -49,12 +62,18 @@ const communitySlice = createSlice({
     addRecentCommunity: (state, action: PayloadAction<CommunityDto>) => {
       state.recent = state.recent.filter((c) => c.id !== action.payload.id);
       state.recent.unshift(action.payload);
-      if (state.recent.length > 20) {
+      if (state.recent.length > RECENT_COMMUNITIES_LIMIT) {
         state.recent.pop();
       }
+      localStorage.setItem(
+        LOCALSTORAGE_RECENT_COMMUNITIES,
+        JSON.stringify(state.recent)
+      );
     },
     clearRecentCommunities: (state) => {
       state.recent = [];
+      console.log(LOCALSTORAGE_RECENT_COMMUNITIES);
+      localStorage.removeItem(LOCALSTORAGE_RECENT_COMMUNITIES);
     },
 
     // MY COMMUNITIES

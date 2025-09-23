@@ -255,8 +255,14 @@
   position: relative;
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
 }
-.banner img {
+
+.profile_picture {
   object-fit: cover;
+}
+
+.banner_img {
+  object-fit: cover;
+  width: 100%;
 }
 
 .banner_img_div {
@@ -1345,6 +1351,50 @@ input[type=number] {
   padding: 30px 50px;
 }
 
+.uploaded-flex {
+  display: flex;
+  flex-direction: row;
+  column-gap: 5px;
+  max-width: 80%;
+  overflow: scroll;
+  padding: 0px 10px;
+}
+
+.post-upload-item {
+  max-width: 150px;
+  max-height: 100px;
+  transition: 0.1s;
+  display: block;
+}
+
+.post-upload-item-overlay {
+  position: relative;
+}
+
+.post-upload-item-remove-overlay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 200;
+  opacity: 0;
+}
+.post-upload-item-remove-overlay:hover {
+  background-color: rgba(255, 255, 255, 0.305);
+  opacity: 1;
+  cursor: pointer;
+}
+
+.post-upload-item-remove {
+  width: 20px;
+  height: 20px;
+  transition: 0.1s;
+}
+
 .auth_wrapper {
   width: 400px;
   height: 600px;
@@ -1845,6 +1895,7 @@ input[type=number] {
   background-color: rgb(255, 255, 207);
   padding: 5px 5px 10px;
   transition: 0.2s;
+  border-top: 1px solid black;
   border-bottom: 1px solid black;
 }
 .event_main:hover {
@@ -1896,7 +1947,10 @@ input[type=number] {
 }
 
 .event_profile_name {
-  font-size: 1rem;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .events_display_event {
@@ -1915,6 +1969,13 @@ input[type=number] {
   column-gap: 10px;
   align-items: center;
   margin: 10px 0px;
+}
+
+.event_buttons {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  background-color: rgb(255, 255, 207);
 }
 
 .event_main--digital {
@@ -1960,18 +2021,23 @@ input[type=number] {
   text-overflow: ellipsis;
 }
 
+.event_buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 10px;
+}
+
 .event_buttons__like {
   display: flex;
   flex-direction: row;
   align-items: start;
   column-gap: 5px;
-  border: 1px solid gray;
   padding: 7px 12px 3px;
   border-radius: 5px;
   font-size: 1.2rem;
   color: rgb(0, 0, 35);
   font-weight: 600;
-  background-color: white;
   transition: 0.1s;
 }
 .event_buttons__like img {
@@ -2730,11 +2796,25 @@ input[type=number]::-webkit-outer-spin-button {
   border: 1px solid rgb(255, 255, 207);
 }
 
+.feed-community-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 .feed-community-buttons {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 15px;
   column-gap: 20px;
+}
+
+.feed-community-user-amount {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  font-size: 0.9rem;
 }
 
 .post-main-container {
@@ -3006,8 +3086,16 @@ input[type=number]::-webkit-outer-spin-button {
   width: 100%;
   padding: 10px 0px;
   position: relative;
+  border-radius: 5px;
 }
-.fullpost-create-comment textarea {
+
+.fullpost-create-comment-message-div,
+.fullpost-create-comment-title-div {
+  position: relative;
+}
+.fullpost-create-comment-message-div textarea, .fullpost-create-comment-message-div input[type=text],
+.fullpost-create-comment-title-div textarea,
+.fullpost-create-comment-title-div input[type=text] {
   font-size: 1.5rem;
   width: 100%;
   background-color: black;
@@ -3018,18 +3106,21 @@ input[type=number]::-webkit-outer-spin-button {
   resize: none;
   overflow: hidden;
   height: 52px;
+  margin: 5px 0px;
+  position: relative;
 }
 
 .fullpost-create-placeholder {
   position: absolute;
-  top: 22px;
+  top: 20px;
   left: 10px;
+  z-index: 100;
 }
 
 .fullpost-create-send {
   position: absolute;
   right: 10px;
-  bottom: 22px;
+  bottom: 19px;
   width: 35px;
   aspect-ratio: 1;
 }
@@ -3040,7 +3131,7 @@ input[type=number]::-webkit-outer-spin-button {
 .fullpost-create-camara {
   position: absolute;
   right: 55px;
-  bottom: 25px;
+  bottom: 22px;
   width: 30px;
   aspect-ratio: 1;
   border: 1px solid #d3d3d3;

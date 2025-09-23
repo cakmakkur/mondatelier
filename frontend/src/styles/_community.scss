@@ -374,9 +374,23 @@
   }
 }
 
+.feed-community-bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
 .feed-community-buttons {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 15px;
   column-gap: 20px;
+}
+
+.feed-community-user-amount {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  font-size: 0.9rem;
 }

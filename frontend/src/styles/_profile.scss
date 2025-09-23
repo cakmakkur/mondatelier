@@ -10,10 +10,17 @@
 
 .banner {
   position: relative;
-  & img {
-    object-fit: cover;
-  }
+
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
+}
+
+.profile_picture {
+  object-fit: cover;
+}
+
+.banner_img {
+  object-fit: cover;
+  width: 100%;
 }
 
 .banner_img_div {

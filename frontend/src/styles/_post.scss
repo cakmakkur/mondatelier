@@ -271,8 +271,15 @@
   width: 100%;
   padding: 10px 0px;
   position: relative;
+  // border: 1px solid $moon-yellow;
+  border-radius: 5px;
+}
 
-  & textarea {
+.fullpost-create-comment-message-div,
+.fullpost-create-comment-title-div {
+  position: relative;
+  & textarea,
+  & input[type="text"] {
     font-size: 1.5rem;
     width: 100%;
     background-color: black;
@@ -283,19 +290,22 @@
     resize: none;
     overflow: hidden;
     height: 52px;
+    margin: 5px 0px;
+    position: relative;
   }
 }
 
 .fullpost-create-placeholder {
   position: absolute;
-  top: 22px;
+  top: 20px;
   left: 10px;
+  z-index: 100;
 }
 
 .fullpost-create-send {
   position: absolute;
   right: 10px;
-  bottom: 22px;
+  bottom: 19px;
   width: 35px;
   aspect-ratio: 1;
   &:hover {
@@ -306,7 +316,7 @@
 .fullpost-create-camara {
   position: absolute;
   right: 55px;
-  bottom: 25px;
+  bottom: 22px;
   width: 30px;
   aspect-ratio: 1;
   border: 1px solid #d3d3d3;

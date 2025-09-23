@@ -136,7 +136,7 @@ export default function Profile() {
     <div className="profile_main_div">
       <div className="banner">
         <div className="banner_img_div">
-          <img src={bannerPath} alt="" />
+          <img className="banner_img" src={bannerPath} alt="" />
         </div>
         {isOwnProfile ? (
           <button

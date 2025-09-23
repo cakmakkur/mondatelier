@@ -44,9 +44,8 @@ export default function Event({ event }: EventPropTypes) {
         </div>
       </div>
       <div className="event_buttons">
-        <button className="event_buttons__like">
-          <img src="/thumb_up.svg" alt="" /> Like
-        </button>
+        <img className="event_buttons__like" src="/heart.svg" alt="" />
+        <img src="/share2.svg" alt="" />
       </div>
     </div>
   );
