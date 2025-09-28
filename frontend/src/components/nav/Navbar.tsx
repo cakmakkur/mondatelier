@@ -33,14 +33,13 @@ export default function NavBar() {
   }, [profile]);
 
   return (
-    <div className="navBar">
-      <div className="navBar__left">
+    <nav className="navBar">
+      <section className="navBar__left">
         <Link className="navBar__left" to="/">
           <img className="navBar__favicon" src="/favicon.png" alt="" />
-          <span className="navBar_nav navBar__title">mondatelier</span>
         </Link>
-      </div>
-      <div className="navBar__right">
+      </section>
+      <section className="navBar__right">
         {!auth ? (
           <>
             <button
@@ -71,31 +70,17 @@ export default function NavBar() {
           />
           Discover
         </Link>
-        <Link className="navBar_nav navbar-hide-buttons" to="/events">
+        <Link
+          style={{ marginRight: "25px" }}
+          className="navBar_nav navbar-hide-buttons"
+          to="/events"
+        >
           <img
-            src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+            src="/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
           Events
         </Link>
-        {/* {auth ? (
-          <Link className="navBar_nav navbar-hide-buttons" to="#">
-            <img
-              src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
-            />
-            Messages
-          </Link>
-        ) : null} */}
-        {auth && profile ? (
-          <Link className="publish_button" to={`/publish/${profile.id}`}>
-            <img
-              src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
-            />
-            <span>Publish</span>
-          </Link>
-        ) : null}
         {auth && profile ? (
           <Link className="navBar_nav" to={`/profile/${profile.id}`}>
             <img
@@ -105,13 +90,33 @@ export default function NavBar() {
             />
           </Link>
         ) : null}
+        {auth ? (
+          <Link className="navBar_nav" to="#">
+            <img
+              width={43}
+              height={43}
+              src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+              alt=""
+            />
+          </Link>
+        ) : null}
+        {/* {auth && profile ? (
+          <Link className="publish_button" to={`/publish/${profile.id}`}>
+            <img
+              src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+              alt=""
+            />
+            <span>Publish</span>
+          </Link>
+        ) : null} */}
+
         <button onClick={toggleMenu} className="menu_button">
           <img
             src="/dehaze_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
             alt=""
           />
         </button>
-      </div>
-    </div>
+      </section>
+    </nav>
   );
 }

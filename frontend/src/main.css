@@ -7,7 +7,7 @@
   justify-content: space-between;
   align-items: center;
   z-index: 500;
-  padding: 1.8vh 30px 0px;
+  padding: 15px 30px 0px;
   background-color: rgba(0, 0, 0, 0.748);
   backdrop-filter: blur(2px);
 }
@@ -121,8 +121,8 @@
 
 .navBar__favicon {
   transform: translateY(-5px);
-  width: 50px;
-  height: 50px;
+  width: 160px;
+  height: 65px;
 }
 
 .account_circle {
@@ -173,8 +173,9 @@
   z-index: 2900;
   background: none;
   border: 1px solid rgb(255, 255, 207);
-  padding: 11px;
+  padding: 10px;
   border-radius: 2px;
+  width: 52px;
 }
 .menu_button:hover {
   cursor: pointer;
@@ -183,6 +184,9 @@
   .menu_button {
     transform: translateX(10px);
   }
+}
+.menu_button img {
+  width: 50px;
 }
 
 @media (max-width: 880px) {
@@ -245,8 +249,8 @@
 }
 
 .profile_main_div {
-  background-color: rgb(243, 243, 243);
-  background-color: rgb(255, 255, 252.9);
+  background-color: rgb(12, 12, 12);
+  background: linear-gradient(180deg, rgb(14, 14, 14) 0%, rgb(0, 0, 0) 100%);
   width: 100%;
   min-height: 100vh;
 }
@@ -254,10 +258,6 @@
 .banner {
   position: relative;
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
-}
-
-.profile_picture {
-  object-fit: cover;
 }
 
 .banner_img {
@@ -282,7 +282,6 @@
   right: 80px;
   z-index: 10;
   background-color: white;
-  border: 1px dotted rgb(0, 0, 0);
   transition: 0.1s;
 }
 .banner_edit_button:hover {
@@ -296,9 +295,6 @@
   height: 130px;
   border-radius: 50%;
   background-color: black;
-  position: absolute;
-  bottom: -65px;
-  left: 50px;
   z-index: 1;
   object-fit: cover;
   border: 2px solid white;
@@ -310,9 +306,14 @@
   }
 }
 
+.profile_picture_div {
+  position: relative;
+}
+
 .pp_edit_button {
-  bottom: -65px;
-  left: 140px;
+  position: absolute;
+  bottom: 0px;
+  left: 110px;
   transition: 0.1s;
 }
 .pp_edit_button:hover {
@@ -329,17 +330,17 @@
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  border: 2px dotted rgb(116, 116, 116);
   z-index: 10;
   background-color: white;
+  border: 1px solid rgb(255, 255, 207);
 }
 
 .profile_display {
   display: grid;
   grid-template-columns: 1fr 3.5fr;
-  padding: 75px 10vw 0px;
+  padding: 75px 10vw 0px 6vw;
   position: relative;
-  column-gap: 20px;
+  column-gap: 50px;
 }
 @media (max-width: 750px) {
   .profile_display {
@@ -354,6 +355,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 5px;
+  transform: translateY(-150px);
 }
 @media (max-width: 750px) {
   .profile_display--left {
@@ -374,14 +376,15 @@
 
 .profile_name {
   font-size: 2rem;
+  color: rgb(247, 247, 247);
 }
 
 .profile_detail {
   display: flex;
   align-items: center;
-  column-gap: 10px;
-  color: rgb(76, 76, 76);
-  padding: 1px 0px;
+  column-gap: 15px;
+  color: rgb(247, 247, 247);
+  padding: 5px 0px;
 }
 .profile_detail img {
   display: inline-block;
@@ -392,59 +395,58 @@
   font-weight: 700;
 }
 
+.profile_detail--website {
+  color: rgb(247, 247, 247);
+}
 .profile_detail--website:hover {
   color: rgb(0, 0, 213);
   cursor: pointer;
 }
 
 .profile_follow {
-  color: rgb(37, 37, 37);
+  color: rgb(216, 215, 215);
   margin-bottom: 10px;
 }
 .profile_follow h5 span {
   font-weight: 600;
   font-size: 1rem;
-  color: rgb(0, 0, 0);
+  color: rgb(247, 247, 247);
 }
 
 .profile_connect_buttons {
   display: flex;
   flex-direction: column;
   padding: 15px 0px;
-  row-gap: 10px;
+  row-gap: 15px;
+  margin-top: 20px;
 }
 .profile_connect_buttons button {
   width: 200px;
   padding: 8px 0px 5px;
   border-radius: 5px;
-  border: 1px solid black;
+  border: 1px solid rgb(188, 188, 188);
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  column-gap: 5px;
-  font-size: 1.2rem;
-  transition: 0.3s;
+  justify-content: start;
+  column-gap: 15px;
+  font-size: 1.3rem;
+  transition: 0.1s;
+  background-color: rgba(255, 255, 255, 0);
+  color: white;
+  padding: 10px 5px;
 }
 .profile_connect_buttons button img {
   transform: translateY(-1px);
+  width: 30px;
 }
 .profile_connect_buttons button:hover {
   cursor: pointer;
   filter: brightness(1.1);
+  color: rgb(255, 255, 207);
+  transform: scale(1.02);
 }
 
 .follow {
-  background-color: rgb(255, 255, 207);
-}
-
-.message {
-  background-color: white;
-  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.427);
-  width: 100%;
-  height: 100%;
-}
-.message:hover {
   background-color: rgb(255, 255, 207);
 }
 
@@ -473,7 +475,7 @@
 .display_nav button {
   border: none;
   background-color: transparent;
-  color: rgb(44, 44, 44);
+  color: rgb(213, 213, 213);
 }
 .display_nav button:hover {
   cursor: pointer;
@@ -489,28 +491,27 @@
   position: absolute;
   right: 5vw;
   top: 25px;
-  background-color: rgb(255, 255, 207);
-  width: 200px;
+  background-color: rgb(187, 0, 0);
+  width: 180px;
   padding: 8px 0px 5px;
   border-radius: 5px;
-  border: 1px solid black;
+  border: 1px solid rgb(214, 214, 214);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   column-gap: 5px;
-  font-size: 1.2rem;
-  transition: 0.3s;
+  transition: 0.1s;
 }
 .edit_profile_button img {
   transform: translateY(-1px);
 }
 .edit_profile_button:hover {
   cursor: pointer;
-  filter: brightness(1.1);
-}
-.edit_profile_button:hover {
-  background-color: rgb(255, 255, 207);
+  filter: brightness(1.2);
 }
 
 .artwork_column_displayer {
@@ -605,7 +606,7 @@
 .art_type--selected {
   filter: brightness(1.2);
   transform: scale(1.1);
-  border: 1px solid red;
+  border: 1px solid rgb(255, 255, 255);
 }
 
 .art_label {
@@ -860,11 +861,11 @@
 .sidebar {
   background-color: rgba(0, 0, 0, 0.748);
   position: fixed;
-  top: 70px;
+  top: 81px;
   right: 0px;
-  transform: translateX(190px);
+  transform: translateX(185px);
   width: 240px;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 80px);
   padding: 1vh 1vw 5vh 1px;
   font-size: 1.3rem;
   font-weight: 600;
@@ -889,7 +890,7 @@
   position: fixed;
   top: 0px;
   right: 0px;
-  width: 240px;
+  width: 250px;
   height: calc(100vh - 65px);
   background: none;
   z-index: 2000;
@@ -909,6 +910,7 @@
 .sidebar_list {
   display: flex;
   flex-direction: column;
+  row-gap: 2px;
 }
 
 .sidebar_option {
@@ -916,7 +918,7 @@
   display: inline-block;
   width: 17vw;
   border: 1px solid rgba(255, 255, 255, 0);
-  padding: 5px 15px;
+  padding: 5px 15px 5px 10px;
   display: flex;
   column-gap: 13px;
   text-wrap: nowrap;
@@ -928,6 +930,7 @@
 }
 .sidebar_option img {
   filter: brightness(0.9);
+  width: 30px;
 }
 
 .sidebar_separator {
@@ -942,7 +945,7 @@
 
 .display_nav--highlight {
   height: 2px;
-  background-color: black;
+  background-color: white;
   transition: 0.3s;
   position: absolute;
   bottom: 0;
@@ -1893,10 +1896,10 @@ input[type=number] {
 
 .event_main {
   background-color: rgb(255, 255, 207);
-  padding: 5px 5px 10px;
+  padding: 5px 0px 10px;
   transition: 0.2s;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  border: 1px solid rgba(0, 0, 0, 0.641);
+  box-shadow: inset 0px 0px 15px 5px rgba(0, 0, 0, 0.646);
 }
 .event_main:hover {
   transform: scale(1.04);
@@ -1908,10 +1911,16 @@ input[type=number] {
   flex-direction: column;
 }
 
+.event_details div {
+  padding: 0px 10px;
+}
+
 .event_title {
   font-size: 1.4rem;
   font-weight: 700;
-  margin: 5px 0px;
+  background-color: black;
+  color: rgb(255, 255, 207);
+  padding: 10px !important;
 }
 
 .events_display_wrapper {
@@ -1975,7 +1984,6 @@ input[type=number] {
   display: flex;
   flex-direction: row;
   width: 100%;
-  background-color: rgb(255, 255, 207);
 }
 
 .event_main--digital {
@@ -1983,7 +1991,7 @@ input[type=number] {
 }
 
 .event_main--physical {
-  background-color: rgb(255, 255, 207);
+  background-color: #d5ffef;
 }
 
 .events_header_location_img {
@@ -2019,6 +2027,7 @@ input[type=number] {
   box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 10px !important;
 }
 
 .event_buttons {
@@ -2034,18 +2043,18 @@ input[type=number] {
   align-items: start;
   column-gap: 5px;
   padding: 7px 12px 3px;
-  border-radius: 5px;
   font-size: 1.2rem;
   color: rgb(0, 0, 35);
   font-weight: 600;
   transition: 0.1s;
+  background: none;
+  border: none;
 }
 .event_buttons__like img {
   display: inline;
 }
 .event_buttons__like:hover {
   cursor: pointer;
-  background-color: rgb(255, 255, 207);
 }
 
 .events_no_events {
@@ -2056,9 +2065,36 @@ input[type=number] {
   font-size: 3rem;
 }
 
+.event_digital_banner {
+  position: absolute;
+  top: 19px;
+  right: -4px;
+  color: white;
+  font-weight: 700;
+  padding: 0px 5px 0px 0px;
+  z-index: 500;
+  background-color: rgb(0, 140, 255);
+  transform: rotate(52deg);
+}
+.event_digital_banner::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -19px;
+  width: 0;
+  height: 0;
+  border-bottom: 24px solid rgb(0, 140, 255);
+  border-left: 19px solid transparent;
+  z-index: -1;
+}
+
+.event_image {
+  position: relative;
+}
+
 .event_popup_wrapper {
   width: 800px;
-  height: 600px;
+  max-height: 600px;
   left: calc(50% - 400px);
   top: calc(50% - 300px);
   overflow-y: scroll;
@@ -2068,7 +2104,7 @@ input[type=number] {
   border-radius: 5px;
   box-shadow: inset 1px 0px 10px 5px black;
   border: 1px solid rgb(255, 255, 207);
-  background: linear-gradient(-35deg, black 20%, rgb(255, 255, 207) 100%);
+  background: linear-gradient(-35deg, black 50%, rgb(255, 255, 207) 100%);
   padding: 20px;
 }
 
@@ -2414,7 +2450,8 @@ input[type=number]::-webkit-outer-spin-button {
 
 .community-main-div {
   width: 100vw;
-  background-color: black;
+  background-color: rgb(12, 12, 12);
+  background: linear-gradient(180deg, rgb(14, 14, 14) 0%, rgb(0, 0, 0) 100%);
   min-height: 100vh;
   color: rgba(255, 255, 255, 0.639);
   padding: 150px 80px 100px 40px;

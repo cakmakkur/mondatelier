@@ -2,7 +2,12 @@
 
 .community-main-div {
   width: 100vw;
-  background-color: black;
+  background-color: rgb(12, 12, 12);
+  background: linear-gradient(
+    180deg,
+    rgb(14, 14, 14) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
   min-height: 100vh;
   color: $lightTextColor;
   padding: 150px 80px 100px 40px;

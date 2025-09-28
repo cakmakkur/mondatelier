@@ -2,20 +2,19 @@
 @import "responsive";
 
 .profile_main_div {
-  background-color: rgb(243, 243, 243);
-  background-color: lighten($moon-yellow, 9%);
+  background-color: rgb(12, 12, 12);
+  background: linear-gradient(
+    180deg,
+    rgb(14, 14, 14) 0%,
+    rgba(0, 0, 0, 1) 100%
+  );
   width: 100%;
   min-height: 100vh;
 }
 
 .banner {
   position: relative;
-
   box-shadow: 0px 5px 15px 5px rgba(0, 0, 0, 0.385);
-}
-
-.profile_picture {
-  object-fit: cover;
 }
 
 .banner_img {
@@ -38,7 +37,6 @@
   right: 80px;
   z-index: 10;
   background-color: white;
-  border: 1px dotted rgb(0, 0, 0);
   transition: 0.1s;
   &:hover {
     cursor: pointer;
@@ -52,9 +50,7 @@
   height: 130px;
   border-radius: 50%;
   background-color: black;
-  position: absolute;
-  bottom: -65px;
-  left: 50px;
+
   z-index: 1;
   object-fit: cover;
   border: 2px solid white;
@@ -64,9 +60,14 @@
   }
 }
 
+.profile_picture_div {
+  position: relative;
+}
+
 .pp_edit_button {
-  bottom: -65px;
-  left: 140px;
+  position: absolute;
+  bottom: 0px;
+  left: 110px;
   transition: 0.1s;
   &:hover {
     cursor: pointer;
@@ -83,17 +84,17 @@
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  border: 2px dotted rgb(116, 116, 116);
   z-index: 10;
   background-color: white;
+  border: 1px solid $moon-yellow;
 }
 
 .profile_display {
   display: grid;
   grid-template-columns: 1fr 3.5fr;
-  padding: 75px 10vw 0px;
+  padding: 75px 10vw 0px 6vw;
   position: relative;
-  column-gap: 20px;
+  column-gap: 50px;
   @include S {
     display: flex;
     flex-direction: column;
@@ -106,6 +107,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 5px;
+  transform: translateY(-150px);
   @include S {
     align-items: center;
   }
@@ -124,13 +126,14 @@
 
 .profile_name {
   font-size: 2rem;
+  color: rgb(247, 247, 247);
 }
 .profile_detail {
   display: flex;
   align-items: center;
-  column-gap: 10px;
-  color: rgb(76, 76, 76);
-  padding: 1px 0px;
+  column-gap: 15px;
+  color: rgb(247, 247, 247);
+  padding: 5px 0px;
   & img {
     display: inline-block;
   }
@@ -142,6 +145,8 @@
 }
 
 .profile_detail--website {
+  color: rgb(247, 247, 247);
+
   &:hover {
     color: rgb(0, 0, 213);
     cursor: pointer;
@@ -149,12 +154,12 @@
 }
 
 .profile_follow {
-  color: rgb(37, 37, 37);
+  color: rgb(216, 215, 215);
   margin-bottom: 10px;
   & h5 span {
     font-weight: 600;
     font-size: 1rem;
-    color: rgb(0, 0, 0);
+    color: rgb(247, 247, 247);
   }
 }
 
@@ -162,41 +167,37 @@
   display: flex;
   flex-direction: column;
   padding: 15px 0px;
-  row-gap: 10px;
+  row-gap: 15px;
+  margin-top: 20px;
   & button {
     width: 200px;
     padding: 8px 0px 5px;
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px solid rgb(188, 188, 188);
     display: flex;
     flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    column-gap: 5px;
-    font-size: 1.2rem;
-    transition: 0.3s;
+    justify-content: start;
+    column-gap: 15px;
+    font-size: 1.3rem;
+    transition: 0.1s;
+    background-color: rgba(255, 255, 255, 0);
+    color: white;
+    padding: 10px 5px;
     & img {
       transform: translateY(-1px);
+      width: 30px;
     }
     &:hover {
       cursor: pointer;
       filter: brightness(1.1);
+      color: $moon-yellow;
+      transform: scale(1.02);
     }
   }
 }
 
 .follow {
   background-color: $moon-yellow;
-}
-
-.message {
-  background-color: white;
-  box-shadow: 0px 0px 6px 1px rgba(0, 0, 0, 0.427);
-  width: 100%;
-  height: 100%;
-  &:hover {
-    background-color: $moon-yellow;
-  }
 }
 
 .profile_display--right {
@@ -222,7 +223,8 @@
   & button {
     border: none;
     background-color: transparent;
-    color: rgb(44, 44, 44);
+    color: rgb(213, 213, 213);
+
     &:hover {
       cursor: pointer;
       filter: brightness(1.2);
@@ -237,26 +239,25 @@
   position: absolute;
   right: 5vw;
   top: 25px;
-  background-color: $moon-yellow;
-  width: 200px;
+  background-color: rgb(187, 0, 0);
+  width: 180px;
   padding: 8px 0px 5px;
   border-radius: 5px;
-  border: 1px solid black;
+  border: 1px solid rgb(214, 214, 214);
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   column-gap: 5px;
-  font-size: 1.2rem;
-  transition: 0.3s;
+  transition: 0.1s;
   & img {
     transform: translateY(-1px);
   }
   &:hover {
     cursor: pointer;
-    filter: brightness(1.1);
-  }
-  &:hover {
-    background-color: $moon-yellow;
+    filter: brightness(1.2);
   }
 }

@@ -150,7 +150,7 @@ export default function Sidebar() {
                 ref={playDotRef}
                 style={{
                   color: "red",
-                  margin: "0px 10px",
+                  margin: "0px 15px 0px 10px",
                   transform: "scale(4) translateY(1px)",
                 }}
               >

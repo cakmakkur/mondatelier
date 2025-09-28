@@ -25,13 +25,18 @@ export default function Event({ event }: EventPropTypes) {
       }`}
       onClick={handleClick}
     >
-      <div className="event_image">
+      <section className="event_image">
         <img
           src={`${UPLOADS_PATH}${event.thumbnail_url}`}
           alt="event cover image"
         />
-      </div>
-      <div className="event_details">
+        {event.type === 1 ? (
+          <div className="event_digital_banner">DIGITAL</div>
+        ) : (
+          ""
+        )}
+      </section>
+      <section className="event_details">
         <div className="event_title">{event.title}</div>
         <div className="event_description">{event.description}</div>
         <div className="event_profile">
@@ -42,11 +47,11 @@ export default function Event({ event }: EventPropTypes) {
           />
           <span className="event_profile_name">{profile?.profileName}</span>
         </div>
-      </div>
-      <div className="event_buttons">
+      </section>
+      <menu className="event_buttons">
         <img className="event_buttons__like" src="/heart.svg" alt="" />
         <img src="/share2.svg" alt="" />
-      </div>
+      </menu>
     </div>
   );
 }

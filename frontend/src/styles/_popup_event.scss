@@ -1,6 +1,6 @@
 .event_popup_wrapper {
   width: 800px;
-  height: 600px;
+  max-height: 600px;
   left: calc(50% - 400px);
   top: calc(50% - 300px);
   overflow-y: scroll;
@@ -10,7 +10,7 @@
   border-radius: 5px;
   box-shadow: inset 1px 0px 10px 5px black;
   border: 1px solid $moon-yellow;
-  background: linear-gradient(-35deg, black 20%, $moon-yellow 100%);
+  background: linear-gradient(-35deg, black 50%, $moon-yellow 100%);
   padding: 20px;
 }
 

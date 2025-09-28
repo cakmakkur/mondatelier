@@ -53,7 +53,7 @@ export default function ProfileDisplaySections({
           ref={(el: HTMLButtonElement | null) => {
             if (el) buttonRefs.current[i] = el;
           }}
-          style={focusPosition === i ? { color: "black" } : {}}
+          style={focusPosition === i ? { color: "white" } : {}}
           onClick={() => handleClick(label.toLowerCase(), i)}
         >
           {["Liked"].includes(label) ? (

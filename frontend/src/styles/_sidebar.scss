@@ -3,11 +3,11 @@
 .sidebar {
   background-color: $transparent-black;
   position: fixed;
-  top: 70px;
+  top: 81px;
   right: 0px;
-  transform: translateX(190px);
+  transform: translateX(185px);
   width: 240px;
-  height: calc(100vh - 65px);
+  height: calc(100vh - 80px);
   padding: 1vh 1vw 5vh 1px;
   font-size: 1.3rem;
   font-weight: 600;
@@ -31,7 +31,7 @@
   position: fixed;
   top: 0px;
   right: 0px;
-  width: 240px;
+  width: 250px;
   height: calc(100vh - 65px);
   background: none;
   z-index: 2000;
@@ -51,6 +51,7 @@
 .sidebar_list {
   display: flex;
   flex-direction: column;
+  row-gap: 2px;
 }
 
 .sidebar_option {
@@ -58,7 +59,7 @@
   display: inline-block;
   width: 17vw;
   border: 1px solid rgba(255, 255, 255, 0);
-  padding: 5px 15px;
+  padding: 5px 15px 5px 10px;
   display: flex;
   column-gap: 13px;
   text-wrap: nowrap;
@@ -69,6 +70,7 @@
   }
   & img {
     filter: brightness(0.9);
+    width: 30px;
   }
 }
 
@@ -84,7 +86,7 @@
 
 .display_nav--highlight {
   height: 2px;
-  background-color: black;
+  background-color: white;
   transition: 0.3s;
   position: absolute;
   bottom: 0;

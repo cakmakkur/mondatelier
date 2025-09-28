@@ -4,7 +4,7 @@ import Art from "../components/profile/art/Art";
 import Collections from "../components/profile/Collections";
 import ProfileDisplaySections from "../components/profile/ProfileDisplaySections";
 import { useAuthContext } from "../auth/AuthContext";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import type { Profile } from "../dto/Profile";
 import { useProfileContext } from "../context/ProfileContext";
 import type Freelance from "../dto/Freelance";
@@ -148,30 +148,33 @@ export default function Profile() {
         ) : (
           ""
         )}
-        <div className="profile_picture_div">
-          <img className="profile_picture" src={ppPath} alt="" />
-          {isOwnProfile ? (
-            <button
-              onClick={handlePPEditClick}
-              className="pp_edit_button profile_edit_button"
-            >
-              <img src="/edit.svg" alt="" />
-            </button>
-          ) : (
-            ""
-          )}
-        </div>
       </div>
       <div className="profile_display">
         {!isOwnProfile ? (
           ""
         ) : (
-          <button className="edit_profile_button">
-            <img src="/edit.svg" alt="" />
-            Edit Profile
-          </button>
+          <Link className="edit_profile_button" to={`/publish/${profile?.id}`}>
+            <img
+              src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+              alt=""
+            />
+            <span>Publish</span>
+          </Link>
         )}
         <div className="profile_display--left">
+          <div className="profile_picture_div">
+            <img className="profile_picture" src={ppPath} alt="" />
+            {isOwnProfile ? (
+              <button
+                onClick={handlePPEditClick}
+                className="pp_edit_button profile_edit_button"
+              >
+                <img src="/edit.svg" alt="edit profile picture button icon" />
+              </button>
+            ) : (
+              ""
+            )}
+          </div>
           <h2 className="profile_name">{currentProfile.firstname}</h2>
           <div className="profile_follow">
             <h5>
@@ -184,16 +187,13 @@ export default function Profile() {
             <img
               style={{ display: "inline-block" }}
               src="/pin_drop_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-              alt=""
+              alt="location icon"
             />
             {currentProfile.country}
           </div>
           {freelances.length > 0 ? (
             <div className="profile_detail profile_detail--freelance">
-              <img
-                src="/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
-              />
+              <img width={24} height={24} src="/pin.svg" alt="pin icon" />
               Available as freelancer
             </div>
           ) : (
@@ -202,8 +202,10 @@ export default function Profile() {
           {currentProfile.personalWebsite ? (
             <div className="profile_detail ">
               <img
+                width={24}
+                height={24}
                 src="/captive_portal_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
+                alt="personal website icon"
               />
               <a
                 className="profile_detail--website"
@@ -219,22 +221,24 @@ export default function Profile() {
           {masterclasses.length > 0 ? (
             <div className="profile_detail">
               <img
-                src="/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-                alt=""
+                width={24}
+                height={24}
+                src="/school_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+                alt="masterclass available icon"
               />
               Masterclass{masterclasses.length > 1 ? "es" : ""} available
             </div>
           ) : (
             ""
           )}
-          <div className="profile_connect_buttons">
+          <menu className="profile_connect_buttons">
             {isOwnProfile ? (
               ""
             ) : (
               <button className="follow">
                 <img
                   src="/add_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                  alt=""
+                  alt="follow button icon"
                 />
                 Follow
               </button>
@@ -243,7 +247,7 @@ export default function Profile() {
               ""
             ) : (
               <button className="message">
-                <img src="/donate.svg" alt="" />
+                <img src="/donate.svg" alt="donate button icon" />
                 Donate to artist
               </button>
             )}
@@ -254,7 +258,7 @@ export default function Profile() {
               <button className="message">
                 <img
                   src="/mail_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                  alt=""
+                  alt="send message button icon"
                 />
                 Message
               </button>
@@ -269,7 +273,7 @@ export default function Profile() {
               >
                 <img
                   src="/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
-                  alt=""
+                  alt="new event button icon"
                 />
                 New Event
               </button>
@@ -283,8 +287,8 @@ export default function Profile() {
                 className="message"
               >
                 <img
-                  src="/school_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-                  alt=""
+                  src="/school_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+                  alt="new masterclass buttton icon"
                 />
                 New Masterclass
               </button>
@@ -297,14 +301,11 @@ export default function Profile() {
                 onClick={() => setComponentState(CreateFreelance)}
                 className="message"
               >
-                <img
-                  src="/handshake_24dp_666666_FILL0_wght400_GRAD0_opsz24.svg"
-                  alt=""
-                />
+                <img src="/pin.svg" alt="new freelance button icon" />
                 Freelance
               </button>
             )}
-          </div>
+          </menu>
         </div>
         <div className="profile_display--right">
           <ProfileDisplaySections setSection={setSection} />

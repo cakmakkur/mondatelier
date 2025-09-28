@@ -52,7 +52,10 @@ export default function EventModalView({ event }: EventPropTypes) {
           </div>
           <div className="event_buttons">
             <button className="event_buttons__like">
-              <img src="/thumb_up.svg" alt="" /> Like
+              <img src="/heart.svg" alt="event like button" />
+            </button>
+            <button className="event_buttons__like">
+              <img src="/share.svg" alt="event share button" />
             </button>
           </div>
         </div>
