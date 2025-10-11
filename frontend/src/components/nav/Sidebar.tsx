@@ -95,7 +95,7 @@ export default function Sidebar() {
               to="/events"
             >
               <img
-                src="/calendar_month_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
+                src="/calendar_month_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg"
                 alt=""
               />
               Events

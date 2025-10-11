@@ -26,7 +26,7 @@ export default function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Homepage />} />
             <Route path="/profile/:profileId" element={<Profile />} />
-            <Route path="events" element={<Events />} />
+            <Route path="/events" element={<Events />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/community" element={<Community />}>
               <Route index element={<Feed />} />

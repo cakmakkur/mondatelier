@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-// @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import { useModalContext } from "../../context/ModalContext";
 import { useProfileContext } from "../../context/ProfileContext";
