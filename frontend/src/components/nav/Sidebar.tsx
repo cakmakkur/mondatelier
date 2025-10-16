@@ -205,11 +205,11 @@ export default function Sidebar() {
               Preferences
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link className="sidebar_option" to="/digital">
               🇬🇧 <span>Language</span>
             </Link>
-          </li>
+          </li> */}
           {auth ? (
             <li>
               <Link

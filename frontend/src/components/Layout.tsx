@@ -7,7 +7,7 @@ export default function Layout() {
     <>
       <NavBar />
       <Sidebar />
-      <main className="main_div">
+      <main style={{ minWidth: "100vh" }}>
         <Outlet />
       </main>
     </>

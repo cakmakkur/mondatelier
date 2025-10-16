@@ -169,8 +169,6 @@ export default function HomepageOther() {
           A
         </button>
       </div>
-
-      <div className="footer">&copy; Kursat Cakmak</div>
     </section>
   );
 }

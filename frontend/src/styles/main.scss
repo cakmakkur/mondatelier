@@ -1,3 +1,8 @@
+// MODULE CONTENT:
+// * CSS RESET
+// * GENERAL PURPOSE STYLES
+// * BOOTSTRAP IMITATION
+
 @import "navBar";
 @import "homepage";
 @import "profile";
@@ -17,6 +22,8 @@
 @import "carousel";
 @import "community";
 @import "post";
+
+// CSS RESET
 
 *,
 *::before,
@@ -83,82 +90,7 @@ input:focus {
   outline: none;
 }
 
-.main_div {
-  min-height: 100vh;
-}
-
-.loading_div,
-.fade_out_modal_div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  z-index: 1000;
-  background-color: black;
-  opacity: 1;
-  transition: 1s;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  color: white;
-  font-size: 1.5rem;
-  pointer-events: none;
-  row-gap: 15px;
-}
-
-.footer {
-  position: absolute;
-  bottom: 5px;
-  left: 0;
-  width: 100%;
-  height: auto;
-  text-align: end;
-  color: rgb(165, 104, 177);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding-right: 20px;
-  opacity: 0;
-  transition: 5s;
-}
-
-.absoluteFullScreen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-}
-
-.absoluteLargeFullScreen {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 130vh;
-}
-
-.loadingBar_container {
-  width: 200px;
-  height: 30px;
-  border: 1px solid white;
-  overflow: hidden;
-  z-index: 100;
-}
-
-.loadingProgress {
-  z-index: 80;
-  width: 200px;
-  height: 30px;
-  background-color: rgb(9, 97, 9);
-  transition: 0.2s;
-  transform: translateX(-200px);
-}
-
-.exposition__main_div {
-  min-width: 1180px;
-}
+// general item classes
 
 .modal_backdrop {
   position: fixed;
@@ -171,10 +103,72 @@ input:focus {
   backdrop-filter: blur(1px);
 }
 
-.modalElement {
+.absoluteFullScreen {
   position: absolute;
-  z-index: 3000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
 }
 
-.tooltip {
+// Following classes imitate most necessary Bootstrap classes for quick prototyping
+// This project doesn't use Bootstrap
+
+/* Display */
+.d-flex {
+  display: flex;
+}
+.d-inline-flex {
+  display: inline-flex;
+}
+
+/* Flex direction */
+.flex-row {
+  flex-direction: row;
+}
+.flex-row-reverse {
+  flex-direction: row-reverse;
+}
+.flex-column {
+  flex-direction: column;
+}
+.flex-column-reverse {
+  flex-direction: column-reverse;
+}
+
+/* Justify content */
+.justify-content-start {
+  justify-content: flex-start;
+}
+.justify-content-center {
+  justify-content: center;
+}
+.justify-content-end {
+  justify-content: flex-end;
+}
+.justify-content-between {
+  justify-content: space-between;
+}
+.justify-content-around {
+  justify-content: space-around;
+}
+.justify-content-evenly {
+  justify-content: space-evenly;
+}
+
+/* Align items */
+.align-items-start {
+  align-items: flex-start;
+}
+.align-items-center {
+  align-items: center;
+}
+.align-items-end {
+  align-items: flex-end;
+}
+.align-items-baseline {
+  align-items: baseline;
+}
+.align-items-stretch {
+  align-items: stretch;
 }

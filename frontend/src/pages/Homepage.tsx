@@ -86,7 +86,7 @@ export default function Homepage() {
 
   if (!isPageLoaded) {
     return (
-      <div className="loading_div">
+      <div>
         <h1>Loading...</h1>
       </div>
     );
@@ -117,8 +117,6 @@ export default function Homepage() {
           </button>
         )}
       </div>
-
-      <div className="footer">&copy; Kursat Cakmak</div>
     </section>
   );
 }
