@@ -105,8 +105,8 @@ export default function Homepage() {
           simply be inspired by others — you're in the right place.{" "}
         </p>
         {auth ? (
-          <Link to="/explore" className="homepage_create_account">
-            Explore artwors
+          <Link to="/discover" className="homepage_create_account">
+            Explore artworks
           </Link>
         ) : (
           <button
