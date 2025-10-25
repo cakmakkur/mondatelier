@@ -449,7 +449,14 @@
   display: flex;
   flex-direction: column;
   row-gap: 2vh;
-  min-height: 100vh;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.profile_display--right::-webkit-scrollbar {
+  display: none;
 }
 
 .display_nav {
@@ -508,6 +515,18 @@
 .edit_profile_button:hover {
   cursor: pointer;
   filter: brightness(1.2);
+}
+
+.profile-events {
+  flex-wrap: wrap;
+  width: 100%;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+
+.profile-events > * {
+  flex: 0 1 calc(33% - 20px);
+  box-sizing: border-box;
 }
 
 .artwork_column_displayer {
@@ -1355,7 +1374,6 @@ input[type=number] {
   flex-direction: row;
   column-gap: 5px;
   max-width: 80%;
-  overflow: scroll;
   padding: 0px 10px;
 }
 
@@ -3370,4 +3388,10 @@ input:focus {
 
 .h-100 {
   height: 100%;
+}
+
+menu {
+  padding-inline-start: 0;
+  margin: 0;
+  list-style: none;
 }

@@ -180,3 +180,9 @@ input:focus {
 .h-100 {
   height: 100%;
 }
+
+menu {
+  padding-inline-start: 0; // removes the left padding in ltr
+  margin: 0; // optional: remove default margin
+  list-style: none; // optional: remove bullets/numbers
+}
