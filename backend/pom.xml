@@ -136,6 +136,8 @@
         </dependency>
     </dependencies>
 
+
+
     <build>
         <plugins>
 
@@ -161,7 +163,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
+<!--            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.1.0</version>
@@ -175,12 +177,12 @@
                         <configuration>
                             <executable>bash</executable>
                             <arguments>
-                                <argument>${project.basedir}/reset-test-db.sh</argument>
+                                <argument>${project.basedir}/src/main/resources/scripts/reset-test-db.sh</argument>
                             </arguments>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
 
             <!-- Build frontend -->
             <plugin>
