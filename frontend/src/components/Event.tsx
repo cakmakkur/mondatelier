@@ -48,7 +48,10 @@ export default function Event({ event }: EventPropTypes) {
           <span className="event_profile_name">{profile?.profileName}</span>
         </div>
       </section>
-      <menu className="event_buttons">
+      <menu
+        className="d-flex flex-row align-items-center w-100"
+        style={{ marginTop: "10px" }}
+      >
         <img className="event_buttons__like" src="/heart.svg" alt="" />
         <img src="/share2.svg" alt="" />
       </menu>

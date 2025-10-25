@@ -31,6 +31,12 @@ public class EventController {
         return ResponseEntity.ok(eventDTO);
     };
 
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<List<EventDTO>> getEventsByProfile(@PathVariable String id) {
+        List<EventDTO> dtos = eventService.getEventsByProfile(id);
+        return ResponseEntity.ok(dtos);
+    }
+
     //doesnt work correctly
     @GetMapping
     public ResponseEntity<List<EventDTO>> getEvents(

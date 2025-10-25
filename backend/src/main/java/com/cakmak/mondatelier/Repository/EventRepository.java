@@ -1,6 +1,7 @@
 package com.cakmak.mondatelier.Repository;
 
 import com.cakmak.mondatelier.Model.City;
+import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.event.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +34,6 @@ public interface EventRepository extends JpaRepository<Event, String> {
             @Param("month") Integer month,
             @Param("year") Integer year
     );
+
+    List<Event> findByProfile(Profile profile);
 }

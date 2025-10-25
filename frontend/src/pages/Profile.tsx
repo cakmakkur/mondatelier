@@ -40,6 +40,7 @@ export default function Profile() {
   const [bannerPath, setBannerPath] = useState("");
   const { setComponentState } = useModalContext();
 
+  // move to the masterclasses section
   const fetchMasterclasses = async () => {
     try {
       const response = await fetch(
@@ -55,6 +56,7 @@ export default function Profile() {
     }
   };
 
+  // move to the freelance section
   const fetchFreelances = async () => {
     try {
       const response = await fetch(`${FREELANCE_PATH}?profileId=${profileId}`);
@@ -111,9 +113,6 @@ export default function Profile() {
     } else {
       fetchProfile();
     }
-    fetchMasterclasses();
-    fetchFreelances();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth, profileId, profile]);
 
   const fetchProfile = async () => {
@@ -319,7 +318,7 @@ export default function Profile() {
             ) : section === "masterclasses" ? (
               <Masterclasses />
             ) : section === "events" ? (
-              <Events />
+              <Events profile={currentProfile} />
             ) : section === "freelance" ? (
               <Freelances />
             ) : section === "liked" ? (

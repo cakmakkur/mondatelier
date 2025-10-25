@@ -50,14 +50,14 @@ export default function EventModalView({ event }: EventPropTypes) {
               </span>
             </Link>
           </div>
-          <div className="event_buttons">
+          <menu className="d-flex flex-row align-items-center w-100">
             <button className="event_buttons__like">
               <img src="/heart.svg" alt="event like button" />
             </button>
             <button className="event_buttons__like">
               <img src="/share.svg" alt="event share button" />
             </button>
-          </div>
+          </menu>
         </div>
       </div>
     </div>

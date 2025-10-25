@@ -52,6 +52,16 @@ public class EventService {
         return DTOMappers.toEventDTO(event);
     }
 
+    public List<EventDTO> getEventsByProfile(String id) {
+        Profile profile = profileRepository.findById(id).orElseThrow(ProfileNotFoundException::new);
+        List<Event> events = eventRepository.findByProfile(profile);
+        List<EventDTO> eventDTOS = new ArrayList<>();
+        for (Event event : events) {
+            eventDTOS.add(DTOMappers.toEventDTO(event));
+        }
+        return eventDTOS;
+    }
+
     public List<EventDTO> getEventsByFilter(Integer calendarWeek, Integer month, Integer year, String cityName) {
         if (cityName == null) return new ArrayList<>();
 

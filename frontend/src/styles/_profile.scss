@@ -113,11 +113,6 @@
   }
 }
 
-.profile_display--right {
-  height: 100vh;
-  width: 100%;
-}
-
 .profile_location {
   display: flex;
   align-items: center;
@@ -204,6 +199,8 @@
   display: flex;
   flex-direction: column;
   row-gap: 2vh;
+  min-height: 100vh;
+  // width: 100%;
 }
 
 .display_nav {

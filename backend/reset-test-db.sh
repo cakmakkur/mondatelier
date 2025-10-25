@@ -12,7 +12,6 @@ PG_BIN="/Applications/Postgres.app/Contents/Versions/17/bin"
 # User with permission to create DB
 SUPERUSER="kursat"
 
-
 # Function to kill all connections to a database
 kill_connections() {
   local db="$1"
@@ -35,7 +34,6 @@ kill_connections "$TARGET_DB"
   --username=mondatelier \
   --file="$DUMP_FILE" \
   "$SOURCE_DB"
-
 
 # Drop and recreate test DB as SUPERUSER
 "$PG_BIN/dropdb" --if-exists \
@@ -65,3 +63,6 @@ kill_connections "$TARGET_DB"
   --username=mondatelier \
   --dbname="$TARGET_DB" \
   --file="$DUMP_FILE"
+
+# Delete the dump file
+rm -f "$DUMP_FILE"

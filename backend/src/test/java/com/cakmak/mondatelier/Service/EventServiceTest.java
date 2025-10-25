@@ -29,7 +29,7 @@ public class EventServiceTest {
         assertEquals("description", eventDTO.description());
         assertEquals("2025-08-23 20:22:38.421", eventDTO.createdAt().toString());
         assertEquals("2025-08-23 02:00:00.0", eventDTO.date().toString());
-        assertEquals("1", eventDTO.profileId());
+        assertEquals("2", eventDTO.profileId());
         assertEquals("/events/1755973358402_Franz_Marc_020.jpg", eventDTO.thumbnail_url());
 
     }

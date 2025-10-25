@@ -214,12 +214,6 @@
   margin: 10px 0px;
 }
 
-.event_buttons {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
 .event_main--digital {
   background-color: #d5ebff;
 }
@@ -264,13 +258,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 10px !important;
-}
-
-.event_buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 10px;
 }
 
 .event_buttons__like {

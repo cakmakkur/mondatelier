@@ -363,11 +363,6 @@
   }
 }
 
-.profile_display--right {
-  height: 100vh;
-  width: 100%;
-}
-
 .profile_location {
   display: flex;
   align-items: center;
@@ -454,6 +449,7 @@
   display: flex;
   flex-direction: column;
   row-gap: 2vh;
+  min-height: 100vh;
 }
 
 .display_nav {
@@ -1980,12 +1976,6 @@ input[type=number] {
   margin: 10px 0px;
 }
 
-.event_buttons {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-}
-
 .event_main--digital {
   background-color: #d5ebff;
 }
@@ -2028,13 +2018,6 @@ input[type=number] {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-top: 10px !important;
-}
-
-.event_buttons {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-top: 10px;
 }
 
 .event_buttons__like {
@@ -3378,4 +3361,13 @@ input:focus {
 
 .align-items-stretch {
   align-items: stretch;
+}
+
+/* Sizes */
+.w-100 {
+  width: 100%;
+}
+
+.h-100 {
+  height: 100%;
 }

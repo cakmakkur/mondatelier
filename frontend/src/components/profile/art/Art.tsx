@@ -77,7 +77,7 @@ export default function Art() {
   }, [page, size, sortBy]);
 
   return (
-    <div className="art_container">
+    <div>
       <div className="types_container">
         {categoryMedia.map((categoryMedia, index) => (
           <div
@@ -93,7 +93,7 @@ export default function Art() {
           </div>
         ))}
       </div>
-      <div className="artwork_container">
+      <div>
         {selectedCategory === null
           ? null
           : (() => {
