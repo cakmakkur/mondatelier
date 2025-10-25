@@ -39,7 +39,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  background-color: rgb(255, 255, 253);
+  background-color: black;
 }
 
 img,
@@ -121,6 +121,14 @@ input:focus {
 }
 .d-inline-flex {
   display: inline-flex;
+}
+
+/* Position */
+.position-relative {
+  position: relative;
+}
+.position-absolute {
+  position: absolute;
 }
 
 /* Flex direction */

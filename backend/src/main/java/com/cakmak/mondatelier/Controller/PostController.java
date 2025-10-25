@@ -121,9 +121,9 @@ public class PostController {
     }
 
     @GetMapping("/my-liked")
-    public ResponseEntity<List<Long>> getMyLikedPosts() {
+    public ResponseEntity<List<PostDto>> getMyLikedPosts() {
         User user = AuthUtil.getCurrentUser();
-        List<Long> likes = postService.getMyLikes(user);
+        List<PostDto> likes = postService.getMyLikes(user);
         return ResponseEntity.ok(likes);
     }
 

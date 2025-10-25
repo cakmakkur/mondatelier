@@ -91,13 +91,16 @@ export default function NavBar() {
           </Link>
         ) : null}
         {auth ? (
-          <Link className="navBar_nav" to="#">
+          <Link className="navBar_nav position-relative" to="#">
             <img
               width={43}
               height={43}
               src="/mail_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
               alt=""
             />
+            <span className="navbar-messages-count position-absolute d-flex align-items-center justify-content-center">
+              2
+            </span>
           </Link>
         ) : null}
         {/* {auth && profile ? (

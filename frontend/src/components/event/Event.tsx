@@ -1,18 +1,42 @@
-import type { EventDto } from "../dto/EventDto";
+import type { EventDto } from "../../dto/EventDto";
 import { useSelector } from "react-redux";
-import type { RootState } from "../store/store";
-import { useModalContext } from "../context/ModalContext";
+import type { RootState } from "../../store/store";
+import { useModalContext } from "../../context/ModalContext";
 import EventModalView from "./EventModalView";
+import { useEffect, useState } from "react";
+import type { Profile } from "../../dto/Profile";
 
 interface EventPropTypes {
   event: EventDto;
 }
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
+const PROFILE_PATH = import.meta.env.VITE_PROFILE_PATH;
 
 export default function Event({ event }: EventPropTypes) {
   const profiles = useSelector((state: RootState) => state.event.profiles);
-  const profile = profiles[event.profileId];
+  const [profile, setProfile] = useState<Profile | null>(null);
+
+  // should check if event.profiles is already defined. if not, it should fetch the profile separately
   const { setComponentState } = useModalContext();
+
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch(`${PROFILE_PATH}/${event.profileId}`);
+      const data = await response.json();
+      setProfile(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    const cachedProfile = profiles[event.profileId];
+    if (cachedProfile) {
+      setProfile(cachedProfile);
+    } else {
+      fetchProfile();
+    }
+  }, [event]);
 
   const handleClick = () => {
     setComponentState(EventModalView, { event });

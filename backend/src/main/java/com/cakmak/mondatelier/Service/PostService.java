@@ -283,16 +283,16 @@ public class PostService {
         postLikesRepository.delete(pl);
     }
 
-    public List<Long> getMyLikes(User user) {
+    public List<PostDto> getMyLikes(User user) {
         Profile profile = user.getProfile();
 
         List<PostLikes> postLikes = postLikesRepository.findByProfile_Id(profile.getId());
-        List<Long> likedPostIds = new ArrayList<>();
-
+        List<PostDto> postDtos = new ArrayList<>();
         for (PostLikes postLike : postLikes) {
-            likedPostIds.add(postLike.getPost().getId());
+            Post post = postLike.getPost();
+            postDtos.add(DTOMappers.toPostDTO(post));
         }
 
-        return likedPostIds;
+        return postDtos;
     }
 }

@@ -272,7 +272,11 @@ export default function Community() {
         )}
       </div>
       <Outlet />
-      <div className="community-main-subdiv community-main-subdiv--right"></div>
+      <div className="community-main-subdiv community-main-subdiv--right">
+        Reserved space <br /> for generic content <br /> maybe trending posts{" "}
+        <br />
+        maybe ads <br /> maybe new artworks
+      </div>
     </div>
   );
 }

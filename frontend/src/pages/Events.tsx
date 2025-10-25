@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
-import SingleEvent from "../components/Event";
+import SingleEvent from "../components/event/Event";
 import { useUserPreferencesContext } from "../context/PreferencesContext";
 import { DateFormatter } from "../util/DateFormatter";
 import { useDispatch, useSelector } from "react-redux";

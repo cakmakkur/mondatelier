@@ -16,7 +16,7 @@ import CreateMasterclass from "../components/userActions/CreateMasterclass";
 import CreateFreelance from "../components/userActions/CreateFreelance";
 import Liked from "../components/profile/Liked";
 import Masterclasses from "../components/profile/Masterclasses";
-import Events from "../components/profile/Events";
+import Events from "../components/profile/events/Events";
 import Freelances from "../components/profile/Freelances";
 import ImageUploader from "../components/userActions/ImageUploader";
 
@@ -70,6 +70,18 @@ export default function Profile() {
     }
   };
 
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch(`${PROFILE_PATH}/${profileId}`);
+      const data = await response.json();
+      setCurrentProfile(data);
+      setBannerPath(`${UPLOADS_PATH}${data.bannerPath}`);
+      setPpPath(`${UPLOADS_PATH}${data.profilePicturePath}`);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
   const handlePPEditClick = () => {
     setComponentState(ImageUploader, {
       targetUrl: `${PROFILE_PATH}/profilePicture/${profileId}`,
@@ -114,18 +126,6 @@ export default function Profile() {
       fetchProfile();
     }
   }, [auth, profileId, profile]);
-
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch(`${PROFILE_PATH}/${profileId}`);
-      const data = await response.json();
-      setCurrentProfile(data);
-      setBannerPath(`${UPLOADS_PATH}${data.bannerPath}`);
-      setPpPath(`${UPLOADS_PATH}${data.profilePicturePath}`);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
 
   if (!currentProfile) {
     return <div>Loading...</div>;

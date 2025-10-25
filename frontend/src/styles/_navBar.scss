@@ -189,3 +189,13 @@
     display: none;
   }
 }
+
+.navbar-messages-count {
+  background-color: rgb(200, 0, 0);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  right: 0;
+  top: -3px;
+  font-weight: 600;
+}

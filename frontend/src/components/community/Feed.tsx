@@ -273,13 +273,13 @@ export default function Feed() {
     dispatch(addRecentCommunity(community));
   };
 
-  // TODO: need to implement in BE
   // fetches posts that the user liked and populates the feed
   const fetchMyLiked = async () => {
     try {
       feedLoadingRef.current = true;
       const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
-      setFeed(response.data);
+      console.log(response.data);
+      dispatch(setFeed(response.data));
     } catch (err) {
       console.warn(err);
     } finally {

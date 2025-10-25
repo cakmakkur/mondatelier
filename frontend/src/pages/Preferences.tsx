@@ -71,17 +71,6 @@ export default function Preferences() {
     >
       <h1>User Preferences</h1>
       <form id="preferencesForm">
-        <label htmlFor="language">Language:</label>
-        <select
-          onChange={(e) => handleChange("language", e.target.value)}
-          value={preferences?.language || ""}
-          id="language"
-          name="language"
-        >
-          <option value="EN">English</option>
-          <option value="DE">Deutsch</option>
-        </select>
-
         <label>
           <input
             checked={preferences?.notifications || false}

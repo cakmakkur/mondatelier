@@ -1,11 +1,11 @@
 import { useSelector } from "react-redux";
-import type { EventDto } from "../dto/EventDto";
-import type { RootState } from "../store/store";
+import type { EventDto } from "../../dto/EventDto";
+import type { RootState } from "../../store/store";
 import { Link } from "react-router-dom";
-import { useModalContext } from "../context/ModalContext";
+import { useModalContext } from "../../context/ModalContext";
 import { useEffect, useRef, useState } from "react";
-import useAxiosPrivate from "../auth/useAxiosPrivate";
-import { useAuthContext } from "../auth/AuthContext";
+import useAxiosPrivate from "../../auth/useAxiosPrivate";
+import { useAuthContext } from "../../auth/AuthContext";
 
 interface EventPropTypes {
   event: EventDto;

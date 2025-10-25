@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import SingleEvent from "../../components/Event";
+import SingleEvent from "./Event";
 
-import type { Profile } from "../../dto/Profile";
-import type { EventDto } from "../../dto/EventDto";
+import type { Profile } from "../../../dto/Profile";
+import type { EventDto } from "../../../dto/EventDto";
 
 interface EventsProps {
   profile: Profile;
