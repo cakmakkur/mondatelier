@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.Service;
 
-import com.cakmak.mondatelier.Exception.ProfileNotFoundException;
+import com.cakmak.mondatelier.Exception.types.ProfileNotFoundException;
 import com.cakmak.mondatelier.Model.Country;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Repository.CountryRepository;

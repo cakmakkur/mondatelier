@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.Service;
 
-import com.cakmak.mondatelier.Exception.ArtworkNotFoundException;
+import com.cakmak.mondatelier.Exception.types.ArtworkNotFoundException;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.art.Artwork;
 import com.cakmak.mondatelier.Model.art.ArtworkLike;

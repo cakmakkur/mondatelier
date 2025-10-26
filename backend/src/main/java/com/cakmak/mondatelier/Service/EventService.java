@@ -1,7 +1,7 @@
 package com.cakmak.mondatelier.Service;
 
-import com.cakmak.mondatelier.Exception.EventNotFoundException;
-import com.cakmak.mondatelier.Exception.ProfileNotFoundException;
+import com.cakmak.mondatelier.Exception.types.EventNotFoundException;
+import com.cakmak.mondatelier.Exception.types.ProfileNotFoundException;
 import com.cakmak.mondatelier.Model.City;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.event.Event;
@@ -18,11 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

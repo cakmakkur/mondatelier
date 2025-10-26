@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Exception.UserProfileMismatchException;
+import com.cakmak.mondatelier.Exception.types.UserProfileMismatchException;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.ProfileService;
 import com.cakmak.mondatelier.dto.PublicProfileDTO;

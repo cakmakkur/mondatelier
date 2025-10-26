@@ -3,16 +3,13 @@
 /backend/.classpath
 /backend/.project
 /backend/.settings/
-/backend/.idea/
 *.iml
 
-# === Frontend (Node.js / React / Vue / etc.) ===
+# === Frontend ===
 /frontend/node_modules/
-/frontend/.next/
 /frontend/dist/
 /frontend/node/
 /frontend/.vite/
-/frontend/.idea/
 *.log
 
 
@@ -27,7 +24,7 @@
 Thumbs.db
 
 # === OS or Editor Files ===
-.vscode/
-.idea/
+**/.idea/
+**/.vscode/
 *.sublime-workspace
 *.sublime-project

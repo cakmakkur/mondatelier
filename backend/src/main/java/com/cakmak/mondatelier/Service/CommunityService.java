@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.Service;
 
-import com.cakmak.mondatelier.Exception.CommunityNotFoundException;
+import com.cakmak.mondatelier.Exception.types.CommunityNotFoundException;
 import com.cakmak.mondatelier.Model.Profile;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Model.community.Community;

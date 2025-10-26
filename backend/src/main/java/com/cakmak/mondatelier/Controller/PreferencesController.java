@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Exception.UserProfileMismatchException;
+import com.cakmak.mondatelier.Exception.types.UserProfileMismatchException;
 import com.cakmak.mondatelier.Model.*;
 import com.cakmak.mondatelier.Repository.CityRepository;
 import com.cakmak.mondatelier.Repository.CountryRepository;

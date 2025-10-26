@@ -1,4 +1,4 @@
-package com.cakmak.mondatelier.task;
+package com.cakmak.mondatelier.runner;
 
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;

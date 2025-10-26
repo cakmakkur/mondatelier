@@ -1,12 +1,11 @@
 package com.cakmak.mondatelier.Service;
 
-import com.cakmak.mondatelier.Exception.MediaNotFoundException;
+import com.cakmak.mondatelier.Exception.types.MediaNotFoundException;
 import com.cakmak.mondatelier.Model.art.ArtworkMedia;
 import com.cakmak.mondatelier.Repository.ArtworkMediaRepository;
 import com.cakmak.mondatelier.dto.MediaResourceDTO;
 import com.cakmak.mondatelier.enums.LogTypes;
 import com.cakmak.mondatelier.util.Logger;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 

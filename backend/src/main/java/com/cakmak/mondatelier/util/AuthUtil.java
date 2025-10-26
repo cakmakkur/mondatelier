@@ -1,6 +1,6 @@
 package com.cakmak.mondatelier.util;
 
-import com.cakmak.mondatelier.Exception.UserNotFoundException;
+import com.cakmak.mondatelier.Exception.types.UserNotFoundException;
 import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Repository.UserRepository;
 import org.springframework.security.core.Authentication;
