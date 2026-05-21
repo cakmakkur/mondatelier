@@ -16,6 +16,7 @@ import Publish from "./pages/Publish";
 import LiveStreams from "./pages/LiveStreams";
 import Feed from "./components/community/Feed";
 import FullPost from "./components/community/FullPost";
+import NotReadyYet from "./pages/NotReadyYet";
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
             <Route path={`/publish/:profileId`} element={<Publish />} />
             <Route path="/help" element={<Help />} />
             <Route path="/livestreams" element={<LiveStreams />} />
+            <Route path="/not-ready" element={<NotReadyYet />} />
             <Route
               path="/termsandconditions"
               element={<TermsAndConditions />}

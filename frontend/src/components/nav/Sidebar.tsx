@@ -66,7 +66,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/cart"
+              to="/not-ready"
             >
               <img
                 src="/shopping_cart_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
@@ -105,7 +105,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/masterclasses"
+              to="/not-ready"
             >
               <img
                 src="/school_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
@@ -131,7 +131,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/digital"
+              to="/not-ready"
             >
               <img
                 src="/handshake_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
@@ -144,7 +144,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/digital"
+              to="/not-ready"
             >
               <span
                 ref={playDotRef}
@@ -168,7 +168,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/digital"
+              to="/not-ready"
             >
               <img
                 src="/art_track_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"
@@ -234,7 +234,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/help"
+              to="/not-ready"
             >
               {Component === Sidebar ? "Help" : "Hel.."}
             </Link>
@@ -243,7 +243,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/contact"
+              to="/not-ready"
             >
               {Component === Sidebar ? "Contact us" : "Con.."}
             </Link>
@@ -252,7 +252,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/impressum"
+              to="/not-ready"
             >
               {Component === Sidebar ? "Impressum" : "Imp.."}
             </Link>
@@ -261,7 +261,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option"
-              to="/termsandconditions"
+              to="/not-ready"
             >
               {Component === Sidebar ? "Terms and Conditions" : "Ter.."}
             </Link>
