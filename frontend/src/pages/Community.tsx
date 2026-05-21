@@ -14,6 +14,7 @@ import {
   setMyCommunities,
 } from "../store/communitySlice.ts";
 import Login from "../components/auth/Login.tsx";
+import MockAd from "../components/mock/MockAd.tsx";
 
 const COMMUNITIES_PATH = import.meta.env.VITE_COMMUNITIES_PATH;
 const UPLOADS_PATH = import.meta.env.VITE_MEDIA_URL;
@@ -147,8 +148,8 @@ export default function Community() {
                 {community.followerAmount < 1000
                   ? community.followerAmount
                   : community.followerAmount < 1000000
-                  ? `${community.followerAmount / 1000}K`
-                  : "Too Many"}{" "}
+                    ? `${community.followerAmount / 1000}K`
+                    : "Too Many"}{" "}
                 Profiles
               </div>
             </Link>
@@ -195,8 +196,8 @@ export default function Community() {
                     {community.followerAmount < 1000
                       ? community.followerAmount
                       : community.followerAmount < 1000000
-                      ? `${community.followerAmount / 1000}K`
-                      : "Too Many"}{" "}
+                        ? `${community.followerAmount / 1000}K`
+                        : "Too Many"}{" "}
                     Profiles
                   </div>
                 </Link>
@@ -250,8 +251,8 @@ export default function Community() {
                   {community.followerAmount < 1000
                     ? community.followerAmount
                     : community.followerAmount < 1000000
-                    ? `${community.followerAmount / 1000}K`
-                    : "Too Many"}{" "}
+                      ? `${community.followerAmount / 1000}K`
+                      : "Too Many"}{" "}
                   Profiles
                 </div>
               </Link>
@@ -273,9 +274,17 @@ export default function Community() {
       </div>
       <Outlet />
       <div className="community-main-subdiv community-main-subdiv--right">
-        Reserved space <br /> for generic content <br /> maybe trending posts{" "}
+        <MockAd width="100%" height="250px" />
         <br />
-        maybe ads <br /> maybe new artworks
+        <MockAd width="100%" height="250px" />
+        <br />
+        <MockAd width="100%" height="250px" />
+        <br />
+        <MockAd width="100%" height="250px" />
+        <br />
+        <MockAd width="100%" height="250px" />
+        <br />
+        <MockAd width="100%" height="250px" />
       </div>
     </div>
   );
