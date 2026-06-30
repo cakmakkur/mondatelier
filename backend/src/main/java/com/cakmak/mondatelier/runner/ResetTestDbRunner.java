@@ -4,12 +4,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.io.*;
 import java.nio.file.Files;
 
 @Component
 @Profile("test")
+@ConditionalOnProperty(name = "app.test.reset-database", havingValue = "true")
 public class ResetTestDbRunner implements CommandLineRunner {
 
     @Override

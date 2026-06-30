@@ -4,7 +4,9 @@ import com.cakmak.mondatelier.Model.community.PostMedia;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PostMediaRepository extends JpaRepository<PostMedia, Long> {
-    PostMedia findByPostId(Long postId);
+    List<PostMedia> findByPostId(Long postId);
 }

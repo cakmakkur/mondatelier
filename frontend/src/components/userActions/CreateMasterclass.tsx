@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useProfileContext } from "../../context/ProfileContext";
 
-// @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import { useModalContext } from "../../context/ModalContext";
 import ToolTip from "../../util/Tooltip";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
+import useObjectUrl from "../../util/useObjectUrl";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
 const MASTERCLASS_PATH = import.meta.env.VITE_MASTERCLASS_PATH;
@@ -24,6 +24,7 @@ export default function CreateMasterclass() {
   const [selectedCountry, setSelectedCountry] = useState("Austria");
   const [artCategories, setArtCategories] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const imagePreviewUrl = useObjectUrl(imageFile);
   const [formValues, setFormValues] = useState({
     title: "",
     city: "",
@@ -116,7 +117,7 @@ export default function CreateMasterclass() {
         formData,
         { headers }
       );
-      if (response.status === 200) {
+      if (response.status === 201) {
         // return success
         overlayRef.current!.style.opacity = "1";
         setTimeout(() => {
@@ -208,7 +209,7 @@ export default function CreateMasterclass() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label className="popup_form__image">
               <div className="popup_form__image_overlay">
-                {imageFile && <img src={URL.createObjectURL(imageFile)} />}
+                {imagePreviewUrl && <img src={imagePreviewUrl} alt="" />}
               </div>
               <input
                 className="popup_form__image_input"

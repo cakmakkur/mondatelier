@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+} from "react";
 import type { CommunityDto } from "../../dto/CommunityDto";
 import type { PostDto } from "../../dto/PostDto";
 import { Link } from "react-router-dom";
@@ -24,7 +30,9 @@ export default function CommunitySearchBar({
 
   const timeoutRef = useRef<number | undefined>(undefined);
 
-  const fetchCommunitySearchResult = async (): Promise<CommunityDto[]> => {
+  const fetchCommunitySearchResult = useCallback(async (): Promise<
+    CommunityDto[]
+  > => {
     try {
       const response = await fetch(
         `${COMMUNITIES_PATH}/search?query=${query}&page=${communityPageRef.current}`
@@ -37,9 +45,9 @@ export default function CommunitySearchBar({
       console.error("Error fetching communities:", error);
     }
     return [];
-  };
+  }, [query]);
 
-  const fetchPostSearchResult = async (): Promise<PostDto[]> => {
+  const fetchPostSearchResult = useCallback(async (): Promise<PostDto[]> => {
     try {
       const response = await fetch(
         `${POST_PATH}/search?query=${query}&page=${postPageRef.current}`
@@ -52,18 +60,21 @@ export default function CommunitySearchBar({
       console.error("Error fetching posts:", error);
     }
     return [];
-  };
+  }, [query]);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function debounce(callback: any, delay = 500) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return function (...args: any) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = setTimeout(() => {
-        callback(...args);
-      }, delay);
-    };
-  }
+  const search = useCallback(async () => {
+    try {
+      const [communityResults, postResults] = await Promise.all([
+        fetchCommunitySearchResult(),
+        fetchPostSearchResult(),
+      ]);
+      setSearchResults([...communityResults, ...postResults]);
+    } catch (error) {
+      console.error("Error fetching results:", error);
+    } finally {
+      searchInProgressRef.current = false;
+    }
+  }, [fetchCommunitySearchResult, fetchPostSearchResult]);
 
   useEffect(() => {
     clearTimeout(timeoutRef.current);
@@ -73,8 +84,7 @@ export default function CommunitySearchBar({
       setSearchResults([]);
       return;
     }
-    const debouncedSearch = debounce(search);
-    debouncedSearch();
+    timeoutRef.current = window.setTimeout(() => void search(), 500);
 
     // reset page number when query changes
     communityPageRef.current = 0;
@@ -83,42 +93,10 @@ export default function CommunitySearchBar({
     return () => {
       clearTimeout(timeoutRef.current);
     };
-  }, [query]);
-
-  // fetches results after user clicks on more (results) button
-  useEffect(() => {
-    if (postPageRef.current > 0) {
-      fetchPostSearchResult();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [postPageRef.current]);
-
-  useEffect(() => {
-    if (communityPageRef.current > 0) {
-      fetchCommunitySearchResult();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [communityPageRef.current]);
+  }, [query, search]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
-  };
-
-  const search = async () => {
-    try {
-      const [communityResults, postResults] = await Promise.all([
-        fetchCommunitySearchResult(),
-        fetchPostSearchResult(),
-      ]);
-
-      const combined = [...communityResults, ...postResults];
-
-      setSearchResults(combined);
-    } catch (error) {
-      console.error("Error fetching results:", error);
-    } finally {
-      searchInProgressRef.current = false;
-    }
   };
 
   const cancelSearch = () => {

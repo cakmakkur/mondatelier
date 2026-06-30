@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import { useModalContext } from "../../context/ModalContext";
 import { useProfileContext } from "../../context/ProfileContext";
+import useObjectUrl from "../../util/useObjectUrl";
 
 interface Response {
   status: string;
@@ -9,6 +10,7 @@ interface Response {
 }
 export default function ImageUploader({ targetUrl }: { targetUrl: string }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const imagePreviewUrl = useObjectUrl(imageFile);
   const overlayRef = useRef<HTMLDivElement>(null);
   const axiosPrivate = useAxiosPrivate();
   const { setComponentState } = useModalContext();
@@ -115,7 +117,7 @@ export default function ImageUploader({ targetUrl }: { targetUrl: string }) {
         <div style={{ display: "flex", flexDirection: "column" }}>
           <label className="image_form__image">
             <div className="image_form__image_overlay">
-              {imageFile && <img src={URL.createObjectURL(imageFile)} />}
+              {imagePreviewUrl && <img src={imagePreviewUrl} alt="" />}
             </div>
             <input
               className="popup_form__image_input"

@@ -42,6 +42,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             @Param("limit") int limit
     );
 
+    @Query(value = "SELECT DISTINCT p.* FROM posts p " +
+            "JOIN community_profile cp ON cp.community_id = p.community_id " +
+            "WHERE cp.profile_id = :profileId " +
+            "AND p.parent_post_id IS NULL " +
+            "ORDER BY p.created_at DESC, p.id DESC LIMIT :limit",
+            nativeQuery = true)
+    List<Post> findFirstBatchForProfile(
+            @Param("profileId") String profileId,
+            @Param("limit") int limit
+    );
+
+    @Query(value = "SELECT DISTINCT p.* FROM posts p " +
+            "JOIN community_profile cp ON cp.community_id = p.community_id " +
+            "WHERE cp.profile_id = :profileId " +
+            "AND p.parent_post_id IS NULL " +
+            "AND (p.created_at < :lastCreatedAt " +
+            "OR (p.created_at = :lastCreatedAt AND p.id < :lastId)) " +
+            "ORDER BY p.created_at DESC, p.id DESC LIMIT :limit",
+            nativeQuery = true)
+    List<Post> findNextBatchForProfile(
+            @Param("profileId") String profileId,
+            @Param("lastCreatedAt") LocalDateTime lastCreatedAt,
+            @Param("lastId") Long lastId,
+            @Param("limit") int limit
+    );
+
     // find first page of parent by community
     @Query(value = "SELECT * FROM posts " +
             "WHERE (posts.community_id = :communityId)" +

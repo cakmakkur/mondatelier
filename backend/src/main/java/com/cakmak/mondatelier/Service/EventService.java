@@ -19,6 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.time.temporal.IsoFields;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,20 +63,52 @@ public class EventService {
         return eventDTOS;
     }
 
+    public List<EventDTO> getHighlights() {
+        return eventRepository.findTop5ByDateGreaterThanEqualOrderByDateAsc(new Date())
+                .stream()
+                .map(DTOMappers::toEventDTO)
+                .toList();
+    }
+
     public List<EventDTO> getEventsByFilter(Integer calendarWeek, Integer month, Integer year, String cityName) {
-        if (cityName == null) return new ArrayList<>();
+        if (cityName == null || cityName.isBlank()) return new ArrayList<>();
 
         City city = cityRepository.findByName(cityName)
-                .orElseThrow(() -> new RuntimeException("City not found"));
+                .orElseThrow(() -> new IllegalArgumentException("City not found"));
 
-        List<Event> events = eventRepository.findByCityAndWeekNumber(city.getId(), calendarWeek);
+        int targetYear = year == null ? LocalDate.now(ZoneOffset.UTC).getYear() : year;
+        LocalDate startDate;
+        LocalDate endDate;
 
-        return events.stream()
+        if (calendarWeek != null) {
+            if (calendarWeek < 1 || calendarWeek > 53) {
+                throw new IllegalArgumentException("Calendar week must be between 1 and 53");
+            }
+            startDate = LocalDate.of(targetYear, 1, 4)
+                    .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, calendarWeek)
+                    .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+            endDate = startDate.plusWeeks(1);
+        } else if (month != null) {
+            if (month < 1 || month > 12) {
+                throw new IllegalArgumentException("Month must be between 1 and 12");
+            }
+            startDate = LocalDate.of(targetYear, month, 1);
+            endDate = startDate.plusMonths(1);
+        } else {
+            throw new IllegalArgumentException("A calendar week or month is required");
+        }
+
+        Date start = Date.from(startDate.atStartOfDay().toInstant(ZoneOffset.UTC));
+        Date end = Date.from(endDate.atStartOfDay().toInstant(ZoneOffset.UTC));
+
+        return eventRepository
+                .findByCityAndDateGreaterThanEqualAndDateLessThanOrderByDate(city, start, end)
+                .stream()
                 .map(DTOMappers::toEventDTO)
                 .collect(Collectors.toList());
     }
 
-    public void createEvent(EventDTO eventDTO, MultipartFile imageFile) {
+    public void createEvent(EventDTO eventDTO, MultipartFile imageFile, Profile owner) {
         Event event = new Event();
         event.setTitle(SanitizeInput.sanitize(eventDTO.title()));
         event.setDescription(SanitizeInput.sanitize(eventDTO.description()));
@@ -85,9 +123,7 @@ public class EventService {
 
         event.setDate(eventDTO.date());
 
-        Profile profile = profileRepository.findById(eventDTO.profileId())
-                .orElseThrow(ProfileNotFoundException::new);
-        event.setProfile(profile);
+        event.setProfile(owner);
 
         // Save image if exists
         if (imageFile != null && !imageFile.isEmpty()) {

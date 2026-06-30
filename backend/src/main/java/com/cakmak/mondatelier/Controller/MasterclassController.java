@@ -1,7 +1,10 @@
 package com.cakmak.mondatelier.Controller;
 
+import com.cakmak.mondatelier.Model.User;
 import com.cakmak.mondatelier.Service.MasterclassService;
 import com.cakmak.mondatelier.dto.MasterclassDTO;
+import com.cakmak.mondatelier.util.AuthUtil;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,11 @@ public class MasterclassController {
             @RequestPart("masterclass") MasterclassDTO masterClassDTO,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
-        masterclassService.createMasterclass(masterClassDTO, imageFile);
-        return ResponseEntity.ok().build();
+        User currentUser = AuthUtil.getCurrentUser();
+        masterclassService.createMasterclass(
+                masterClassDTO,
+                imageFile,
+                currentUser.getProfile());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

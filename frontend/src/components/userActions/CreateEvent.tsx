@@ -6,6 +6,7 @@ import BgFx2 from "../fx/BgFx2";
 import ToolTip from "../../util/Tooltip";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
+import useObjectUrl from "../../util/useObjectUrl";
 
 const EVENTS_PATH = import.meta.env.VITE_EVENTS_PATH;
 const CITIES_PATH = import.meta.env.VITE_CITIES_PATH;
@@ -28,6 +29,7 @@ export default function CreateEvent() {
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("Austria");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const imagePreviewUrl = useObjectUrl(imageFile);
   const [formValues, setFormValues] = useState({
     id: "",
     title: "",
@@ -173,7 +175,7 @@ export default function CreateEvent() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label className="popup_form__image">
               <div className="popup_form__image_overlay">
-                {imageFile && <img src={URL.createObjectURL(imageFile)} />}
+                {imagePreviewUrl && <img src={imagePreviewUrl} alt="" />}
               </div>
               <input
                 className="popup_form__image_input"

@@ -32,7 +32,7 @@ export default function HomepageOther() {
   }, [startApproachMoon]);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!startAnimation || !canvasRef.current) return;
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({
@@ -42,7 +42,6 @@ export default function HomepageOther() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("black");
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -88,6 +87,7 @@ export default function HomepageOther() {
       .forEach(() => addStars(xRange, yRange, zRange));
 
     // const clock = new THREE.Clock();
+    let animationFrameId = 0;
     function animate() {
       // const elapsedTime = clock.getElapsedTime();
 
@@ -106,7 +106,7 @@ export default function HomepageOther() {
       camera.position.set(17, 5, 6);
 
       camera.updateProjectionMatrix();
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
       renderer.render(scene, camera);
 
       // zoom into moon animation
@@ -131,6 +131,7 @@ export default function HomepageOther() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
     };

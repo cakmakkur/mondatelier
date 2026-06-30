@@ -4,9 +4,11 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CommunityDto } from "../dto/CommunityDto";
 import type { PostDto } from "../dto/PostDto";
 
-const RECENT_COMMUNITIES_LIMIT = import.meta.env.VITE_RECENT_COMMUNITIES_LIMIT;
+const RECENT_COMMUNITIES_LIMIT = Number(
+  import.meta.env.VITE_RECENT_COMMUNITIES_LIMIT ?? 20
+);
 const LOCALSTORAGE_RECENT_COMMUNITIES = import.meta.env
-  .VITE_LOCALSTORAGE_RECENT_COMMUNITIES;
+  .VITE_LOCALSTORAGE_RECENT_COMMUNITIES ?? "recentCommunities";
 
 interface CommunityState {
   recent: CommunityDto[];
@@ -28,7 +30,7 @@ const initialState: CommunityState = {
 
 function loadRecentCommunities(): CommunityDto[] {
   try {
-    const stored = localStorage.getItem("recentCommunities");
+    const stored = localStorage.getItem(LOCALSTORAGE_RECENT_COMMUNITIES);
     return stored ? JSON.parse(stored) : [];
   } catch {
     return [];
@@ -72,7 +74,6 @@ const communitySlice = createSlice({
     },
     clearRecentCommunities: (state) => {
       state.recent = [];
-      console.log(LOCALSTORAGE_RECENT_COMMUNITIES);
       localStorage.removeItem(LOCALSTORAGE_RECENT_COMMUNITIES);
     },
 

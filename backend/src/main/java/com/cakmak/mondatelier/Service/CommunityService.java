@@ -36,7 +36,7 @@ public class CommunityService {
     private final CommunityProfileRepository communityProfileRepository;
     private final ProfileRepository profileRepository;
 
-    private final List<CommunityDto> topCommunities = new ArrayList<>();
+    private volatile List<CommunityDto> topCommunities = List.of();
 
     @Value("${app.upload.dir}")
     private String uploadDir;
@@ -69,8 +69,7 @@ public class CommunityService {
             });
         });
 
-        topCommunities.clear();
-        topCommunities.addAll(newTopCommunities);
+        topCommunities = List.copyOf(newTopCommunities);
     }
 
     public List<CommunityDto> getMyCommunities (String profileId) {
@@ -83,14 +82,15 @@ public class CommunityService {
     }
 
     public CommunityDto getCommunityById(Long communityId) {
-        Community c = communityRepository.findById(communityId).orElseThrow(() -> new RuntimeException("Community not found"));
+        Community c = communityRepository.findById(communityId)
+                .orElseThrow(CommunityNotFoundException::new);
         return DTOMappers.toCommunityDTO(c);
     }
 
     @Transactional
     public void followCommunity(Long communityId, User user) {
         Community community = communityRepository.findById(communityId)
-                .orElseThrow(() -> new RuntimeException("Community not found"));
+                .orElseThrow(CommunityNotFoundException::new);
 
         Profile profile = user.getProfile();
 
@@ -102,8 +102,6 @@ public class CommunityService {
         CommunityProfile cp = new CommunityProfile();
         cp.setProfile(profile);
         cp.setCommunity(community);
-
-        community.getCommunityProfiles().add(cp);
 
         communityProfileRepository.save(cp);
     }
@@ -121,8 +119,6 @@ public class CommunityService {
             throw new CommunityNotFoundException("Already unliked");
         }
 
-        community.getCommunityProfiles().remove(cp);
-
         communityProfileRepository.delete(cp);
     }
 
@@ -131,10 +127,6 @@ public class CommunityService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<Community> communities = communityRepository.findByNameContainingIgnoreCase(query, pageable);
-
-        if (communities.isEmpty()) {
-            throw new CommunityNotFoundException("Community not found");
-        }
 
         return communities.map(DTOMappers::toCommunityDTO);
     }

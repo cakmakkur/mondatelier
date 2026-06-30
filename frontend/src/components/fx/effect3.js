@@ -2,7 +2,7 @@ class FlowFieldEffect {
   #ctx;
   #width;
   #height;
-  #animationFrameId = null;
+  animationFrameId = null;
 
   constructor(ctx, width, height) {
     this.#ctx = ctx;
@@ -63,6 +63,10 @@ class FlowFieldEffect {
     }
 
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
+  }
+
+  stop() {
+    cancelAnimationFrame(this.animationFrameId);
   }
 }
 

@@ -36,6 +36,10 @@ public class PreferencesController {
 
     @GetMapping("{profileId}")
     public ResponseEntity<PreferencesDto> getMyPreferences(@PathVariable String profileId) {
+        User currentUser = AuthUtil.getCurrentUser();
+        if (!currentUser.getProfile().getId().equals(profileId)) {
+            throw new UserProfileMismatchException();
+        }
         Preferences preferences = preferencesRepository.findByProfile_Id(profileId).orElseThrow(() -> new RuntimeException("Profile not found"));
         return ResponseEntity.ok(DTOMappers.toPreferencesDTO(preferences));
     }

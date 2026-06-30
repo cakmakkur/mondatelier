@@ -1,9 +1,9 @@
 package com.cakmak.mondatelier.Controller;
 
-import com.cakmak.mondatelier.Repository.EventRepository;
 import com.cakmak.mondatelier.Service.EventService;
-import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.EventDTO;
+import com.cakmak.mondatelier.Model.User;
+import com.cakmak.mondatelier.util.AuthUtil;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -18,11 +18,9 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
-    private final EventRepository eventRepository;
 
-    public EventController(EventService eventService, EventRepository eventRepository) {
+    public EventController(EventService eventService) {
         this.eventService = eventService;
-        this.eventRepository = eventRepository;
     }
 
     @GetMapping("/{id}")
@@ -37,7 +35,6 @@ public class EventController {
         return ResponseEntity.ok(dtos);
     }
 
-    //doesnt work correctly
     @GetMapping
     public ResponseEntity<List<EventDTO>> getEvents(
         @RequestParam String city,
@@ -55,21 +52,14 @@ public class EventController {
             @RequestPart("event") EventDTO eventDTO,
             @RequestPart(value = "image", required = false) MultipartFile imageFile
     ) {
-        eventService.createEvent(eventDTO, imageFile);
+        User currentUser = AuthUtil.getCurrentUser();
+        eventService.createEvent(eventDTO, imageFile, currentUser.getProfile());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-    // returns currently random events
     @GetMapping("/highlights")
     public ResponseEntity<List<EventDTO>> getHighlights() {
-        List<EventDTO> dtoList = eventRepository.findAll()
-                .stream()
-                .map(DTOMappers::toEventDTO)
-                .toList();
-
         return ResponseEntity.ok()
-                .header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
-                .header("Pragma", "no-cache")
-                .body(dtoList);
+                .header("Cache-Control", "public, max-age=300")
+                .body(eventService.getHighlights());
     }
 }
-

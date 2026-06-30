@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getWeekNumber, getDateOfISOWeek, addDays } from "../util/weekNumber";
 import SingleEvent from "../components/event/Event";
 import { useUserPreferencesContext } from "../context/PreferencesContext";
 import { DateFormatter } from "../util/DateFormatter";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../store/store";
-import { addProfile, addEvents } from "../store/eventSlice";
+import { addProfiles, addEvents } from "../store/eventSlice";
 import type { EventDto } from "../dto/EventDto";
 import BgFx3 from "../components/fx/BgFx3";
 import { useAuthContext } from "../auth/AuthContext";
@@ -28,66 +28,104 @@ export default function Events() {
 
   const { preferences: settings } = useUserPreferencesContext();
 
-  const date = new Date();
-  const [weekNumber, setWeekNumber] = useState(getWeekNumber());
+  const initialDate = new Date();
   const [dateOfISOWeek, setDateOfISOWeek] = useState(
-    getDateOfISOWeek(weekNumber, date.getFullYear())
+    getDateOfISOWeek(getWeekNumber(initialDate), initialDate.getFullYear())
   );
-  const year = date.getFullYear();
+  const weekNumber = getWeekNumber(dateOfISOWeek);
+  const year = addDays(dateOfISOWeek, 3).getFullYear();
   const [cities, setCities] = useState<string[]>([]);
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const profilesRef = useRef(profiles);
 
-  // initiate events page
   useEffect(() => {
-    const init = async () => {
-      if (settings?.preferredCountry) {
-        setSelectedCountry(settings.preferredCountry);
-        const data = await getCitiesByCountry(settings.preferredCountry);
-        setSelectedCity(
-          settings.preferredCity === "" ? data[0] : settings.preferredCity
-        );
+    profilesRef.current = profiles;
+  }, [profiles]);
+
+  const getCitiesByCountry = useCallback(async (country: string) => {
+    try {
+      const response = await fetch(`${CITIES_PATH}/by_country/${country}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch cities (${response.status})`);
       }
-    };
-    init();
+      const data: string[] = await response.json();
+      setCities(data ?? []);
+      return data ?? [];
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
   }, []);
 
-  // doesnt work correct. check it later
-  // fetches profile if it hasn't been fetched yet
-  const fetchProfiles = async (eventsData: EventDto[]) => {
-    for (const event of eventsData) {
-      const profileId = event.profileId;
-      if (!profiles[profileId]) {
-        const profile = await fetch(`${PROFILE_PATH}/${profileId}`).then(
-          (res) => res.json()
-        );
-        dispatch(addProfile({ profileId, profile }));
+  const fetchProfiles = useCallback(
+    async (eventsData: EventDto[]) => {
+      const missingProfileIds = [
+        ...new Set(
+          eventsData
+            .map((event) => event.profileId)
+            .filter((profileId) => !profilesRef.current[profileId])
+        ),
+      ];
+      const fetchedProfiles = await Promise.all(
+        missingProfileIds.map(async (profileId) => {
+          const response = await fetch(`${PROFILE_PATH}/${profileId}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch profile (${response.status})`);
+          }
+          return response.json();
+        })
+      );
+      if (fetchedProfiles.length > 0) {
+        dispatch(addProfiles(fetchedProfiles));
       }
-    }
-  };
+    },
+    [dispatch]
+  );
 
-  // determine preferred location
   useEffect(() => {
-    if (settings?.preferredCountry) {
-      const updateLocation = async () => {
-        setSelectedCountry(settings.preferredCountry ?? "");
-        const data = await getCitiesByCountry(settings.preferredCountry ?? "");
-        setSelectedCity(
-          settings.preferredCity === "" ? data[0] : settings.preferredCity
-        );
-      };
-      if (settings.preferredCountry !== "") {
-        updateLocation();
+    if (!settings?.preferredCountry) return;
+
+    const updateLocation = async () => {
+      setSelectedCountry(settings.preferredCountry ?? "");
+      const data = await getCitiesByCountry(settings.preferredCountry ?? "");
+      const preferredCity = settings.preferredCity ?? "";
+      setSelectedCity(
+        preferredCity && data.includes(preferredCity) ? preferredCity : data[0] ?? ""
+      );
+    };
+    void updateLocation();
+  }, [getCitiesByCountry, settings?.preferredCity, settings?.preferredCountry]);
+
+  const fetchEvents = useCallback(
+    async (targetWeek: number, targetYear: number, city: string) => {
+      const urlParams = new URLSearchParams({
+        city,
+        calenderWeek: String(targetWeek),
+        year: String(targetYear),
+      });
+      try {
+        const response = await fetch(`${EVENTS_PATH}?${urlParams}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch events (${response.status})`);
+        }
+        const data: EventDto[] = await response.json();
+        await fetchProfiles(data);
+        dispatch(addEvents(data));
+      } catch (error) {
+        console.error(error);
+        dispatch(addEvents([]));
       }
-    }
-  }, [settings]);
+    },
+    [dispatch, fetchProfiles]
+  );
 
   // fetch events and associated profiles
   useEffect(() => {
     if (!selectedCity) return;
     dispatch(addEvents([]));
-    fetchEvents(weekNumber, selectedCity);
-  }, [weekNumber, selectedCity]);
+    void fetchEvents(weekNumber, year, selectedCity);
+  }, [dispatch, fetchEvents, selectedCity, weekNumber, year]);
 
   // clear events when leaving the page
   useEffect(() => {
@@ -96,44 +134,15 @@ export default function Events() {
     };
   }, [dispatch]);
 
-  // determine date of ISO week
-  useEffect(() => {
-    setDateOfISOWeek(getDateOfISOWeek(weekNumber, year));
-  }, [weekNumber, year]);
-
-  const fetchEvents = async (weekNumber: number, selectedCity: string) => {
-    const urlParams = `city=${selectedCity}&` + `calenderWeek=${weekNumber}`;
-    try {
-      const response = await fetch(`${EVENTS_PATH}?${urlParams}`);
-      if (response.status === 200) {
-        const data = await response.json();
-        dispatch(addEvents(data));
-        await fetchProfiles(data);
-      }
-    } catch (error) {
-      console.log(error);
+  const handleCountryChange = async (country: string) => {
+    setSelectedCountry(country);
+    if (!country) {
+      setCities([]);
+      setSelectedCity("");
+      return;
     }
-  };
-
-  // get cities for selected country
-  useEffect(() => {
-    const updateCities = async () => {
-      if (!selectedCountry) return;
-      const data = await getCitiesByCountry(selectedCountry);
-      setSelectedCity(data?.[0] || "");
-    };
-    updateCities();
-  }, [selectedCountry]);
-
-  const getCitiesByCountry = async (country: string) => {
-    try {
-      const response = await fetch(`${CITIES_PATH}/by_country/${country}`);
-      const data = await response.json();
-      setCities(data ?? []);
-      return data ?? [];
-    } catch (error) {
-      console.error(error);
-    }
+    const data = await getCitiesByCountry(country);
+    setSelectedCity(data[0] ?? "");
   };
 
   const handleCreateEventClick = () => {
@@ -204,7 +213,7 @@ export default function Events() {
               <label className="events_location_dropdown">
                 <select
                   value={selectedCountry}
-                  onChange={(e) => setSelectedCountry(e.target.value)}
+                  onChange={(e) => void handleCountryChange(e.target.value)}
                   required
                   className="events_location_select"
                 >
@@ -241,7 +250,7 @@ export default function Events() {
       <div className="events_weekbox">
         <div className="events_weekbox_left_button">
           <img
-            onClick={() => setWeekNumber((prev) => prev - 1)}
+            onClick={() => setDateOfISOWeek((previous) => addDays(previous, -7))}
             src="/arrow_left.svg"
             alt="events previous week button"
           />
@@ -291,7 +300,7 @@ export default function Events() {
 
         <div className="events_weekbox_right_button">
           <img
-            onClick={() => setWeekNumber((prev) => prev + 1)}
+            onClick={() => setDateOfISOWeek((previous) => addDays(previous, 7))}
             src="/arrow_right.svg"
             alt="events next week button"
           />

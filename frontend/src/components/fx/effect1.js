@@ -108,15 +108,17 @@ class Effect {
     this.interval = 1000 / this.fps;
     this.timer = 0;
     this.animationFrameId = null;
+    this.timeoutIds = [];
 
     this.grid = [];
     this.gridVisible = false;
     this.createGrid();
-    window.addEventListener("keydown", (e) => {
+    this.handleKeyDown = (e) => {
       if (e.key === "g") {
         this.toggleGrid();
       }
-    });
+    };
+    window.addEventListener("keydown", this.handleKeyDown);
 
     this.lines = [];
     this.createInitialLines();
@@ -124,9 +126,10 @@ class Effect {
 
   createInitialLines() {
     for (let i = 0; i < 10; i++) {
-      window.setTimeout(() => {
+      const timeoutId = window.setTimeout(() => {
         this.createNewLine();
       }, i * 500);
+      this.timeoutIds.push(timeoutId);
     }
   }
 
@@ -215,6 +218,8 @@ class Effect {
   }
   stop() {
     cancelAnimationFrame(this.animationFrameId);
+    this.timeoutIds.forEach((timeoutId) => clearTimeout(timeoutId));
+    window.removeEventListener("keydown", this.handleKeyDown);
   }
 }
 

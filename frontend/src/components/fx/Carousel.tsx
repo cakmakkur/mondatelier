@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 
 interface CarouselPropTypes {
   imgUrls: string[];
@@ -8,30 +8,33 @@ export default function Carousel({ imgUrls }: CarouselPropTypes) {
   const [activeIndex, setActiveIndex] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<number | undefined>(undefined);
-  const [reversed, setReversed] = useState(false);
+  const directionRef = useRef<1 | -1>(1);
 
-  useEffect(() => {
-    startSlide();
-    return () => clearInterval(intervalRef.current);
-    // run once on mount (and if imgUrls length changes)
-  }, [imgUrls.length]);
-
-  const startSlide = () => {
+  const startSlide = useCallback(() => {
     clearInterval(intervalRef.current);
+    if (imgUrls.length <= 1) return;
+
     intervalRef.current = window.setInterval(() => {
       setActiveIndex((current) => {
         if (current === imgUrls.length - 1) {
-          setReversed(true);
+          directionRef.current = -1;
           return current - 1;
         } else if (current === 0) {
-          setReversed(false);
+          directionRef.current = 1;
           return current + 1;
         } else {
-          return current + (reversed ? -1 : 1);
+          return current + directionRef.current;
         }
       });
     }, 5000);
-  };
+  }, [imgUrls.length]);
+
+  useEffect(() => {
+    setActiveIndex(0);
+    directionRef.current = 1;
+    startSlide();
+    return () => clearInterval(intervalRef.current);
+  }, [startSlide]);
 
   const stopSlide = () => {
     clearInterval(intervalRef.current);

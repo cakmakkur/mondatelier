@@ -52,7 +52,7 @@ public class Post {
     private Community community;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.REMOVE)
-    private List<PostLikes> postLikes;
+    private List<PostLikes> postLikes = new ArrayList<>();
 
     @Column(name = "children_posts_amount")
     private Integer childrenPostsAmount;

@@ -1,20 +1,29 @@
 import axios from "axios";
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+import { useCallback } from "react";
+import { useAuthContext } from "./AuthContext";
+
+const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
 
 const useRefreshToken = () => {
-  const refresh = async () => {
+  const { setAuth } = useAuthContext();
+
+  return useCallback(async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/auth/refresh`, {
+      const response = await axios.post(REFRESH_URL, {}, {
         withCredentials: true,
       });
-      const newToken = response.data.accessToken;
-      return newToken;
+      setAuth({
+        accessToken: response.data.token,
+        userId: response.data.userId,
+        profileId: response.data.profileId,
+      });
+      return response.data.token as string;
     } catch (err) {
       console.error("Refresh token failed:", err);
+      setAuth(undefined);
       return null;
     }
-  };
-  return refresh;
+  }, [setAuth]);
 };
 
 export default useRefreshToken;

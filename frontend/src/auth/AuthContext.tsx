@@ -3,6 +3,11 @@ import { createContext, useState, useContext, useEffect } from "react";
 import type { SignupDto } from "../dto/Signup";
 import type { LoginDto } from "../dto/Login";
 
+const LOGIN_URL = import.meta.env.VITE_LOGIN_URL;
+const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL;
+const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
+const LOGOUT_URL = import.meta.env.VITE_LOGOUT_URL;
+
 interface AuthState {
   userId: string;
   accessToken: string;
@@ -48,20 +53,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     return persistedValue !== null ? JSON.parse(persistedValue) : false;
   });
 
-  const LOGIN_URL = import.meta.env.VITE_LOGIN_URL;
-  const SIGNUP_URL = import.meta.env.VITE_SIGNUP_URL;
-  const REFRESH_URL = import.meta.env.VITE_REFRESH_URL;
-  const LOGOUT_URL = import.meta.env.VITE_LOGOUT_URL;
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [userId, setUserId] = useState<string>("");
-
-  useEffect(() => {
-    if (auth) {
-      setUserId(auth.userId);
-    }
-  }, [auth]);
-
   const login = async (
     credentials: LoginDto
   ): Promise<AxiosResponse<unknown, unknown> | undefined> => {
@@ -80,7 +71,6 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
       });
 
       if (response.status === 200) {
-        clearTimeout(timeout);
         setAuth({
           userId: response.data.userId,
           accessToken: response.data.token,
@@ -91,8 +81,12 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
     } catch (error) {
       console.error("Login failed: ", error);
       setAuth(undefined);
-      clearTimeout(timeout);
+      if (axios.isAxiosError(error)) {
+        return error.response;
+      }
       return;
+    } finally {
+      clearTimeout(timeout);
     }
   };
 
@@ -113,14 +107,17 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         },
       });
       if (response.status === 200) {
-        clearTimeout(timeout);
-        login({ email: credentials.email, password: credentials.password });
+        await login({ email: credentials.email, password: credentials.password });
       }
       return response;
     } catch (error) {
       console.error("Signup failed: ", error);
-      clearTimeout(timeout);
+      if (axios.isAxiosError(error)) {
+        return error.response;
+      }
       return;
+    } finally {
+      clearTimeout(timeout);
     }
   };
 
@@ -141,7 +138,7 @@ export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
-        if (err.status === 401) return;
+        if (err.response?.status === 401) return;
         console.error("Could not refresh token on mount:", err);
         setAuth(undefined);
       }

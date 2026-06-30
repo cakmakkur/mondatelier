@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../auth/AuthContext";
 import type { CommunityDto } from "../dto/CommunityDto.ts";
+import type { PostDto } from "../dto/PostDto.ts";
 import { useModalContext } from "../context/ModalContext.tsx";
 import useAxiosPrivate from "../auth/useAxiosPrivate";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,52 +44,55 @@ export default function Community() {
     dispatch(clearRecentCommunities());
   };
 
-  const fetchTopCommunities = async () => {
-    try {
-      const response = await fetch(`${COMMUNITIES_PATH}/top`);
-      if (response.ok) {
-        const data = await response.json();
-        setTopCommunities(data);
-      }
-    } catch (error) {
-      console.error("Error fetching communities:", error);
-    }
-  };
-
-  // fetches the communities that the user follows
-  const fetchMyCommunities = async () => {
-    if (!auth) return;
-    try {
-      const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
-      dispatch(setMyCommunities(response.data));
-    } catch (error) {
-      console.error("Error fetching communities:", error);
-    }
-  };
-
-  const fetchMyLikes = async () => {
-    if (!auth) return;
-    try {
-      const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
-      dispatch(setLikes(response.data));
-    } catch (error) {
-      console.error("Error fetching likes:", error);
-    }
-  };
-
-  const initiate = async () => {
-    // fetch top communities and users communities if authenticated
-    await Promise.all([
-      fetchTopCommunities(),
-      fetchMyCommunities(),
-      fetchMyLikes(),
-    ]);
-    setPageLoading(false);
-  };
-
   useEffect(() => {
-    initiate();
-  }, [auth]);
+    let active = true;
+
+    const fetchTopCommunities = async () => {
+      try {
+        const response = await fetch(`${COMMUNITIES_PATH}/top`);
+        if (response.ok && active) {
+          setTopCommunities(await response.json());
+        }
+      } catch (error) {
+        console.error("Error fetching communities:", error);
+      }
+    };
+
+    const fetchMyCommunities = async () => {
+      if (!auth) return;
+      try {
+        const response = await axiosPrivate.get(`${COMMUNITIES_PATH}/me`);
+        if (active) dispatch(setMyCommunities(response.data));
+      } catch (error) {
+        console.error("Error fetching communities:", error);
+      }
+    };
+
+    const fetchMyLikes = async () => {
+      if (!auth) return;
+      try {
+        const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
+        if (active) {
+          dispatch(
+            setLikes(response.data.map((post: PostDto) => post.id))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching likes:", error);
+      }
+    };
+
+    void Promise.all([fetchTopCommunities(), fetchMyCommunities()]).finally(
+      () => {
+        if (active) setPageLoading(false);
+      }
+    );
+    void fetchMyLikes();
+
+    return () => {
+      active = false;
+    };
+  }, [auth, axiosPrivate, dispatch]);
 
   // TODO: Proper loading "page"
   if (pageLoading) {

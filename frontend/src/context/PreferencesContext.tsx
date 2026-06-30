@@ -41,6 +41,7 @@ export const PreferencesContextProvider = ({
   const [settings, setSettings] = useState<Preferences | null>(null);
 
   const alreadyFetchedFor = useRef("");
+  const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
 
   useEffect(() => {
     const fetchPreferences = async () => {
@@ -54,7 +55,7 @@ export const PreferencesContextProvider = ({
         }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        if (error.status === 404) return null;
+        if (error.response?.status === 404) return null;
         console.error("Error fetching preferences:", error);
         return null;
       }
@@ -115,8 +116,8 @@ export const PreferencesContextProvider = ({
       setSettings(finalSettings);
     };
 
-    initializePreferencesContext();
-  }, [profile]);
+    void initializePreferencesContext();
+  }, [auth, axiosPrivate, profile]);
 
   const updatePreferences = async (
     key: keyof Preferences,
@@ -125,24 +126,30 @@ export const PreferencesContextProvider = ({
     if (!settings) return; // ignore if settings not loaded yet
     if (!Object.keys(defaultPreferences).includes(key)) return;
 
-    const newSettings = {
-      ...settings,
-      [key]: value,
-      profileId: auth?.profileId || "",
-    };
+    setSettings((currentSettings) => {
+      if (!currentSettings) return currentSettings;
 
-    setSettings(newSettings);
+      const newSettings = {
+        ...currentSettings,
+        [key]: value,
+        profileId: auth?.profileId || "",
+      };
 
-    if (auth) {
-      try {
-        await axiosPrivate.post(
-          `${PREFERENCES_PATH}/${auth?.profileId}`,
-          newSettings
-        );
-      } catch (error) {
-        console.log(error);
+      if (auth) {
+        saveQueue.current = saveQueue.current
+          .catch(() => undefined)
+          .then(() =>
+            axiosPrivate.post(
+              `${PREFERENCES_PATH}/${auth.profileId}`,
+              newSettings
+            )
+          )
+          .catch((error) => {
+            console.error("Failed to save preferences:", error);
+          });
       }
-    }
+      return newSettings;
+    });
   };
 
   useEffect(() => {

@@ -1,9 +1,10 @@
 package com.cakmak.mondatelier.dto.auth;
 
 import com.cakmak.mondatelier.enums.ProfileTypes;
+import com.cakmak.mondatelier.enums.UserTypes;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.util.Date;
@@ -16,8 +17,8 @@ public record SignupDTO(
         @NotBlank
         @Size(min = 6, max = 25)
         String password,
-        @Max(3)
-        Integer userType,
+        @NotNull
+        UserTypes userType,
         @Size(max = 25)
         String firstname,
         @Size(max = 25)
@@ -28,5 +29,6 @@ public record SignupDTO(
         @Size(max = 25)
         String country,
         Boolean showRealName,
+        @NotNull
         ProfileTypes profileType
 ) {}

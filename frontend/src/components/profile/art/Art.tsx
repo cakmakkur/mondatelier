@@ -5,6 +5,7 @@ import Watchable from "./Watchable";
 import Readable from "./Readable";
 import type { Artwork } from "../../../dto/Artwork";
 import type { CategoryMedia } from "../../../dto/CategoryMedia";
+import { useParams } from "react-router-dom";
 
 const ART_URL = import.meta.env.VITE_ARTWORK_PATH;
 
@@ -18,12 +19,11 @@ const ART_URL = import.meta.env.VITE_ARTWORK_PATH;
 // }
 
 export default function Art() {
-  const [isLoaded, setIsLoaded] = useState(false);
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [categoryMedia, setCategoryMedia] = useState<CategoryMedia[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<null | string>(null);
 
-  const profileId = 1;
+  const { profileId } = useParams();
   const [page] = useState(0);
   const [size] = useState(10);
   const [sortBy] = useState("createdAt");
@@ -61,20 +61,18 @@ export default function Art() {
         if (!response.ok) throw new Error("Failed to fetch artworks");
         const data = await response.json();
         if (data.content.length === 0) {
-          setIsLoaded(true);
           return;
         }
         setArtworks(data.content);
         extractCategories(data.content);
         setSelectedCategory(data.content[0].artCategory);
-        setIsLoaded(true);
       } catch (error) {
         console.error("Error fetching artworks:", error);
       }
     }
 
     fetchArtworks();
-  }, [page, size, sortBy]);
+  }, [page, profileId, size, sortBy]);
 
   return (
     <div>

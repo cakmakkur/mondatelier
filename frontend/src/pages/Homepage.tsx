@@ -26,7 +26,7 @@ export default function Homepage() {
   }, [isPageLoaded]);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!startAnimation || !canvasRef.current) return;
 
     const scene = new THREE.Scene();
     const renderer = new THREE.WebGLRenderer({
@@ -36,7 +36,6 @@ export default function Homepage() {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor("black");
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -59,13 +58,14 @@ export default function Homepage() {
 
     scene.add(moon);
 
+    let animationFrameId = 0;
     function animate() {
       directionalLight.position.x = window.scrollY * 0.05;
       directionalLight.position.y = window.scrollY * 0.05;
       moon.rotation.y += 0.0002;
 
       camera.updateProjectionMatrix();
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
       renderer.render(scene, camera);
     }
 
@@ -79,6 +79,7 @@ export default function Homepage() {
     window.addEventListener("resize", handleResize);
 
     return () => {
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);
       renderer.dispose();
     };

@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useProfileContext } from "../../context/ProfileContext";
-// @ts-expect-error auth context
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import BgFx2 from "../fx/BgFx2";
 import { useModalContext } from "../../context/ModalContext";
 
 const CATEGORIES_PATH = import.meta.env.VITE_ART_CATEGORIES_PATH;
-const FREELANCE_PATH = import.meta.env.VITE_VITE_FREELANCE_PATH;
+const FREELANCE_PATH = import.meta.env.VITE_FREELANCE_PATH;
 
 export default function CreateFreelance() {
   const { profile } = useProfileContext();
@@ -61,11 +60,9 @@ export default function CreateFreelance() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const formData = new FormData();
-
     try {
-      const response = await axiosPrivate.post(`${FREELANCE_PATH}`, formData);
-      if (response.status === 200) {
+      const response = await axiosPrivate.post(FREELANCE_PATH, formValues);
+      if (response.status === 201) {
         // return success
         overlayRef.current!.style.opacity = "1";
         setTimeout(() => {

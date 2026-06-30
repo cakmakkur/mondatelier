@@ -67,6 +67,7 @@ export default function Feed() {
     lastCreatedAt: "",
     lastId: 0,
   });
+  const loadNextPageRef = useRef<() => Promise<void>>(async () => undefined);
 
   useEffect(() => {
     if (
@@ -89,17 +90,7 @@ export default function Feed() {
       observer.current = new IntersectionObserver(
         async (entries) => {
           if (entries[0].isIntersecting) {
-            if (
-              (feedTypeRef.current === "recent" && !endOfFeedRef.current) ||
-              (feedTypeRef.current === "myFeed" && endOfFeedRef.current)
-            ) {
-              await fetchRecentFeedAndPopulateFeed();
-            } else if (
-              feedTypeRef.current === "myFeed" &&
-              !endOfFeedRef.current
-            ) {
-              await fetchMyFeedAndPopulateFeed();
-            }
+            await loadNextPageRef.current();
           }
         },
         { root: null, threshold: 0.1 }
@@ -107,7 +98,7 @@ export default function Feed() {
 
       observer.current.observe(node);
     },
-    [feed, endOfFeed]
+    []
   );
 
   const updateMyCommunities = async (communityDto: CommunityDto) => {
@@ -172,6 +163,11 @@ export default function Feed() {
       );
 
       const data: PostDto[] = response.data;
+      if (data.length === 0) {
+        setEndOfFeed(true);
+        endOfFeedRef.current = true;
+        return;
+      }
       dispatch(appendToFeed(data));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -220,6 +216,11 @@ export default function Feed() {
       }
 
       const data: PostDto[] = await response.json();
+      if (data.length === 0) {
+        setEndOfFeed(true);
+        endOfFeedRef.current = true;
+        return;
+      }
       dispatch(appendToFeed(data)); // changed
     } catch (error) {
       console.error("Error fetching feed:", error);
@@ -258,6 +259,11 @@ export default function Feed() {
       }
 
       const data: PostDto[] = await response.json();
+      if (data.length === 0) {
+        setEndOfFeed(true);
+        endOfFeedRef.current = true;
+        return;
+      }
 
       if (feedTypeRef.current !== "byCommunity" || feed.length === 0) {
         dispatch(setFeed(data));
@@ -278,7 +284,6 @@ export default function Feed() {
     try {
       feedLoadingRef.current = true;
       const response = await axiosPrivate.get(`${POST_PATH}/my-liked`);
-      console.log(response.data);
       dispatch(setFeed(response.data));
     } catch (err) {
       console.warn(err);
@@ -293,6 +298,26 @@ export default function Feed() {
       await fetchMyFeedAndPopulateFeed();
     } else {
       await fetchRecentFeedAndPopulateFeed();
+    }
+  };
+
+  loadNextPageRef.current = async () => {
+    if (
+      (feedTypeRef.current === "recent" && !endOfFeedRef.current) ||
+      (feedTypeRef.current === "myFeed" && endOfFeedRef.current)
+    ) {
+      await fetchRecentFeedAndPopulateFeed();
+    } else if (
+      feedTypeRef.current === "byCommunity" &&
+      !endOfFeedRef.current &&
+      currentCommunity
+    ) {
+      await fetchFeedByCommunityAndPopulateFeed(currentCommunity);
+    } else if (
+      feedTypeRef.current === "myFeed" &&
+      !endOfFeedRef.current
+    ) {
+      await fetchMyFeedAndPopulateFeed();
     }
   };
 
@@ -341,6 +366,9 @@ export default function Feed() {
     // return () => {
     //   window.removeEventListener("load");
     // };
+    // Scroll restoration intentionally uses the values captured when this route
+    // mounts; adding them would reset the feed immediately after restoration.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [communityId, location.pathname]);
 
   // on click on the post in search result

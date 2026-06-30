@@ -10,12 +10,11 @@ import com.cakmak.mondatelier.Repository.CountryRepository;
 import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.Repository.UserRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
-import com.cakmak.mondatelier.converter.UserTypesConverter;
 import com.cakmak.mondatelier.dto.auth.SignupDTO;
 import com.cakmak.mondatelier.dto.auth.LoginDTO;
 import com.cakmak.mondatelier.dto.auth.LoginResponse;
-import com.cakmak.mondatelier.enums.ProfileTypes;
 import com.cakmak.mondatelier.util.SanitizeInput;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -67,7 +66,7 @@ public class AuthenticationService {
         }
         user.setEmail(signupDTO.email());
         user.setPassword(passwordEncoder.encode(signupDTO.password()));
-        user.setUserType(new UserTypesConverter().convertToEntityAttribute(signupDTO.userType()));
+        user.setUserType(signupDTO.userType());
         user.setIsActive(true);
         userRepository.save(user);
 
@@ -83,7 +82,7 @@ public class AuthenticationService {
         profile.setShowRealName(signupDTO.showRealName());
         profile.setCountry(countryRepository.findByName(SanitizeInput.sanitize(signupDTO.country())));
         profile.setUser(user);
-        profile.setType(ProfileTypes.fromValue(signupDTO.userType()));
+        profile.setType(signupDTO.profileType());
         profileRepository.save(profile);
         user.setProfile(profile);
 
@@ -129,11 +128,15 @@ public class AuthenticationService {
             return ResponseEntity.status(401).build();
         }
 
-        String email = jwtService.extractUsername(refreshToken);
-        User user = userRepository.findByEmail(email).orElseThrow();
-
-        if (!jwtService.isRefreshTokenValid(refreshToken, user)) {
-            return ResponseEntity.status(403).build();
+        final User user;
+        try {
+            String email = jwtService.extractRefreshUsername(refreshToken);
+            user = userRepository.findByEmail(email).orElse(null);
+            if (user == null || !jwtService.isRefreshTokenValid(refreshToken, user)) {
+                return ResponseEntity.status(401).build();
+            }
+        } catch (JwtException | IllegalArgumentException exception) {
+            return ResponseEntity.status(401).build();
         }
 
         String newAccessToken = jwtService.generateToken(user);

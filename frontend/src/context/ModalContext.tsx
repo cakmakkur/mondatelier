@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useEffect, useState, useContext } from "react";
 import type { ComponentType, ReactNode } from "react";
 
 interface ModalContextType {
-  Component: ComponentType | undefined;
+  Component: ComponentType<any> | undefined;
   setComponentState: (
-    component: ComponentType | undefined,
+    component: ComponentType<any> | undefined,
     props?: Record<string, any>
   ) => void;
 }
@@ -35,10 +35,9 @@ export const ModalContextProvider = ({
   );
   const [props, setProps] = useState<Record<string, unknown>>({});
 
-  const addEscButtonListener = (e: KeyboardEvent) => {
-    if (e.key === "Escape") {
-      setComponent(undefined);
-    }
+  const closeModal = () => {
+    setComponent(undefined);
+    setProps({});
   };
 
   const setComponentState = (
@@ -46,15 +45,20 @@ export const ModalContextProvider = ({
     props: Record<string, any> = {}
   ) => {
     setComponent(() => component);
-    if (Object.keys(props).length > 0) {
-      setProps(props);
-    }
-    if (component !== undefined) {
-      window.addEventListener("keydown", addEscButtonListener);
-    } else {
-      window.removeEventListener("keydown", addEscButtonListener);
-    }
+    setProps(props);
   };
+
+  useEffect(() => {
+    if (!Component) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeModal();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [Component]);
 
   const value: ModalContextType = {
     Component,
@@ -63,7 +67,7 @@ export const ModalContextProvider = ({
 
   const stopModal = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    setComponent(undefined);
+    closeModal();
   };
 
   return (

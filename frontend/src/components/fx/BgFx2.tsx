@@ -16,8 +16,10 @@ export default function BgFx2() {
       const effect = new FlowFieldEffect(ctx2, canvas.width, canvas.height);
       effectRef.current = effect;
 
-      requestAnimationFrame(effect.animate.bind(effect));
+      effect.animationFrameId = requestAnimationFrame(effect.animate.bind(effect));
     }
+
+    return () => effectRef.current?.stop();
   }, []);
 
   return <canvas ref={canvasRef} className="canvas_2"></canvas>;

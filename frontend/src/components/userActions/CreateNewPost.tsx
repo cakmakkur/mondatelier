@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ToolTip from "../../util/Tooltip";
 import { useAuthContext } from "../../auth/AuthContext";
 import { useModalContext } from "../../context/ModalContext";
@@ -11,7 +11,7 @@ interface CreateNewPostProps {
 }
 
 const POST_PATH = import.meta.env.VITE_POST_PATH;
-const MAX_FILE_SIZE_MB = 500; // MB
+const MAX_FILE_SIZE_MB = 10;
 const MAX_FILE_AMOUNT = 5;
 
 export default function CreateNewPost({
@@ -26,6 +26,14 @@ export default function CreateNewPost({
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const previewFiles = useMemo(
+    () =>
+      selectedFiles.map((file) => ({
+        file,
+        url: URL.createObjectURL(file),
+      })),
+    [selectedFiles]
+  );
 
   const checkAuth = (e: React.MouseEvent) => {
     if (!auth) {
@@ -36,7 +44,7 @@ export default function CreateNewPost({
   };
 
   const handleSend = async () => {
-    if (!title || !content) return;
+    if (!content || (!parentPostId && !title)) return;
 
     try {
       const formData = new FormData();
@@ -65,6 +73,7 @@ export default function CreateNewPost({
         },
       });
       // TODO: handle success
+      setTitle("");
       setContent("");
       setSelectedFiles([]);
     } catch (error) {
@@ -119,9 +128,10 @@ export default function CreateNewPost({
     element.style.height = element.scrollHeight + "px";
   }
 
-  useEffect(() => {
-    console.log(selectedFiles);
-  }, [selectedFiles]);
+  useEffect(
+    () => () => previewFiles.forEach(({ url }) => URL.revokeObjectURL(url)),
+    [previewFiles]
+  );
 
   return (
     <div
@@ -139,7 +149,7 @@ export default function CreateNewPost({
           <input
             placeholder="Title"
             type="text"
-            max={60}
+            maxLength={60}
             value={title}
             onChange={(e) => handleTitleChange(e)}
           />
@@ -172,15 +182,16 @@ export default function CreateNewPost({
         ref={fileInputRef}
         style={{ display: "none" }}
         multiple
-        accept="image/*,video/*,audio/*"
+        accept="image/jpeg,image/png,image/gif,image/webp"
         onChange={handleFilesSelected}
       />
 
       <div className="uploaded-flex">
-        {selectedFiles.map((file, idx) => {
+        {previewFiles.map(({ file, url }) => {
           if (file.type.startsWith("image/")) {
             return (
               <div
+                key={`${file.name}-${file.lastModified}`}
                 onClick={() => {
                   handleRemoveFile(file);
                 }}
@@ -194,8 +205,7 @@ export default function CreateNewPost({
                   />
                 </div>
                 <img
-                  key={idx}
-                  src={URL.createObjectURL(file)}
+                  src={url}
                   alt={file.name}
                   className="post-upload-item"
                 />
@@ -204,6 +214,7 @@ export default function CreateNewPost({
           } else if (file.type.startsWith("video/")) {
             return (
               <div
+                key={`${file.name}-${file.lastModified}`}
                 onClick={() => {
                   handleRemoveFile(file);
                 }}
@@ -218,8 +229,7 @@ export default function CreateNewPost({
                 </div>
 
                 <video
-                  key={idx}
-                  src={URL.createObjectURL(file)}
+                  src={url}
                   controls={false}
                   muted
                   className="post-upload-item"
@@ -228,7 +238,10 @@ export default function CreateNewPost({
             );
           } else if (file.type.startsWith("audio/")) {
             return (
-              <div className="post-upload-item-overlay">
+              <div
+                key={`${file.name}-${file.lastModified}`}
+                className="post-upload-item-overlay"
+              >
                 <div
                   onClick={() => {
                     handleRemoveFile(file);
@@ -242,8 +255,7 @@ export default function CreateNewPost({
                   />
                 </div>
                 <audio
-                  key={idx}
-                  src={URL.createObjectURL(file)}
+                  src={url}
                   controls
                   className="post-upload-item"
                 />

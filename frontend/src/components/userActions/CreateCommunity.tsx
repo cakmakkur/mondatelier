@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import BgFx2 from "../fx/BgFx2";
+import useObjectUrl from "../../util/useObjectUrl";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import ToolTip from "../../util/Tooltip";
 import { useModalContext } from "../../context/ModalContext";
@@ -13,6 +14,7 @@ export default function Community() {
   const { setComponentState } = useModalContext();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const imagePreviewUrl = useObjectUrl(imageFile);
   const [formValues, setFormValues] = useState({
     name: "",
     description: "",
@@ -126,7 +128,7 @@ export default function Community() {
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label className="popup_form__image">
               <div className="popup_form__image_overlay">
-                {imageFile && <img src={URL.createObjectURL(imageFile)} />}
+                {imagePreviewUrl && <img src={imagePreviewUrl} alt="" />}
               </div>
               <input
                 className="popup_form__image_input"

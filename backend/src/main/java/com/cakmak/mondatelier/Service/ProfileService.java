@@ -7,7 +7,6 @@ import com.cakmak.mondatelier.Repository.CountryRepository;
 import com.cakmak.mondatelier.Repository.ProfileRepository;
 import com.cakmak.mondatelier.converter.DTOMappers;
 import com.cakmak.mondatelier.dto.PublicProfileDTO;
-import com.cakmak.mondatelier.enums.ProfileTypes;
 import com.cakmak.mondatelier.util.DeleteFile;
 import com.cakmak.mondatelier.util.UploadImage;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,15 +34,10 @@ public class ProfileService {
         return DTOMappers.toPublicProfileDTO(profile);
     }
 
+    @Transactional
     public void updatePublicProfile(PublicProfileDTO publicProfileDTO, MultipartFile imageFile) {
         Profile currentProfile = profileRepository.findById(publicProfileDTO.id())
                 .orElseThrow(ProfileNotFoundException::new);
-
-        // profileType
-        if (publicProfileDTO.profileType() != null &&
-                !ProfileTypes.fromValue(publicProfileDTO.profileType()).equals(currentProfile.getType())) {
-            currentProfile.setType(ProfileTypes.fromValue(publicProfileDTO.profileType()));
-        }
 
         // profileName
         if (publicProfileDTO.profileName() != null &&

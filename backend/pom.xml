@@ -27,7 +27,7 @@
         <url/>
     </scm>
     <properties>
-        <java.version>24</java.version>
+        <java.version>21</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -49,8 +49,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -61,7 +62,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.7.3</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -90,12 +91,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.19.0</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.bucket4j/bucket4j-core -->
         <dependency>
             <groupId>com.bucket4j</groupId>
@@ -117,11 +112,13 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
             <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -146,8 +143,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>24</source>
-                    <target>24</target>
+                    <release>${java.version}</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>
@@ -179,46 +175,6 @@
                 </executions>
             </plugin>-->
 
-            <!-- Build frontend -->
-            <plugin>
-                <groupId>com.github.eirslett</groupId>
-                <artifactId>frontend-maven-plugin</artifactId>
-                <version>1.15.0</version>
-                <configuration>
-                    <workingDirectory>../frontend</workingDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>install node and npm</id>
-                        <goals>
-                            <goal>install-node-and-npm</goal>
-                        </goals>
-                        <configuration>
-                            <nodeVersion>v22.13.1</nodeVersion>
-                            <npmVersion>11.1.0</npmVersion>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm install</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>install</arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>npm build</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>run build</arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <!-- Copy frontend build to Spring Boot static folder -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -226,7 +182,7 @@
                 <executions>
                     <execution>
                         <id>copy-frontend</id>
-                        <phase>process-resources</phase>
+                        <phase>prepare-package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>

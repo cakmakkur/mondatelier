@@ -14,12 +14,12 @@ export default function BgFx3() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       effectRef.current = new FlowFieldEffect(ctx, canvas.width, canvas.height);
-      requestAnimationFrame((ts) => effectRef.current?.animate(ts));
+      effectRef.current.animationFrameId = requestAnimationFrame((ts) =>
+        effectRef.current?.animate(ts)
+      );
     }
 
-    // return () => {
-    //   effectRef.current?.stop();
-    // };
+    return () => effectRef.current?.stop();
   }, []);
 
   return (

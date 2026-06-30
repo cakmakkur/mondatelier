@@ -36,17 +36,13 @@ export default function Login() {
     }
   }, [focus, email, password]);
 
-  // Sanitization
-  const sanitize = (input: string) => input.trim().replace(/[^\w\s@.]/gi, "");
-
   const handleSetUsername = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sanitizedUsername = e.target.value;
     setEmail(sanitizedUsername);
   };
 
   const handleSetPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const sanitizedPassword = sanitize(e.target.value);
-    setPassword(sanitizedPassword);
+    setPassword(e.target.value);
   };
 
   const handleClick = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,7 +56,7 @@ export default function Login() {
         timerRef.current = setTimeout(() => {
           setComponentState(undefined);
         }, 800);
-      } else if (response?.status === 400) {
+      } else if (response?.status === 400 || response?.status === 401) {
         console.error("Bad credentials");
         setError("Wrong email or password");
       }

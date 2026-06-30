@@ -79,7 +79,7 @@ export default function Sidebar() {
             <Link
               onClick={() => setComponentState(undefined)}
               className="sidebar_option sidebar-hide-buttons"
-              to="/comunity"
+              to="/community"
             >
               <img
                 src="/diversity_3_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg"

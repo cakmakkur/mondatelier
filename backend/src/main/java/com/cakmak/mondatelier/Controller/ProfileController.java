@@ -71,7 +71,7 @@ public class ProfileController {
             @RequestPart(value = "image", required = false) MultipartFile imageFile) {
         User currentUser = AuthUtil.getCurrentUser();
         if (!currentUser.getProfile().getId().equals(profileId)) {
-            throw new RuntimeException("User's profile and target profile don't match");
+            throw new UserProfileMismatchException();
         }
         profileService.updateProfileBanner(profileId, imageFile);
         PublicProfileDTO updatedProfileDTO = this.profileService.getProfileById(profileId);

@@ -63,6 +63,10 @@ class FlowFieldEffect {
 
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
   }
+
+  stop() {
+    cancelAnimationFrame(this.animationFrameId);
+  }
 }
 
 // OTHER EFFECT

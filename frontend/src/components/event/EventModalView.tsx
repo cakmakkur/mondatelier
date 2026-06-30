@@ -4,7 +4,6 @@ import type { RootState } from "../../store/store";
 import { Link } from "react-router-dom";
 import { useModalContext } from "../../context/ModalContext";
 import { useEffect, useRef, useState } from "react";
-import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import { useAuthContext } from "../../auth/AuthContext";
 
 interface EventPropTypes {
@@ -18,7 +17,6 @@ export default function EventModalView({ event }: EventPropTypes) {
   const profile = profiles[event.profileId];
   const heartIconEmptyRef = useRef<HTMLImageElement>(null);
   const heartIconFillRef = useRef<HTMLImageElement>(null);
-  const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuthContext();
   const [isLiked, setIsLiked] = useState(false);
 

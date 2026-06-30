@@ -33,13 +33,15 @@ public class SecurityConfig {
                                 "/auth/signup",
                                 "/auth/login",
                                 "/auth/refresh",
-                                "/uploads/**",
-                                "/api/**").permitAll()
+                                "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .anyRequest().permitAll()
-/*
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/preferences/**",
+                                "/api/community/me",
+                                "/api/post/from-my-communities",
+                                "/api/post/my-liked").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .anyRequest().authenticated()
-*/
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import About from "../components/profile/About";
 import Art from "../components/profile/art/Art";
 import Collections from "../components/profile/Collections";
@@ -41,7 +41,7 @@ export default function Profile() {
   const { setComponentState } = useModalContext();
 
   // move to the masterclasses section
-  const fetchMasterclasses = async () => {
+  const fetchMasterclasses = useCallback(async () => {
     try {
       const response = await fetch(
         `${MASTERCLASS_PATH}?profileId=${profileId}`
@@ -54,10 +54,10 @@ export default function Profile() {
     } catch (error) {
       console.error("Error fetching masterclasses:", error);
     }
-  };
+  }, [profileId]);
 
   // move to the freelance section
-  const fetchFreelances = async () => {
+  const fetchFreelances = useCallback(async () => {
     try {
       const response = await fetch(`${FREELANCE_PATH}?profileId=${profileId}`);
       const data = await response.json();
@@ -68,9 +68,9 @@ export default function Profile() {
     } catch (error) {
       console.error("Error fetching freelances:", error);
     }
-  };
+  }, [profileId]);
 
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const response = await fetch(`${PROFILE_PATH}/${profileId}`);
       const data = await response.json();
@@ -80,7 +80,12 @@ export default function Profile() {
     } catch (error) {
       console.error("Error fetching profile:", error);
     }
-  };
+  }, [profileId]);
+
+  useEffect(() => {
+    if (!profileId) return;
+    void Promise.all([fetchMasterclasses(), fetchFreelances()]);
+  }, [fetchFreelances, fetchMasterclasses, profileId]);
 
   const handlePPEditClick = () => {
     setComponentState(ImageUploader, {
@@ -119,13 +124,14 @@ export default function Profile() {
   }, [currentProfile]);
 
   useEffect(() => {
+    setIsOwnProfile(false);
     if (profile?.id === profileId) {
       setIsOwnProfile(true);
       setCurrentProfile(profile);
     } else {
       fetchProfile();
     }
-  }, [auth, profileId, profile]);
+  }, [auth, fetchProfile, profileId, profile]);
 
   if (!currentProfile) {
     return <div>Loading...</div>;

@@ -36,6 +36,7 @@ export default function FullPost() {
 
   const postsLoadingRef = useRef<boolean>(false);
   const endOfFeedRef = useRef(false);
+  const fetchCommentsRef = useRef<() => Promise<void>>(async () => undefined);
   const observer = useRef<IntersectionObserver | null>(null);
   const lastVisibleRef = useCallback(
     (node: HTMLSpanElement | null) => {
@@ -50,7 +51,7 @@ export default function FullPost() {
             !endOfFeedRef.current &&
             !postsLoadingRef.current
           ) {
-            fetchComments();
+            void fetchCommentsRef.current();
           }
         },
         { root: null, threshold: 0.1 }
@@ -58,7 +59,7 @@ export default function FullPost() {
 
       observer.current.observe(node);
     },
-    [commentPosts, endOfFeedRef.current]
+    []
   );
 
   const fetchPost = async () => {
@@ -79,28 +80,37 @@ export default function FullPost() {
       const response = await fetch(
         `${POST_PATH}/comments?postId=${postId}&lastId=${feedPageRef.current.lastId}&lastCreatedAt=${feedPageRef.current.lastCreatedAt}`
       );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch comments (${response.status})`);
+      }
       const data: PostDto[] = await response.json();
-      const newComments = data.filter(
-        (post) => !commentPosts.find((p) => p.id === post.id)
-      );
-      setCommentPosts((prev) => [...prev, ...newComments]);
+      if (data.length === 0) {
+        endOfFeedRef.current = true;
+        return;
+      }
+      setCommentPosts((previous) => {
+        const knownIds = new Set(previous.map((post) => post.id));
+        return [...previous, ...data.filter((post) => !knownIds.has(post.id))];
+      });
       feedPageRef.current = {
         lastCreatedAt: new Date(data[data.length - 1].createdAt).toISOString(),
         lastId: data[data.length - 1].id,
       };
-      if (response.status === 404) {
-        endOfFeedRef.current = true;
-        return;
-      }
     } catch (err) {
       console.error(err);
     } finally {
       postsLoadingRef.current = false;
     }
   };
+  fetchCommentsRef.current = fetchComments;
 
   useEffect(() => {
     const init = async () => {
+      setMainPost(null);
+      setCommentPosts([]);
+      endOfFeedRef.current = false;
+      feedPageRef.current = { lastCreatedAt: "", lastId: 0 };
+
       let post: PostDto | undefined;
       if (feed && feed.length > 0) {
         post = feed.find((p) => p.id === Number(postId));
@@ -117,7 +127,10 @@ export default function FullPost() {
     };
 
     init();
-  }, []);
+    // Initialization is keyed by the route instance; feed updates must not
+    // restart comment pagination.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postId]);
 
   useEffect(() => {
     if (mainPost?.postMediaPathList && mainPost.postMediaPathList.length > 0) {

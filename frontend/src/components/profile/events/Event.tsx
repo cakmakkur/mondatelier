@@ -20,24 +20,24 @@ export default function Event({ event }: EventPropTypes) {
 
   const { setComponentState } = useModalContext();
 
-  const fetchProfile = async () => {
-    try {
-      const response = await fetch(`${PROFILE_PATH}/${event.profileId}`);
-      const data = await response.json();
-      setProfile(data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    }
-  };
-
   useEffect(() => {
     const cachedProfile = profiles[event.profileId];
     if (cachedProfile) {
       setProfile(cachedProfile);
-    } else {
-      fetchProfile();
+      return;
     }
-  }, [event]);
+
+    const fetchProfile = async () => {
+      try {
+        const response = await fetch(`${PROFILE_PATH}/${event.profileId}`);
+        const data = await response.json();
+        setProfile(data);
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+    void fetchProfile();
+  }, [event.profileId, profiles]);
 
   const handleClick = () => {
     setComponentState(EventModalView, { event });
